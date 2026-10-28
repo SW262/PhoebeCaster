@@ -1,0 +1,3222 @@
+[
+ {
+  "qid": 922004,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"isreshare\" = 'TRUE' AND \"likes\" > 100",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 359,
+    "out_tok": 109
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921029,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COALESCE(SUM(CAST(NULLIF(g.\"grad_cohort\", '') AS bigint)), 0) AS total_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"year\" = 2012\n  AND g.\"gender\" = 'F'\n  AND g.\"race\" = 'A'\n  AND g.\"cohort\" = '4y other'\n  AND d.\"chronname\" = 'University of Alaska at Anchorage'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1195,
+    "out_tok": 429
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COALESCE(SUM(CAST(regexp_replace(g.\"grad_cohort\", '[^0-9]', '', 'g') AS bigint)), 0) AS total_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"year\" = 2012\n  AND g.\"gender\" = 'F'\n  AND g.\"race\" = 'A'\n  AND g.\"cohort\" = '4y other'\n  AND d.\"chronname\" = 'University of Alaska at Anchorage'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1350,
+    "out_tok": 435
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COALESCE(SUM(nullif(regexp_replace(g.\"grad_cohort\", '\\D', '', 'g'), '')::bigint), 0) AS total_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"year\" = 2012\n  AND g.\"gender\" = 'F'\n  AND g.\"race\" = 'A'\n  AND g.\"cohort\" = '4y other'\n  AND d.\"chronname\" = 'University of Alaska at Anchorage'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1495,
+    "out_tok": 482
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921019,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT count(*) FROM \"college_completion\".\"institution_details\" WHERE \"level\" = '4-year' AND \"control\" = 'Public' AND \"state\" = 'UT' AND \"awards_per_value\" > \"awards_per_state_value\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": true,
+    "in_tok": 1344,
+    "out_tok": 57
+   },
+   {
+    "round": 2,
+    "sql": "SELECT count(*) FROM \"college_completion\".\"institution_details\" WHERE \"level\" = '4-year' AND \"control\" = 'Public' AND \"state\" = 'Utah' AND \"awards_per_value\" > \"awards_per_state_value\"",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": false,
+    "in_tok": 1448,
+    "out_tok": 57
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921028,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH filtered AS (\n    SELECT \n        g.\"unitid\",\n        d.\"chronname\",\n        NULLIF(g.\"grad_150\",'')::bigint AS grad_150\n    FROM \"institution_grads\" g\n    JOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\n    WHERE g.\"year\" = 2013\n      AND g.\"race\" = 'B'\n      AND g.\"cohort\" = '4y bach'\n      AND d.\"chronname\" IN (\n          'Brown University','Columbia University','Cornell University',\n          'Dartmouth College','Harvard University','Princeton University',\n          'University of Pennsylvania','Yale University'\n      )\n)\nSELECT \"chronname\", grad_150\nFROM filtered\nWHERE grad_150 = (SELECT MAX(grad_150) FROM filtered)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1274,
+    "out_tok": 510
+   },
+   {
+    "round": 2,
+    "sql": "WITH filtered AS (\n    SELECT \n        g.\"unitid\",\n        d.\"chronname\",\n        NULLIF(regexp_replace(g.\"grad_150\", '[,]', '', 'g'), '')::bigint AS grad_150\n    FROM \"institution_grads\" g\n    JOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\n    WHERE g.\"year\" = 2013\n      AND g.\"race\" = 'B'\n      AND g.\"cohort\" = '4y bach'\n      AND d.\"chronname\" IN (\n          'Brown University','Columbia University','Cornell University',\n          'Dartmouth College','Harvard University','Princeton University',\n          'University of Pennsylvania','Yale University'\n      )\n)\nSELECT \"chronname\", grad_150\nFROM filtered\nWHERE grad_150 = (SELECT MAX(grad_150) FROM filtered)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1493,
+    "out_tok": 609
+   },
+   {
+    "round": 3,
+    "sql": "WITH filtered AS (\n    SELECT\n        d.\"chronname\",\n        NULLIF(regexp_replace(g.\"grad_150\", '[,]', '', 'g'), '')::bigint AS grad_150\n    FROM \"institution_grads\" g\n    JOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\n    WHERE g.\"year\" = 2013\n      AND g.\"race\" = 'B'\n      AND g.\"cohort\" = '4y bach'\n      AND d.\"chronname\" IN (\n          'Brown University','Columbia University','Cornell University',\n          'Dartmouth College','Harvard University','Princeton University',\n          'University of Pennsylvania','Yale University'\n      )\n      AND g.\"grad_150\" IS NOT NULL\n)\nSELECT \"chronname\", grad_150\nFROM filtered\nWHERE grad_150 = (SELECT MAX(grad_150) FROM filtered)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1702,
+    "out_tok": 415
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920022,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"start\"\nFROM careplans\nWHERE \"patient\" = (\n    SELECT \"patient\"\n    FROM patients\n    WHERE \"first\" = 'Walter'\n      AND \"last\" = 'Bahringer'\n)",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 859,
+    "out_tok": 208
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921002,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"state\" FROM \"institution_details\" WHERE \"chronname\" = 'Mercer University'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "cached": false,
+    "in_tok": 1292,
+    "out_tok": 21
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921013,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(\"sg\".\"grad_cohort\")\nFROM \"college_completion\".\"state_sector_grads\" AS \"sg\"\nJOIN \"college_completion\".\"state_sector_details\" AS \"sd\"\n  ON \"sg\".\"stateid\" = \"sd\".\"stateid\"\n AND \"sg\".\"state\" = \"sd\".\"state\"\n AND \"sg\".\"control\" = \"sd\".\"control\"\n AND \"sg\".\"level\" = \"sd\".\"level\"\nWHERE \"sg\".\"gender\" = 'F'\n  AND \"sg\".\"year\" = 2012\n  AND \"sd\".\"schools_count\" BETWEEN 10 AND 20",
+    "outcome": "ERROR: function sum(text) does not exist",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1228,
+    "out_tok": 138
+   },
+   {
+    "round": 2,
+    "sql": "SELECT SUM(\"sg\".\"grad_cohort_ct\")\nFROM \"college_completion\".\"state_sector_grads\" AS \"sg\"\nJOIN \"college_completion\".\"state_sector_details\" AS \"sd\"\n  ON \"sg\".\"stateid\" = \"sd\".\"stateid\"\n AND \"sg\".\"state\" = \"sd\".\"state\"\n AND \"sg\".\"control\" = \"sd\".\"control\"\n AND \"sg\".\"level\" = \"sd\".\"level\"\nWHERE \"sg\".\"gender\" = 'F'\n  AND \"sg\".\"year\" = 2012\n  AND \"sd\".\"schools_count\" BETWEEN 10 AND 20",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1408,
+    "out_tok": 138
+   },
+   {
+    "round": 3,
+    "sql": "SELECT SUM(\"sg\".\"grad_cohort_ct\")\nFROM \"state_sector_grads\" AS \"sg\"\nJOIN \"state_sector_details\" AS \"sd\"\n  ON \"sg\".\"stateid\" = \"sd\".\"stateid\"\n AND \"sg\".\"state\" = \"sd\".\"state\"\n AND \"sg\".\"control\" = \"sd\".\"control\"\n AND \"sg\".\"level\" = \"sd\".\"level\"\nWHERE \"sg\".\"gender\" = 'F'\n  AND \"sg\".\"year\" = 2012\n  AND \"sd\".\"schools_count\" BETWEEN 10 AND 20",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1569,
+    "out_tok": 132
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922020,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"statecode\" FROM \"location\" WHERE \"state\" = 'Gwynedd State'",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 340,
+    "out_tok": 194
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"statecode\" FROM \"location\" WHERE \"state\" ILIKE '%Gwynedd%'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 399,
+    "out_tok": 327
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921033,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"control\", \"level\"\nFROM \"institution_details\" d\nJOIN \"institution_grads\" g ON d.\"unitid\" = g.\"unitid\"\nWHERE g.\"race\" = 'X'\nORDER BY d.\"student_count\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1131,
+    "out_tok": 1166
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922012,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS positive_tweet_count\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"state\" = 'Ha Noi'\n  AND t.\"sentiment\" > 0",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 321,
+    "out_tok": 55
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920011,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT p.\"first\"\nFROM patients p\nJOIN conditions c ON p.\"patient\" = c.\"patient\"\nWHERE c.\"description\" = 'Cystitis'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 860,
+    "out_tok": 132
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920000,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"patient\") FROM \"allergies\" WHERE \"description\" = 'Allergy to eggs'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 903,
+    "out_tok": 26
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920039,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT AVG(o.\"value\") AS average_body_height\nFROM \"observations\" o\nJOIN \"patients\" p ON o.\"patient\" = p.\"patient\"\nWHERE p.\"race\" = 'white'\n  AND o.\"description\" = 'Body Height'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 930,
+    "out_tok": 55
+   },
+   {
+    "round": 2,
+    "sql": "SELECT AVG(o.\"value\") AS average_body_height\nFROM \"observations\" o\nJOIN \"patients\" p ON o.\"patient\" = p.\"patient\"\nWHERE p.\"race\" = 'white'\n  AND o.\"description\" = 'Body Height'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1030,
+    "out_tok": 55
+   },
+   {
+    "round": 3,
+    "sql": "SELECT AVG(o.\"value\") AS average_body_height\nFROM \"observations\" o\nJOIN \"patients\" p ON o.\"patient\" = p.\"patient\"\nWHERE p.\"race\" = 'white'\n  AND o.\"description\" = 'Body Height'\n  AND o.\"units\" = 'cm'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1108,
+    "out_tok": 66
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922007,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"weekday\" = 'Wednesday'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 310,
+    "out_tok": 16
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922015,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT AVG(cnt) FROM (\n  SELECT COUNT(*) AS cnt\n  FROM \"twitter\" t\n  JOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\n  WHERE l.\"country\" = 'Argentina'\n  GROUP BY l.\"city\"\n) sub",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 373,
+    "out_tok": 206
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921032,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT ig.\"race\"\nFROM \"college_completion\".\"institution_details\" id\nJOIN \"college_completion\".\"institution_grads\" ig\n  ON id.\"unitid\" = ig.\"unitid\"\nWHERE id.\"state\" = 'Alabama'\n  AND id.\"student_count\" > 0.9 * (\n        SELECT AVG(\"student_count\")\n        FROM \"college_completion\".\"institution_details\"\n      )",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1153,
+    "out_tok": 396
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920003,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS allergy_count\nFROM \"allergies\" a\nJOIN \"patients\" p ON a.\"patient\" = p.\"patient\"\nWHERE p.\"prefix\" = 'Mrs.'\n  AND p.\"first\" = 'Saundra'\n  AND p.\"last\" = 'Monahan'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 856,
+    "out_tok": 358
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920017,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  p.\"first\",\n  p.\"last\"\nFROM \"patients\" AS p\nJOIN \"allergies\" AS a ON p.\"patient\" = a.\"patient\"\nGROUP BY p.\"patient\", p.\"first\", p.\"last\"\nHAVING COUNT(DISTINCT a.\"description\") > 3",
+    "outcome": "returned 62 rows, expected 157, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 918,
+    "out_tok": 70
+   },
+   {
+    "round": 2,
+    "sql": "SELECT p.\"first\", p.\"last\"\nFROM \"patients\" AS p\nJOIN \"allergies\" AS a ON p.\"patient\" = a.\"patient\"\nGROUP BY p.\"patient\", p.\"first\", p.\"last\"\nHAVING COUNT(a.\"description\") > 3",
+    "outcome": "returned 62 rows, expected 157, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1035,
+    "out_tok": 62
+   },
+   {
+    "round": 3,
+    "sql": "SELECT p.\"first\", p.\"last\"\nFROM \"patients\" AS p\nJOIN \"allergies\" AS a ON p.\"patient\" = a.\"patient\"\nGROUP BY p.\"patient\", p.\"first\", p.\"last\"\nHAVING COUNT(DISTINCT a.\"description\") >= 3",
+    "outcome": "returned 73 rows, expected 157, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1123,
+    "out_tok": 65
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921004,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"unitid\") AS \"num_4yr_private_not_for_profit_in_home_state\"\nFROM \"college_completion\".\"institution_details\"\nWHERE \"level\" = '4-year'\n  AND \"control\" = 'Private not-for-profit'\n  AND \"state\" = (\n    SELECT \"state\"\n    FROM \"college_completion\".\"institution_details\"\n    WHERE \"chronname\" = 'Brevard Community College'\n    LIMIT 1\n  )",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 1154,
+    "out_tok": 267
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1290,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT \"unitid\") AS \"num_4yr_private_not_for_profit_in_home_state\"\nFROM \"college_completion\".\"institution_details\"\nWHERE \"level\" = '4-year'\n  AND \"control\" = 'Private not-for-profit'\n  AND \"state\" = (\n    SELECT \"state\"\n    FROM \"college_completion\".\"institution_details\"\n    WHERE \"chronname\" = 'Brevard Community College'\n    LIMIT 1\n  )\n  AND \"unitid\" NOT IN (\n    SELECT \"unitid\"\n    FROM \"college_completion\".\"institution_details\"\n    WHERE \"chronname\" = 'Brevard Community College'\n  )",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1309,
+    "out_tok": 936
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921005,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"institution_details\" WHERE \"control\" = 'Private not-for-profit'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1194,
+    "out_tok": 20
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922009,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT count(t.\"tweetid\") FROM \"twitter\" t JOIN \"location\" l ON t.\"locationid\" = l.\"locationid\" WHERE l.\"state\" = 'Texas' AND t.\"isreshare\" = 'TRUE'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "cached": false,
+    "in_tok": 311,
+    "out_tok": 50
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920018,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \n    (COUNT(DISTINCT CASE WHEN p.\"gender\" = 'F' THEN p.\"patient\" END)::numeric \n     / NULLIF(COUNT(DISTINCT m.\"patient\")::numeric, 0)) * 100 AS \"female_percentage\"\nFROM \"medications\" m\nJOIN \"patients\" p ON m.\"patient\" = p.\"patient\"\nWHERE m.\"description\" = 'Penicillin V Potassium 250 MG'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 930,
+    "out_tok": 273
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \n  CASE \n    WHEN total = 0 THEN 0\n    ELSE (female::numeric / total) * 100\n  END AS \"female_percentage\"\nFROM (\n  SELECT \n    COUNT(DISTINCT p.\"patient\") FILTER (WHERE p.\"gender\" = 'F') AS female,\n    COUNT(DISTINCT p.\"patient\") AS total\n  FROM \"medications\" m\n  JOIN \"patients\" p ON m.\"patient\" = p.\"patient\"\n  WHERE m.\"description\" = 'Penicillin V Potassium 250 MG'\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1064,
+    "out_tok": 526
+   },
+   {
+    "round": 3,
+    "sql": "WITH med_patients AS (\n  SELECT DISTINCT \"patient\"\n  FROM \"medications\"\n  WHERE \"description\" = 'Penicillin V Potassium 250 MG'\n)\nSELECT\n  CASE WHEN COUNT(*) = 0 THEN 0\n       ELSE (COUNT(*) FILTER (WHERE p.\"gender\" = 'F')::numeric / COUNT(*)::numeric) * 100\n  END AS \"female_percentage\"\nFROM med_patients mp\nJOIN \"patients\" p ON p.\"patient\" = mp.\"patient\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1205,
+    "out_tok": 424
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921012,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COALESCE(SUM(CAST(g.\"grad_cohort\" AS bigint)), 0) AS total_female_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"gender\" = 'F'\n  AND g.\"year\" BETWEEN 2011 AND 2013\n  AND d.\"state\" = (\n    SELECT \"state\"\n    FROM \"institution_details\"\n    WHERE \"chronname\" = 'Gateway Community College'\n    LIMIT 1\n  )",
+    "outcome": "ERROR: invalid input syntax for type bigint: \"NULL\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1165,
+    "out_tok": 576
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COALESCE(SUM(CAST(NULLIF(g.\"grad_cohort\",'') AS bigint)), 0) AS total_female_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"gender\" = 'F'\n  AND g.\"year\" BETWEEN 2011 AND 2013\n  AND d.\"state\" = (\n    SELECT \"state\"\n    FROM \"institution_details\"\n    WHERE \"chronname\" = 'Gateway Community College'\n    LIMIT 1\n  )",
+    "outcome": "ERROR: invalid input syntax for type bigint: \"NULL\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1323,
+    "out_tok": 418
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COALESCE(SUM(CASE WHEN g.\"grad_cohort\" ~ '^\\d+$' THEN g.\"grad_cohort\"::bigint ELSE 0 END), 0) AS total_female_graduates\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"gender\" = 'F'\n  AND g.\"year\" BETWEEN 2011 AND 2013\n  AND d.\"state\" = (\n    SELECT \"state\"\n    FROM \"institution_details\"\n    WHERE \"chronname\" = 'Gateway Community College'\n    LIMIT 1\n  )",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1464,
+    "out_tok": 459
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922002,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(\"tweetid\") FROM \"twitter\" WHERE \"lang\" = 'en'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 319,
+    "out_tok": 19
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920033,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"encounters\" e ON i.\"encounter\" = e.\"id\"\nWHERE e.\"reasondescription\" = 'Normal pregnancy'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 905,
+    "out_tok": 47
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"encounters\" e ON i.\"encounter\" = e.\"id\"\nWHERE e.\"reasondescription\" = 'Normal pregnancy'\n  AND i.\"date\" < (SELECT MAX(e2.\"date\") FROM \"encounters\" e2 WHERE e2.\"patient\" = i.\"patient\" AND e2.\"reasondescription\" = 'Normal pregnancy')",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 997,
+    "out_tok": 93
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"encounters\" e ON i.\"encounter\" = e.\"id\"\nWHERE e.\"reasondescription\" = 'Normal pregnancy'\n  AND i.\"date\" <= e.\"date\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1113,
+    "out_tok": 59
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920002,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  \"start\" - \"stop\" AS \"allergy period\",\n  \"description\" AS \"trigger\"\nFROM \"allergies\"\nJOIN \"patients\" ON \"allergies\".\"patient\" = \"patients\".\"patient\"\nWHERE \"patients\".\"first\" = 'Isadora' AND \"patients\".\"last\" = 'Moen'",
+    "outcome": "ERROR: operator does not exist: text - text",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 918,
+    "out_tok": 75
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  (\"stop\"::date - \"start\"::date) AS \"allergy period\",\n  \"description\" AS \"trigger\"\nFROM \"allergies\"\nJOIN \"patients\" ON \"allergies\".\"patient\" = \"patients\".\"patient\"\nWHERE \"patients\".\"first\" = 'Isadora' AND \"patients\".\"last\" = 'Moen'",
+    "outcome": "returned 2 rows, expected 2, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1037,
+    "out_tok": 80
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  (\"start\"::date - \"stop\"::date) AS \"allergy period\",\n  \"description\" AS \"trigger\"\nFROM \"allergies\"\nJOIN \"patients\" ON \"allergies\".\"patient\" = \"patients\".\"patient\"\nWHERE \"patients\".\"first\" = 'Isadora' AND \"patients\".\"last\" = 'Moen'",
+    "outcome": "returned 2 rows, expected 2, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1140,
+    "out_tok": 80
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921027,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT i.\"site\"\nFROM \"institution_grads\" g\nJOIN \"institution_details\" i ON g.\"unitid\" = i.\"unitid\"\nWHERE g.\"race\" = 'W'\n  AND g.\"cohort\" = '2y all'\n  AND g.\"year\" = 2008\nORDER BY g.\"grad_cohort\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1245,
+    "out_tok": 86
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920026,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT\n    p.\"first\",\n    p.\"last\"\nFROM \"patients\" p\nJOIN \"conditions\" c ON p.\"patient\" = c.\"patient\"\nJOIN \"all_prevalences\" ap ON c.\"description\" = ap.\"item\"\nWHERE p.\"ethnicity\" = 'irish'\n  AND ap.\"occurrences\" > (SELECT AVG(\"occurrences\") * 0.96 FROM \"all_prevalences\")",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 975,
+    "out_tok": 97
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921020,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT ssr.\"race\"\nFROM \"state_sector_grads\" ssr\nJOIN \"state_sector_details\" ssd\n  ON ssr.\"stateid\" = ssd.\"stateid\"\nWHERE ssd.\"control\" = 'Public'\n  AND ssd.\"schools_count\" <= 20",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1122,
+    "out_tok": 479
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922016,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT l.city\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.city IN ('Bangkok', 'Chiang Mai')\nGROUP BY l.city\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 320,
+    "out_tok": 58
+   },
+   {
+    "round": 2,
+    "sql": "SELECT l.city\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.city IN ('Bangkok', 'Chiang Mai')\nGROUP BY l.city\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 420,
+    "out_tok": 57
+   },
+   {
+    "round": 3,
+    "sql": "SELECT l.city\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.city IN ('Bangkok', 'Chiang Mai')\nGROUP BY l.city\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 498,
+    "out_tok": 57
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922022,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"state\") FROM \"location\" WHERE \"country\" = 'United Kingdom'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 311,
+    "out_tok": 22
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(\"state\") FROM \"location\" WHERE \"country\" = 'United Kingdom'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 378,
+    "out_tok": 19
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920030,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"patients\".\"first\" FROM \"patients\" JOIN \"encounters\" ON \"patients\".\"patient\" = \"encounters\".\"patient\" WHERE \"encounters\".\"reasondescription\" = 'Normal pregnancy'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.7-flash",
+    "cached": true,
+    "in_tok": 873,
+    "out_tok": 43
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922000,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"reach\" > 1000",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 330,
+    "out_tok": 19
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921018,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT i.\"chronname\"\nFROM \"institution_details\" i\nJOIN \"state_sector_grads\" s ON i.\"state\" = s.\"state\"\nWHERE i.\"control\" = 'Public'\n  AND s.\"year\" = 2013\n  AND s.\"grad_cohort_ct\" = (\n    SELECT MIN(\"grad_cohort_ct\")\n    FROM \"state_sector_grads\"\n    WHERE \"year\" = 2013\n  )",
+    "outcome": "returned 13122 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1234,
+    "out_tok": 104
+   },
+   {
+    "round": 2,
+    "sql": "SELECT i.\"chronname\"\nFROM \"institution_details\" i\nJOIN \"state_sector_grads\" s ON i.\"state\" = s.\"state\"\nWHERE i.\"control\" = 'Public'\n  AND s.\"year\" = 2013\n  AND s.\"grad_cohort_ct\" = (\n    SELECT MIN(\"grad_cohort_ct\")\n    FROM \"state_sector_grads\"\n    WHERE \"year\" = 2013\n  )",
+    "outcome": "returned 13122 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1387,
+    "out_tok": 104
+   },
+   {
+    "round": 3,
+    "sql": "SELECT i.\"chronname\"\nFROM \"institution_details\" i\nJOIN \"state_sector_grads\" s ON i.\"state\" = s.\"state\"\nWHERE i.\"control\" = 'Public'\n  AND s.\"year\" = 2013\n  AND s.\"state\" = (\n    SELECT \"state\"\n    FROM \"state_sector_grads\"\n    WHERE \"year\" = 2013\n    ORDER BY MIN(\"grad_cohort_ct\")\n    LIMIT 1\n  )",
+    "outcome": "ERROR: column \"state_sector_grads.state\" must appear in the GROUP BY clause or be used in an aggregate function",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1518,
+    "out_tok": 112
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921026,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT id.\"basic\"\nFROM \"college_completion\".\"institution_grads\" AS ig\nJOIN \"college_completion\".\"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE ig.\"year\" = 2012\n  AND ig.\"gender\" = 'M'\n  AND ig.\"race\" = 'X'",
+    "outcome": "returned 33 rows, expected 33, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1221,
+    "out_tok": 76
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT id.\"basic\"\nFROM \"college_completion\".\"institution_grads\" AS ig\nJOIN \"college_completion\".\"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE ig.\"year\" = 2012\n  AND ig.\"gender\" = 'M'\n  AND ig.\"race\" = 'X'\nORDER BY id.\"basic\"",
+    "outcome": "returned 33 rows, expected 33, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1344,
+    "out_tok": 83
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT id.\"basic\"\nFROM \"college_completion\".\"institution_grads\" AS ig\nJOIN \"college_completion\".\"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE ig.\"year\" = 2012\n  AND ig.\"gender\" = 'M'\n  AND ig.\"race\" = 'X'\nORDER BY id.\"basic\" ASC",
+    "outcome": "returned 33 rows, expected 33, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1452,
+    "out_tok": 84
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921011,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"state_abbr\"\nFROM \"state_sector_grads\"\nWHERE \"state\" = 'Delaware'\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1110,
+    "out_tok": 282
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922017,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS tweet_count\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"state\" = 'Sante Fe'\n  AND l.\"country\" = 'Argentina'\n  AND t.\"day\" = 31",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 345,
+    "out_tok": 66
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920027,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT p.\"patient\")\nFROM \"patients\" p\nJOIN \"careplans\" c ON p.\"patient\" = c.\"patient\"\nWHERE p.\"race\" = 'white'\n  AND c.\"reasoncode\" = 10509002",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 875,
+    "out_tok": 213
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920012,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT T1.\"first\", T1.\"last\" FROM \"patients\" AS T1 JOIN \"conditions\" AS T2 ON T1.\"patient\" = T2.\"patient\" WHERE T2.\"description\" = 'Cystitis'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.8-flash",
+    "cached": false,
+    "in_tok": 884,
+    "out_tok": 50
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920035,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \n    c.\"description\" AS \"care plan\",\n    p.\"description\" AS \"procedure\",\n    m.\"description\" AS \"medication\",\n    CONCAT(pt.\"first\", ' ', pt.\"last\") AS \"full name\"\nFROM \"encounters\" e\nLEFT JOIN \"careplans\" c ON e.\"id\" = c.\"encounter\"\nLEFT JOIN \"procedures\" p ON e.\"id\" = p.\"encounter\"\nLEFT JOIN \"medications\" m ON e.\"id\" = m.\"encounter\"\nLEFT JOIN \"patients\" pt ON e.\"patient\" = pt.\"patient\"\nWHERE e.\"id\" = '6f2e3935-b203-493e-a9c0-f23e847b9798'",
+    "outcome": "returned 3 rows, expected 450, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": true,
+    "in_tok": 981,
+    "out_tok": 176
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \n    c.\"description\" AS \"care plan\",\n    p.\"description\" AS \"procedure\",\n    m.\"description\" AS \"medication\",\n    CONCAT(pt.\"first\", ' ', pt.\"last\") AS \"full name\"\nFROM \"encounters\" e\nJOIN \"patients\" pt ON e.\"patient\" = pt.\"patient\"\nCROSS JOIN LATERAL (\n    SELECT DISTINCT \"description\" FROM \"careplans\" WHERE \"encounter\" = e.\"id\"\n) c\nCROSS JOIN LATERAL (\n    SELECT DISTINCT \"description\" FROM \"procedures\" WHERE \"encounter\" = e.\"id\"\n) p\nCROSS JOIN LATERAL (\n    SELECT DISTINCT \"description\" FROM \"medications\" WHERE \"encounter\" = e.\"id\"\n) m\nWHERE e.\"id\" = '6f2e3935-b203-493e-a9c0-f23e847b9798'",
+    "outcome": "returned 3 rows, expected 450, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": false,
+    "in_tok": 1206,
+    "out_tok": 211
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \n    c.\"description\" AS \"care plan\",\n    p.\"description\" AS \"procedure\",\n    m.\"description\" AS \"medication\",\n    CONCAT(pt.\"first\", ' ', pt.\"last\") AS \"full name\"\nFROM \"encounters\" e\nJOIN \"patients\" pt ON e.\"patient\" = pt.\"patient\"\nFULL OUTER JOIN \"careplans\" c ON e.\"id\" = c.\"encounter\"\nFULL OUTER JOIN \"procedures\" p ON e.\"id\" = p.\"encounter\"\nFULL OUTER JOIN \"medications\" m ON e.\"id\" = m.\"encounter\"\nWHERE e.\"id\" = '6f2e3935-b203-493e-a9c0-f23e847b9798'",
+    "outcome": "returned 3 rows, expected 450, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": false,
+    "in_tok": 1443,
+    "out_tok": 178
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920021,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"careplans\".\"start\"\nFROM \"careplans\"\nJOIN \"patients\" ON \"careplans\".\"patient\" = \"patients\".\"patient\"\nWHERE \"patients\".\"maiden\" = 'Adams'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 863,
+    "out_tok": 160
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920029,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*)\nFROM \"encounters\" e\nJOIN \"patients\" p ON e.\"patient\" = p.\"patient\"\nWHERE e.\"date\" BETWEEN '2011-09-01' AND '2012-08-29'\n  AND p.\"ethnicity\" = 'german'\n  AND e.\"description\" = 'Outpatient Encounter'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 983,
+    "out_tok": 85
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT e.\"patient\")\nFROM \"encounters\" e\nJOIN \"patients\" p ON e.\"patient\" = p.\"patient\"\nWHERE e.\"date\" BETWEEN '2011-09-01' AND '2012-08-29'\n  AND p.\"ethnicity\" = 'german'\n  AND e.\"description\" = 'Outpatient Encounter'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1113,
+    "out_tok": 91
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(*)\nFROM \"encounters\" e\nJOIN \"patients\" p ON e.\"patient\" = p.\"patient\"\nWHERE e.\"date\" BETWEEN '2011-01-09' AND '2012-08-29'\n  AND p.\"ethnicity\" = 'german'\n  AND e.\"description\" = 'Outpatient Encounter'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1227,
+    "out_tok": 85
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921016,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT d.\"state\"\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nWHERE g.\"gender\" = 'M'\n  AND g.\"race\" = 'B'\n  AND g.\"year\" = 2011\n  AND d.\"control\" = 'Private for-profit'",
+    "outcome": "returned 49 rows, expected 52, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1152,
+    "out_tok": 301
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT s.\"state_post\" AS state_name\nFROM \"institution_grads\" g\nJOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\nJOIN \"state_sector_details\" s ON d.\"state\" = s.\"state\"\nWHERE g.\"gender\" = 'M'\n  AND g.\"race\" = 'B'\n  AND g.\"year\" = 2011\n  AND d.\"control\" = 'Private for-profit'",
+    "outcome": "returned 49 rows, expected 52, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1268,
+    "out_tok": 752
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT COALESCE(s.\"state_post\", d.\"state\") AS state_name\nFROM \"institution_details\" d\nJOIN \"state_sector_details\" s ON d.\"state\" = s.\"state\"\nWHERE d.\"control\" = 'Private for-profit'\n  AND EXISTS (\n    SELECT 1\n    FROM \"institution_grads\" g\n    WHERE g.\"unitid\" = d.\"unitid\"\n      AND g.\"year\" = 2011\n      AND g.\"gender\" = 'M'\n  )\n  AND EXISTS (\n    SELECT 1\n    FROM \"institution_grads\" g\n    WHERE g.\"unitid\" = d.\"unitid\"\n      AND g.\"year\" = 2011\n      AND g.\"race\" = 'B'\n  )",
+    "outcome": "returned 49 rows, expected 52, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1386,
+    "out_tok": 1418
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920019,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT e.\"description\"\nFROM \"encounters\" e\nJOIN \"patients\" p ON e.\"patient\" = p.\"patient\"\nWHERE p.\"first\" = 'Hubert'\n  AND p.\"last\" = 'Baumbach'\n  AND e.\"date\" = '2008-10-25'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 938,
+    "out_tok": 73
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921023,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COALESCE(SUM(NULLIF(ig.\"grad_cohort\", '')::bigint), 0) AS total_graduates\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Central Alabama Community College'\n  AND ig.\"year\" = 2011",
+    "outcome": "returned 1 rows, expected 18, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1133,
+    "out_tok": 471
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COALESCE(SUM(NULLIF(regexp_replace(ig.\"grad_cohort\", '\\D', '', 'g'), '')::bigint), 0) AS total_graduates\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Central Alabama Community College'\n  AND ig.\"year\" = 2011",
+    "outcome": "returned 1 rows, expected 18, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1254,
+    "out_tok": 676
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \n  COALESCE(SUM(NULLIF(regexp_replace(ig.\"grad_100\", '\\D', '', 'g'), '')::bigint), 0) +\n  COALESCE(SUM(NULLIF(regexp_replace(ig.\"grad_150\", '\\D', '', 'g'), '')::bigint), 0) AS total_graduates\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Central Alabama Community College'\n  AND ig.\"year\" = 2011",
+    "outcome": "returned 1 rows, expected 18, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1365,
+    "out_tok": 849
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921031,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  \"institution_details\".\"chronname\",\n  CAST(\"institution_grads\".\"grad_150_rate\" AS numeric) AS pct\nFROM\n  \"college_completion\".\"institution_grads\"\nJOIN\n  \"college_completion\".\"institution_details\"\n  ON \"institution_grads\".\"unitid\" = \"institution_details\".\"unitid\"\nWHERE\n  \"institution_grads\".\"gender\" = 'M'\n  AND \"institution_grads\".\"race\" = 'w'\n  AND \"institution_grads\".\"year\" = 2011\nORDER BY\n  pct DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1870)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 1159,
+    "out_tok": 497
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  \"institution_details\".\"chronname\",\n  CAST(REPLACE(REPLACE(\"institution_grads\".\"grad_150_rate\", '%', ''), ',', '') AS numeric) AS pct\nFROM\n  \"institution_grads\"\nJOIN\n  \"institution_details\"\n  USING (\"unitid\")\nWHERE\n  \"institution_grads\".\"gender\" = 'M'\n  AND \"institution_grads\".\"race\" = 'w'\n  AND \"institution_grads\".\"year\" = 2011\n  AND \"institution_grads\".\"grad_150_rate\" IS NOT NULL\nORDER BY\n  pct DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1870)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1318,
+    "out_tok": 596
+   },
+   {
+    "round": 3,
+    "sql": "SELECT chronname, pct\nFROM (\n  SELECT d.\"chronname\",\n         CAST(NULLIF(regexp_replace(g.\"grad_150_rate\", '[^0-9.]', '', 'g'), '') AS numeric) AS pct\n  FROM \"institution_grads\" g\n  JOIN \"institution_details\" d ON g.\"unitid\" = d.\"unitid\"\n  WHERE g.\"gender\" = 'M'\n    AND g.\"race\" = 'w'\n    AND g.\"year\" = 2011\n) t\nWHERE pct IS NOT NULL\nORDER BY pct DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1870)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1465,
+    "out_tok": 966
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920014,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT c.\"patient\")\nFROM \"conditions\" c\nJOIN \"patients\" p ON c.\"patient\" = p.\"patient\"\nWHERE c.\"description\" = 'normal pregnancy'\n  AND p.\"marital\" = 'S'\n  AND p.\"gender\" = 'F'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 917,
+    "out_tok": 66
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT c.\"patient\")\nFROM \"conditions\" c\nJOIN \"patients\" p ON c.\"patient\" = p.\"patient\"\nWHERE c.\"description\" = 'normal pregnancy'\n  AND p.\"marital\" = 'S'\n  AND p.\"gender\" = 'F'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1028,
+    "out_tok": 66
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT c.\"patient\")\nFROM \"conditions\" c\nJOIN \"patients\" p ON c.\"patient\" = p.\"patient\"\nWHERE c.\"description\" = 'normal pregnancy'\n  AND p.\"marital\" = 'S'\n  AND p.\"gender\" = 'F'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1117,
+    "out_tok": 66
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920008,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT p.\"last\"\nFROM \"synthea\".\"patients\" p\nJOIN \"synthea\".\"allergies\" a ON p.\"patient\" = a.\"patient\"\nWHERE a.\"description\" = 'Allergy to dairy product'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 910,
+    "out_tok": 53
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922006,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"lang\" = 'en'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 344,
+    "out_tok": 143
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921034,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"site\"\nFROM \"institution_details\"\nWHERE \"student_count\" BETWEEN 500 AND 1000\nORDER BY \"vsa_year\" DESC\nLIMIT 1",
+    "outcome": "returned 1 rows, expected 424, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1208,
+    "out_tok": 42
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"site\"\nFROM \"institution_details\"\nWHERE \"student_count\" BETWEEN 500 AND 1000\n  AND \"vsa_year\" = (\n    SELECT MAX(\"vsa_year\")\n    FROM \"institution_details\"\n    WHERE \"student_count\" BETWEEN 500 AND 1000\n  )",
+    "outcome": "returned 525 rows, expected 424, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1296,
+    "out_tok": 75
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \"site\"\nFROM \"institution_details\"\nWHERE \"student_count\" BETWEEN 500 AND 1000\n  AND \"vsa_year\" = (\n    SELECT MAX(\"vsa_year\")\n    FROM \"institution_details\"\n  )",
+    "outcome": "returned 525 rows, expected 424, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1398,
+    "out_tok": 57
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922011,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"city\" = 'Buenos Aires' \n  AND t.\"weekday\" = 'Thursday'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 362,
+    "out_tok": 168
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920001,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"patients\".\"first\", \"patients\".\"last\" FROM \"patients\" JOIN \"allergies\" ON \"patients\".\"patient\" = \"allergies\".\"patient\" WHERE \"allergies\".\"description\" = 'Allergy to nut'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.6-flash",
+    "cached": false,
+    "in_tok": 877,
+    "out_tok": 47
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920007,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT T1.\"description\" FROM \"medications\" AS T1 JOIN \"allergies\" AS T2 ON T1.\"patient\" = T2.\"patient\" WHERE T2.\"description\" = 'Allergy to mould' AND T1.\"start\" = '2016-06-06'",
+    "outcome": "returned 2 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": true,
+    "in_tok": 912,
+    "out_tok": 67
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"description\" FROM \"medications\" WHERE \"patient\" IN (SELECT \"patient\" FROM \"allergies\" WHERE \"description\" = 'Allergy to mould') AND \"start\" = '2016-06-06'",
+    "outcome": "returned 2 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": false,
+    "in_tok": 1026,
+    "out_tok": 53
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT \"description\" FROM \"medications\" WHERE \"patient\" IN (SELECT \"patient\" FROM \"allergies\" WHERE \"description\" = 'Allergy to mould') AND \"start\" = '2016-06-06'::date",
+    "outcome": "returned 2 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": false,
+    "in_tok": 1103,
+    "out_tok": 55
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920034,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT o.\"value\" AS height, o.\"units\"\nFROM \"observations\" o\nJOIN \"patients\" p ON o.\"patient\" = p.\"patient\"\nWHERE p.\"first\" = 'Elly'\n  AND p.\"last\" = 'Koss'\n  AND o.\"date\" = DATE '2008-03-11'\n  AND o.\"description\" = 'Body Height'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 886,
+    "out_tok": 316
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921001,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"state_post\" FROM \"state_sector_details\" WHERE \"state\" = 'Idaho' LIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1187,
+    "out_tok": 25
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920038,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT p.\"ssn\"\nFROM \"patients\" p\nJOIN \"observations\" o ON p.\"patient\" = o.\"patient\"\nWHERE o.\"description\" = 'Systolic Blood Pressure'\nORDER BY o.\"value\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 925,
+    "out_tok": 56
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921025,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(CAST(\"grad_cohort\" AS BIGINT)) AS total_students\nFROM \"institution_grads\"\nJOIN \"institution_details\" ON \"institution_grads\".\"unitid\" = \"institution_details\".\"unitid\"\nWHERE \"institution_details\".\"chronname\" = 'Lincoln College'\n  AND \"institution_grads\".\"year\" = 2011\n  AND \"institution_grads\".\"cohort\" = '4y bach'",
+    "outcome": "ERROR: invalid input syntax for type bigint: \"NULL\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1252,
+    "out_tok": 96
+   },
+   {
+    "round": 2,
+    "sql": "SELECT SUM(CAST(\"grad_cohort\" AS BIGINT)) AS total_students\nFROM \"institution_grads\"\nJOIN \"institution_details\" ON \"institution_grads\".\"unitid\" = \"institution_details\".\"unitid\"\nWHERE \"institution_details\".\"chronname\" = 'Lincoln College'\n  AND \"institution_grads\".\"year\" = 2011\n  AND \"institution_grads\".\"cohort\" = '4y bach'\n  AND \"grad_cohort\" IS NOT NULL\n  AND \"grad_cohort\" <> ''",
+    "outcome": "ERROR: invalid input syntax for type bigint: \"NULL\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1394,
+    "out_tok": 119
+   },
+   {
+    "round": 3,
+    "sql": "SELECT SUM(CAST(NULLIF(\"grad_cohort\", '') AS BIGINT)) AS total_students\nFROM \"institution_grads\"\nJOIN \"institution_details\" ON \"institution_grads\".\"unitid\" = \"institution_details\".\"unitid\"\nWHERE \"institution_details\".\"chronname\" = 'Lincoln College'\n  AND \"institution_grads\".\"year\" = 2011\n  AND \"institution_grads\".\"cohort\" = '4y bach'\n  AND \"grad_cohort\" IS NOT NULL\n  AND \"grad_cohort\" <> ''\n  AND \"grad_cohort\" ~ '^[0-9]+$'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1537,
+    "out_tok": 139
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920024,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT p.\"ssn\", p.\"address\"\nFROM \"patients\" p\nJOIN \"encounters\" e ON p.\"patient\" = e.\"patient\"\nWHERE e.\"reasondescription\" = 'Viral sinusitis (disorder)'\n  AND e.\"date\" = DATE '2008-06-13'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 909,
+    "out_tok": 228
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922001,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"sentiment\" > 0 AND \"weekday\" = 'Thursday'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 365,
+    "out_tok": 104
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921009,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  SUM(CASE WHEN \"level\" = '2-year' THEN 1 ELSE 0 END) * 1.0 / COUNT(\"level\") AS percentage\nFROM \"institution_details\"\nWHERE \"state\" = 'Hawaii'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1239,
+    "out_tok": 52
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  SUM(CASE WHEN \"level\" = '2-year' THEN 1 ELSE 0 END) * 1.0 / COUNT(\"level\") AS percentage\nFROM \"institution_details\"\nWHERE \"state\" = 'Hawaii'\n  AND \"vsa_year\" = '2010'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1336,
+    "out_tok": 67
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  SUM(CASE WHEN \"level\" = '2-year' THEN 1 ELSE 0 END) * 1.0 / COUNT(\"level\") AS percentage\nFROM \"institution_details\"\nWHERE \"state\" = 'Hawaii'\n  AND \"vsa_year\" = '2010'\n  AND \"level\" IS NOT NULL",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1426,
+    "out_tok": 76
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922023,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*)\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE t.\"isreshare\" = 'TRUE'\n  AND l.\"city\" = 'Buenos Aires'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 336,
+    "out_tok": 54
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921007,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"chronname\"\nFROM \"college_completion\".\"institution_details\"\nWHERE \"state\" = 'Connecticut'\nORDER BY \"retain_percentile\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1145,
+    "out_tok": 137
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920013,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"description\"\nFROM \"medications\"\nWHERE \"reasondescription\" = 'Child attention deficit disorder'\nGROUP BY \"description\"\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 873,
+    "out_tok": 270
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921015,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(CAST(NULLIF(ig.\"grad_cohort\",'') AS bigint)) AS white_students\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id\n  ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"state\" = 'Alaska'\n  AND id.\"state_sector_ct\" = 1\n  AND ig.\"year\" BETWEEN 2011 AND 2013\n  AND ig.\"race\" = 'W'",
+    "outcome": "ERROR: invalid input syntax for type bigint: \"NULL\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1156,
+    "out_tok": 785
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COALESCE(SUM(CASE WHEN ig.\"grad_cohort\" ~ '^\\d+$' THEN ig.\"grad_cohort\"::bigint ELSE 0 END), 0) AS white_students\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"state\" = 'Alaska'\n  AND id.\"state_sector_ct\" = 1\n  AND ig.\"year\" BETWEEN 2011 AND 2013\n  AND ig.\"race\" = 'W'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1294,
+    "out_tok": 630
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COALESCE(SUM(CASE WHEN ig.\"cohort\" ~ '^\\d+$' THEN ig.\"cohort\"::bigint ELSE 0 END), 0) AS white_students\nFROM \"institution_grads\" ig\nJOIN \"institution_details\" id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"state\" = 'Alaska'\n  AND id.\"state_sector_ct\" = 1\n  AND ig.\"year\" BETWEEN 2011 AND 2013\n  AND ig.\"race\" = 'W'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1432,
+    "out_tok": 690
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922010,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS total_tweets\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"country\" = 'Argentina'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 313,
+    "out_tok": 41
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922014,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*)\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE t.\"lang\" = 'fr'\n  AND l.\"country\" = 'Australia'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 324,
+    "out_tok": 49
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922013,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT (COUNT(*) FILTER (WHERE \"twitter\".\"sentiment\" > 0)::numeric / COUNT(*)::numeric) * 100 AS \"positive_percentage\"\nFROM \"twitter\"\nJOIN \"location\" ON \"twitter\".\"locationid\" = \"location\".\"locationid\"\nWHERE \"location\".\"state\" = 'California'",
+    "outcome": "ERROR: division by zero",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 378,
+    "out_tok": 518
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  CASE\n    WHEN total_count = 0 THEN 0\n    ELSE (positive_count::numeric / total_count::numeric) * 100\n  END AS \"positive_percentage\"\nFROM (\n  SELECT\n    COUNT(*) FILTER (WHERE \"twitter\".\"sentiment\" > 0) AS positive_count,\n    COUNT(*) AS total_count\n  FROM \"twitter\"\n  JOIN \"location\" ON \"twitter\".\"locationid\" = \"location\".\"locationid\"\n  WHERE \"location\".\"state\" = 'California'\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 478,
+    "out_tok": 651
+   },
+   {
+    "round": 3,
+    "sql": "SELECT ROUND(\n  CASE WHEN total_count = 0 THEN 0\n       ELSE (positive_count::numeric / total_count::numeric) * 100\n  END, 2) AS \"positive_percentage\"\nFROM (\n  SELECT\n    COUNT(*) FILTER (WHERE \"twitter\".\"sentiment\" > 0) AS positive_count,\n    COUNT(*) AS total_count\n  FROM \"twitter\"\n  JOIN \"location\" ON \"twitter\".\"locationid\" = \"location\".\"locationid\"\n  WHERE \"location\".\"state\" = 'California'\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 610,
+    "out_tok": 769
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921022,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"site\"\nFROM \"institution_details\"\nWHERE \"state\" = 'PA'\nORDER BY \"lat_y\" DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1212,
+    "out_tok": 33
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"site\"\nFROM \"institution_details\"\nWHERE \"state\" = 'Pennsylvania'\nORDER BY \"lat_y\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1287,
+    "out_tok": 33
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920031,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT p.\"description\" AS procedure, m.\"description\" AS medication\nFROM \"procedures\" p\nJOIN \"conditions\" c ON p.\"patient\" = c.\"patient\"\nJOIN \"medications\" m ON p.\"patient\" = m.\"patient\"\nWHERE c.\"description\" = 'Third degree burn'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 922,
+    "out_tok": 68
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921000,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"institution_details\" WHERE \"level\" = '2-year' AND \"control\" = 'public' AND \"state\" = 'California'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1208,
+    "out_tok": 34
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(*) FROM \"institution_details\" WHERE \"level\" = '2-year' AND \"control\" = 'public' AND \"state\" = 'CA'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1287,
+    "out_tok": 34
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(*) FROM \"institution_details\" WHERE \"level\" = '2-year' AND \"control\" = 'public' AND \"state\" = 'California'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1344,
+    "out_tok": 34
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921024,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(CAST(ig.\"grad_cohort\" AS bigint)) AS female_graduates\nFROM \"institution_grads\" AS ig\nJOIN \"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Oakwood University'\n  AND ig.\"year\" = 2013\n  AND ig.\"gender\" = 'F'\n  AND ig.\"cohort\" = 'X'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1162,
+    "out_tok": 532
+   },
+   {
+    "round": 2,
+    "sql": "SELECT SUM(CAST(regexp_replace(ig.\"grad_cohort\", '[,]', '', 'g') AS bigint)) AS female_graduates\nFROM \"institution_grads\" AS ig\nJOIN \"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Oakwood University'\n  AND ig.\"year\" = 2013\n  AND ig.\"gender\" = 'F'\n  AND ig.\"cohort\" = 'X'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1296,
+    "out_tok": 445
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COALESCE(SUM(NULLIF(regexp_replace(ig.\"grad_cohort\", '[,]', '', 'g'), '')::bigint), 0) AS female_graduates\nFROM \"institution_grads\" AS ig\nJOIN \"institution_details\" AS id ON ig.\"unitid\" = id.\"unitid\"\nWHERE id.\"chronname\" = 'Oakwood University'\n  AND ig.\"year\" = 2013\n  AND ig.\"gender\" = 'F'\n  AND ig.\"cohort\" = 'X'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1420,
+    "out_tok": 430
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921008,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  T1.\"chronname\",\n  T2.\"state_appr_value\"\nFROM\n  \"institution_details\" AS T1\n  JOIN \"state_sector_details\" AS T2 ON T1.\"state\" = T2.\"state\"\nORDER BY\n  (T1.\"awards_per_value\" - T1.\"awards_per_natl_value\") DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1284,
+    "out_tok": 85
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921030,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT d.\"state\", d.\"chronname\"\nFROM \"institution_details\" d\nJOIN \"institution_grads\" g ON d.\"unitid\" = g.\"unitid\"\nWHERE g.\"year\" BETWEEN 2010 AND 2012\n  AND g.\"race\" = 'B'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1160,
+    "out_tok": 458
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921010,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT sd.\"state\"\nFROM \"state_sector_details\" sd\nJOIN \"state_sector_grads\" sg ON sd.\"state\" = sg.\"state\"\nWHERE sg.\"year\" = 2011\n  AND sd.\"awards_per_natl_value\" < 20",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1140,
+    "out_tok": 491
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920005,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(\"a\".\"description\") AS total_allergy_types\nFROM \"allergies\" \"a\"\nJOIN \"patients\" \"p\" ON \"a\".\"patient\" = \"p\".\"patient\"\nWHERE \"p\".\"ethnicity\" = 'german'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 910,
+    "out_tok": 56
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT \"a\".\"description\") AS total_allergy_types\nFROM \"allergies\" \"a\"\nJOIN \"patients\" \"p\" ON \"a\".\"patient\" = \"p\".\"patient\"\nWHERE \"p\".\"ethnicity\" = 'german'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1011,
+    "out_tok": 59
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920028,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT EXTRACT(year FROM age(min_e.\"date\", p.\"birthdate\")) AS age_years\nFROM \"patients\" p\nJOIN (\n  SELECT \"patient\", MIN(\"date\") AS \"date\"\n  FROM \"encounters\"\n  WHERE \"reasondescription\" = 'Drug overdose'\n  GROUP BY \"patient\"\n) min_e ON p.\"patient\" = min_e.\"patient\"\nWHERE p.\"first\" = 'Stacy' AND p.\"last\" = 'Morar'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 897,
+    "out_tok": 505
+   },
+   {
+    "round": 2,
+    "sql": "SELECT EXTRACT(year FROM age(min_e.\"date\", p.\"birthdate\")) AS age_years\nFROM \"patients\" p\nJOIN (\n  SELECT \"patient\", MIN(\"date\") AS \"date\"\n  FROM \"encounters\"\n  WHERE \"reasondescription\" = 'Drug overdose'\n    AND \"description\" ILIKE '%emergency%'\n  GROUP BY \"patient\"\n) min_e ON p.\"patient\" = min_e.\"patient\"\nWHERE p.\"first\" = 'Stacy' AND p.\"last\" = 'Morar'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1039,
+    "out_tok": 612
+   },
+   {
+    "round": 3,
+    "sql": "SELECT EXTRACT(year FROM age(e.\"date\", p.\"birthdate\")) AS age_years\nFROM \"patients\" p\nJOIN (\n    SELECT \"patient\", MIN(\"date\") AS \"date\"\n    FROM \"encounters\"\n    WHERE \"reasondescription\" = 'Drug overdose'\n      AND \"description\" ILIKE '%emergency%'\n    GROUP BY \"patient\"\n) e ON p.\"patient\" = e.\"patient\"\nWHERE p.\"first\" = 'Stacy' AND p.\"last\" = 'Morar'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1172,
+    "out_tok": 674
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920020,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"date\"\nFROM \"procedures\"\nJOIN \"patients\" ON \"procedures\".\"patient\" = \"patients\".\"patient\"\nWHERE \"procedures\".\"description\" = 'Standard pregnancy test'\n  AND \"patients\".\"first\" = 'Ira'\n  AND \"patients\".\"last\" = 'Deckow'\n  AND \"patients\".\"prefix\" = 'Mrs.'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 906,
+    "out_tok": 82
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921003,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"chronname\" FROM \"institution_details\" WHERE \"chronname\" IN ('Amridge University', 'Auburn University') ORDER BY \"grad_100_value\" ASC LIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.8-flash",
+    "cached": false,
+    "in_tok": 1335,
+    "out_tok": 43
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922021,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"city\" FROM \"location\" WHERE \"country\" = 'Argentina'",
+    "outcome": "returned 61 rows, expected 60, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 308,
+    "out_tok": 17
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"city\" FROM \"location\" WHERE \"country\" = 'Argentina'",
+    "outcome": "returned 61 rows, expected 60, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 372,
+    "out_tok": 18
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT \"city\" FROM \"location\" WHERE \"country\" = 'Argentina' AND \"city\" IS NOT NULL",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 415,
+    "out_tok": 25
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922018,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT l.\"city\", AVG(t.\"likes\") AS avg_likes\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"city\" IN ('Bangkok', 'Chiang Mai')\nGROUP BY l.\"city\"\nORDER BY avg_likes DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 373,
+    "out_tok": 334
+   },
+   {
+    "round": 2,
+    "sql": "SELECT l.\"city\", AVG(t.\"likes\") AS avg_likes\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE trim(lower(l.\"city\")) IN ('bangkok', 'chiang mai')\nGROUP BY l.\"city\"\nORDER BY avg_likes DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 482,
+    "out_tok": 557
+   },
+   {
+    "round": 3,
+    "sql": "SELECT sub.\"city\", sub.\"avg_likes\"\nFROM (\n    SELECT l.\"city\" AS \"city\",\n           SUM(t.\"likes\")::numeric / COUNT(t.\"tweetid\") AS \"avg_likes\"\n    FROM \"twitter\" t\n    JOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\n    WHERE l.\"city\" ~* '^\\s*(Bangkok|Chiang Mai)\\s*$'\n      AND t.\"likes\" IS NOT NULL\n    GROUP BY l.\"city\"\n) sub\nORDER BY sub.\"avg_likes\" DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 573,
+    "out_tok": 871
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920004,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT a.\"description\" AS allergen\nFROM \"synthea\".\"patients\" p\nJOIN \"synthea\".\"allergies\" a ON p.\"patient\" = a.\"patient\"\nWHERE p.\"first\" = 'Dirk'\n  AND p.\"last\" = 'Languish'\n  AND p.\"race\" = 'Dominican'",
+    "outcome": "returned 0 rows (expected 5)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 855,
+    "out_tok": 315
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 965,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "SELECT a.\"description\" AS allergen\nFROM \"patients\" p\nJOIN \"allergies\" a ON p.\"patient\" = a.\"patient\"\nWHERE p.\"first\" = 'Dirk'\n  AND p.\"last\" = 'Languish'\n  AND p.\"race\" = 'Dominican'",
+    "outcome": "returned 0 rows (expected 5)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 984,
+    "out_tok": 705
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922003,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"twitter\" WHERE \"klout\" > 50",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 322,
+    "out_tok": 17
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920016,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT p.\"first\" || ' ' || p.\"last\" AS \"full name\"\nFROM \"patients\" p\nJOIN \"conditions\" c ON p.\"patient\" = c.\"patient\"\nWHERE c.\"description\" = 'Otitis media'",
+    "outcome": "returned 144 rows, expected 144, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 913,
+    "out_tok": 55
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT p.\"first\" || ' ' || p.\"last\" AS \"full name\"\nFROM \"patients\" p\nJOIN \"conditions\" c ON p.\"patient\" = c.\"patient\"\nWHERE c.\"description\" = 'Otitis media'\nORDER BY p.\"first\", p.\"last\"",
+    "outcome": "ERROR: for SELECT DISTINCT, ORDER BY expressions must appear in select list",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1017,
+    "out_tok": 66
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT p.\"first\" || ' ' || p.\"last\" AS \"full name\"\nFROM \"patients\" p\nJOIN \"conditions\" c ON p.\"patient\" = c.\"patient\"\nWHERE c.\"description\" = 'Otitis media'\nORDER BY \"full name\"",
+    "outcome": "returned 144 rows, expected 144, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1109,
+    "out_tok": 62
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920032,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT c.\"description\"\nFROM \"synthea\".\"immunizations\" i\nJOIN \"synthea\".\"conditions\" c ON i.\"patient\" = c.\"patient\"\nWHERE i.\"description\" = 'IPV'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 905,
+    "out_tok": 49
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920015,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH married AS (\n  SELECT COUNT(DISTINCT p.\"patient\") AS cnt\n  FROM \"synthea\".\"patients\" p\n  JOIN \"synthea\".\"conditions\" c ON p.\"patient\" = c.\"patient\"\n  WHERE p.\"marital\" = 'M'\n    AND c.\"description\" = 'Diabetes'\n),\nsingle AS (\n  SELECT COUNT(DISTINCT p.\"patient\") AS cnt\n  FROM \"synthea\".\"patients\" p\n  JOIN \"synthea\".\"conditions\" c ON p.\"patient\" = c.\"patient\"\n  WHERE p.\"marital\" = 'S'\n    AND c.\"description\" = 'Diabetes'\n)\nSELECT (m.cnt - s.cnt) AS difference\nFROM married m\nCROSS JOIN single s",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 915,
+    "out_tok": 375
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920010,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT m.\"description\"\nFROM \"medications\" m\nJOIN \"patients\" p ON m.\"patient\" = p.\"patient\"\nWHERE p.\"first\" = 'Joe' AND p.\"last\" = 'Homenick'",
+    "outcome": "returned 0 rows (expected 2)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 898,
+    "out_tok": 51
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"description\"\nFROM \"medications\"\nWHERE \"patient\" IN (\n    SELECT \"patient\"\n    FROM \"patients\"\n    WHERE \"first\" = 'Joe' AND \"last\" = 'Homenick'\n)",
+    "outcome": "returned 0 rows (expected 2)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 992,
+    "out_tok": 53
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT \"description\"\nFROM \"medications\"\nWHERE \"patient\" IN (\n    SELECT \"patient\"\n    FROM \"patients\"\n    WHERE \"first\" = 'Joe' AND \"last\" = 'Homenick'\n)",
+    "outcome": "returned 0 rows (expected 2)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1066,
+    "out_tok": 53
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921014,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"grad_cohort_ct\" FROM \"state_sector_grads\" WHERE \"state\" = (SELECT \"state\" FROM \"state_sector_details\" WHERE \"schools_count\" = 113 AND \"level\" = '2-year' AND \"control\" = 'public') AND \"race\" = 'A' AND \"cohort\" = '2y all' AND \"year\" = 2013 AND \"level\" = '2-year' AND \"control\" = 'public'",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": true,
+    "in_tok": 1391,
+    "out_tok": 109
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"grad_cohort_ct\" FROM \"state_sector_grads\" WHERE \"state\" = (SELECT \"state\" FROM \"state_sector_details\" WHERE \"schools_count\" = 113 AND \"level\" = '2-year' AND \"control\" = 'public' LIMIT 1) AND \"race\" = 'A' AND \"cohort\" = '2y all' AND \"year\" = 2013 AND \"level\" = '2-year' AND \"control\" = 'public'",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": false,
+    "in_tok": 1545,
+    "out_tok": 113
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \"grad_cohort_ct\" FROM \"state_sector_grads\" WHERE \"state\" = (SELECT \"state\" FROM \"state_sector_details\" WHERE \"schools_count\" = 113 AND \"level\" = '2-year' AND \"control\" = 'public' LIMIT 1) AND \"race\" = 'A' AND \"cohort\" = '2y all' AND \"year\" = 2013 AND \"level\" = '2-year' AND \"control\" = 'public'",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": false,
+    "in_tok": 1680,
+    "out_tok": 113
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921035,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT ig.\"cohort\"\nFROM \"college_completion\".\"institution_details\" id\nJOIN \"college_completion\".\"institution_grads\" ig\n  ON id.\"unitid\" = ig.\"unitid\"\nWHERE id.\"cohort_size\" = (\n  SELECT MAX(\"cohort_size\") FROM \"college_completion\".\"institution_details\"\n)\nLIMIT 1",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 1174,
+    "out_tok": 955
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1286,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1305,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921017,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\" i\nJOIN \"state_sector_details\" s\n  ON i.\"state\" = s.\"state_abbr\"\nWHERE i.\"level\" = '4-year'\n  AND i.\"control\" = 'Public'\n  AND s.\"state_abbr\" = 'ID'\nORDER BY i.\"grad_100_value\" ASC\nLIMIT 1",
+    "outcome": "ERROR: column s.state_abbr does not exist",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 1164,
+    "out_tok": 419
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\"\nWHERE \"level\" = '4-year'\n  AND \"control\" = 'Public'\n  AND \"state\" = 'ID'\nORDER BY \"grad_100_value\" ASC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1285,
+    "out_tok": 234
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\" i\nJOIN \"state_sector_details\" s\n  ON i.\"state\" = s.\"state_abbr\"\nWHERE i.\"level\" = '4-year'\n  AND i.\"control\" = 'Public'\n  AND s.\"state_abbr\" = 'ID'\nORDER BY i.\"grad_100_value\" ASC\nLIMIT 1",
+    "outcome": "ERROR: column s.state_abbr does not exist",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1355,
+    "out_tok": 687
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 921006,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"site\" FROM \"institution_details\" WHERE \"chronname\" = 'Swarthmore College'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1204,
+    "out_tok": 23
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922008,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(t.\"tweetid\") AS tweet_count\nFROM \"twitter\" t\nJOIN \"location\" l ON t.\"locationid\" = l.\"locationid\"\nWHERE l.\"state\" = 'Michigan'\n  AND t.\"weekday\" = 'Thursday'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 330,
+    "out_tok": 56
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920023,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"patients\" p ON i.\"patient\" = p.\"patient\"\nWHERE p.\"gender\" = 'F'\n  AND i.\"description\" = 'HPV quadrivalent'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 924,
+    "out_tok": 57
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"patients\" p ON i.\"patient\" = p.\"patient\"\nWHERE p.\"gender\" = 'F'\n  AND i.\"description\" = 'HPV quadrivalent'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1026,
+    "out_tok": 57
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT i.\"patient\")\nFROM \"immunizations\" i\nJOIN \"patients\" p ON i.\"patient\" = p.\"patient\"\nWHERE p.\"gender\" = 'F'\n  AND i.\"description\" = 'HPV quadrivalent'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1106,
+    "out_tok": 57
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 922005,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS reshared_count\nFROM \"twitter\"\nWHERE \"weekday\" = 'Monday'\n  AND \"isreshare\" = 'TRUE'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 329,
+    "out_tok": 34
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920009,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT m.\"reasondescription\"\nFROM \"medications\" m\nJOIN \"patients\" p ON m.\"patient\" = p.\"patient\"\nWHERE p.\"first\" = 'Elly'\n  AND p.\"last\" = 'Koss'\n  AND m.\"description\" LIKE 'Acetaminophen%'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 921,
+    "out_tok": 70
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920025,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT p.\"patient\") AS male_immune_count\nFROM patients p\nJOIN immunizations i ON p.\"patient\" = i.\"patient\"\nWHERE p.\"gender\" = 'M'\n  AND i.\"description\" = 'HPV quadrivalent'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 873,
+    "out_tok": 239
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 970,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 989,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 920036,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"patient\"\nFROM \"observations\"\nWHERE \"description\" = 'Body Height'\n  AND \"value\" = (\n    SELECT MAX(\"value\")\n    FROM \"observations\"\n    WHERE \"description\" = 'Body Height'\n  )",
+    "outcome": "returned 28 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 867,
+    "out_tok": 242
+   },
+   {
+    "round": 2,
+    "sql": "WITH per_patient AS (\n  SELECT \"patient\", MAX(\"value\") AS max_h\n  FROM \"observations\"\n  WHERE \"description\" = 'Body Height'\n  GROUP BY \"patient\"\n)\nSELECT \"patient\"\nFROM per_patient\nWHERE max_h = (SELECT MAX(max_h) FROM per_patient)",
+    "outcome": "returned 28 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 959,
+    "out_tok": 572
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \"patient\"\nFROM \"observations\"\nWHERE \"description\" = 'Body Height'\nORDER BY \"value\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1044,
+    "out_tok": 436
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 922019,
+  "db": "social_media",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"locationid\" FROM \"location\" WHERE \"state\" = 'West Sussex'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 298,
+    "out_tok": 19
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920006,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT m.\"description\"\nFROM \"medications\" m\nJOIN \"patients\" p ON m.\"patient\" = p.\"patient\"\nWHERE p.\"ssn\" = '999-94-3751'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 944,
+    "out_tok": 51
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 920037,
+  "db": "synthea",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT o.\"description\", o.\"value\", o.\"units\"\nFROM \"observations\" o\nJOIN \"patients\" p ON o.\"patient\" = p.\"patient\"\nWHERE p.\"first\" = 'Bella' AND p.\"last\" = 'Rolfson'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 909,
+    "out_tok": 58
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 921021,
+  "db": "college_completion",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\"\nWHERE \"state\" = 'NJ'\n  AND \"level\" = '4-year'\nORDER BY \"student_count\" DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1228,
+    "out_tok": 45
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\"\nWHERE \"state\" = 'NJ'\n  AND \"level\" = '4-year'\nORDER BY \"student_count\" DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1315,
+    "out_tok": 44
+   },
+   {
+    "round": 3,
+    "sql": "SELECT \"chronname\"\nFROM \"institution_details\"\nWHERE \"state\" = 'NJ'\n  AND \"level\" = '4-year'\nORDER BY \"student_count\" DESC\nLIMIT 1",
+    "outcome": "returned 0 rows (expected 1)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1380,
+    "out_tok": 44
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ }
+]

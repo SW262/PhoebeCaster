@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PhoebeCaster</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* 自带样式, 不挂 CDN —— demo 现场未必有网:
+   深色 navbar + 浅灰底 + 白卡片 + 同一组强调色。 */
+:root{
+  color-scheme:light;
+  --bg:#f0f2f5; --card:#ffffff; --nav:#212529;
+  --ink:#212529; --ink2:#52525b; --muted:#94a3b8; --line:#dee2e6; --head:#f8f9fa;
+  --blue:#2563eb; --green:#059669;
+  /* CI 覆盖的有序三段 (单色阶, 已过 validate_palette --ordinal) */
+  --step1:#1c5cab; --step2:#3987e5; --step3:#86b6ef;
+  /* 状态色: 固定, 永远配图标+文字, 不靠颜色单独表意 */
+  --ser1:#2a78d6; --ser2:#eb6834;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  /* 四分量(分类色, validate_palette 亮色全过; 对比度 WARN -> 有图例+数据表) */
+  --c-sql:#7b52c9; --c-txn:#1baf7a; --c-mem:#eda100; --c-val:#c94f86; --c-ns:#a8a29e;
+  --shadow:0 2px 8px rgba(0,0,0,.09);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#141416; --card:#1f1f22; --nav:#0d0d0f;
+  --ink:#ececee; --ink2:#b8b8bd; --muted:#76767e; --line:#34343a; --head:#2a2a2e;
+  --blue:#3987e5; --green:#10b981;
+  --step1:#86b6ef; --step2:#3987e5; --step3:#184f95;
+  --ser1:#3987e5; --ser2:#d95926;
+  --c-sql:#9a78e0; --c-txn:#199e70; --c-mem:#c98500; --c-val:#d9619a; --c-ns:#6b6863;
+  --shadow:0 2px 8px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#141416; --card:#1f1f22; --nav:#0d0d0f;
+  --ink:#ececee; --ink2:#b8b8bd; --muted:#76767e; --line:#34343a; --head:#2a2a2e;
+  --blue:#3987e5; --green:#10b981;
+  --step1:#86b6ef; --step2:#3987e5; --step3:#184f95;
+  --ser1:#3987e5; --ser2:#d95926;
+  --c-sql:#9a78e0; --c-txn:#199e70; --c-mem:#c98500; --c-val:#d9619a; --c-ns:#6b6863;
+  --shadow:0 2px 8px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;}
+.nav{background:var(--nav);color:#fff;display:flex;justify-content:space-between;align-items:center;
+  padding:.65rem 1.1rem;gap:1rem;flex-wrap:wrap}
+.nav .brand{font-weight:700;font-size:1.02rem;letter-spacing:.01em}
+.nav .brand small{font-weight:400;opacity:.65;margin-left:.5rem;font-size:.78rem}
+.nav .right{display:flex;align-items:center;gap:.6rem}
+.badge{border-radius:999px;padding:.22rem .7rem;font-size:.75rem;font-weight:600;
+  background:#4b5563;color:#fff;white-space:nowrap}
+.badge.ok{background:var(--good)} .badge.warn{background:var(--warn);color:#3a2a00}
+.badge.crit{background:var(--crit)}
+.tgl{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;
+  padding:.18rem .55rem;font-size:.75rem;cursor:pointer}
+.wrap{padding:14px;max-width:1700px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:14px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.card:last-child{margin-bottom:0}
+.card>h2{margin:0;background:var(--head);color:var(--ink);font-weight:700;font-size:.9rem;
+  border-bottom:1px solid var(--line);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.card>h2 .sub{font-weight:400;font-size:.74rem;color:var(--muted)}
+.body{padding:.85rem 1rem}
+.lab{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.06em;margin:0 0 .35rem}
+.lab .note{text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);opacity:.85}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:.9rem}
+.seg button{flex:1;border:0;border-radius:0;padding:.38rem .2rem;font-size:.82rem;font:inherit;
+  font-size:.82rem;background:var(--card);color:var(--ink2);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff;font-weight:600}
+.row{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:.9rem}
+.row>div{flex:1;min-width:120px}
+select,input{width:100%;padding:.4rem .5rem;font:inherit;font-size:.85rem;border-radius:6px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+select:focus,input:focus{outline:2px solid color-mix(in srgb,var(--blue) 35%,transparent);border-color:var(--blue)}
+.btn{width:100%;border:0;border-radius:7px;padding:.55rem;font:inherit;font-weight:600;
+  background:var(--green);color:#fff;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+table{width:100%;border-collapse:collapse;font-size:.82rem;font-variant-numeric:tabular-nums}
+th,td{padding:.38rem .5rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+td.wrap{white-space:normal;word-break:break-word}
+th:first-child,td:first-child{text-align:left}
+thead th{color:var(--ink2);font-weight:600;background:var(--head);font-size:.76rem}
+tbody tr:last-child td{border-bottom:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.3rem .8rem;font-size:.82rem;
+  font-variant-numeric:tabular-nums}
+.kv dt{color:var(--ink2)} .kv dd{margin:0;text-align:right;font-weight:600}
+.cases{display:grid;gap:.4rem;margin-top:.7rem}
+.cases button{text-align:left;border:1px solid var(--line);border-radius:7px;padding:.45rem .6rem;font:inherit;font-size:.8rem;
+  background:transparent;color:inherit;cursor:pointer;line-height:1.35}
+.cases button:hover{border-color:var(--blue)}
+.cases b{display:block;font-size:.82rem}
+.hint{font-size:.74rem;color:var(--muted);line-height:1.5;margin:.5rem 0 0}
+.hint code{background:var(--head);padding:.05rem .3rem;border-radius:3px}
+.met{color:var(--good);font-weight:700} .miss{color:var(--crit);font-weight:700}
+.warnbox{background:color-mix(in srgb,var(--warn) 18%,transparent);
+  border-left:3px solid var(--warn);border-radius:4px;padding:.45rem .6rem;font-size:.78rem;margin-bottom:.7rem}
+/* 进度条: 单系列, 一个色阶 */
+.pbar{height:9px;border-radius:5px;background:var(--line);overflow:hidden;margin:.3rem 0}
+.pbar>i{display:block;height:100%;background:var(--step2);border-radius:5px}
+/* CI 覆盖: 有序三段堆叠, 段间 2px 表面色缝 */
+.stack{display:flex;height:17px;border-radius:5px;overflow:hidden;background:var(--line);gap:2px}
+.stack>span{display:block;min-width:0}
+.stack>span:first-child{border-radius:5px 0 0 5px}
+.stack>span:last-child{border-radius:0 5px 5px 0}
+.legend{display:flex;flex-wrap:wrap;gap:.75rem;font-size:.75rem;color:var(--ink2);margin:.45rem 0 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
+.proc{display:flex;flex-wrap:wrap;gap:.35rem}
+.proc span{font-size:.72rem;border-radius:999px;padding:.15rem .55rem;border:1px solid var(--line);color:var(--ink2)}
+.proc span.on{border-color:var(--good);color:var(--good)}
+.proc span.off{border-color:var(--muted);color:var(--muted)}
+details{margin-top:.6rem} summary{cursor:pointer;font-size:.76rem;color:var(--ink2)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.74rem;
+  color:var(--ink2);white-space:pre-wrap;word-break:break-word;line-height:1.5}
+/* 核数扫描图 */
+#sweep svg{width:100%;height:auto;display:block;overflow:visible}
+#sweep .grid-l{stroke:var(--line);stroke-width:1}
+#sweep .axis{stroke:var(--line);stroke-width:1}
+#sweep .tick{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
+#sweep .ser{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+#sweep .ref{stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:5 4}
+#sweep .reft{fill:var(--ink2);font-size:10px;font-weight:600}
+#sweep .dlab{font-size:10.5px;font-weight:600}
+#sweep .hit{fill:transparent;cursor:crosshair}
+#sweep .pick{fill:none;stroke:var(--ink);stroke-width:2}
+#sweep .pick.near{stroke:var(--crit);stroke-dasharray:3 2}
+.critbox{background:color-mix(in srgb,var(--crit) 10%,transparent);border-left:4px solid var(--crit);
+  border-radius:6px;padding:.8rem 1rem;font-size:.95rem;margin-bottom:1rem;line-height:1.6}
+.critbox strong.h{color:var(--crit)}
+td.why{text-align:left;color:var(--ink2);font-size:.78rem;padding-top:0;white-space:normal}
+.tag{display:block;font-size:.66rem;color:var(--muted);font-weight:400;line-height:1}
+.tscroll{overflow-x:auto;max-width:100%}
+#rec th,#rec td{padding:.38rem .32rem} #rec thead th{white-space:normal;line-height:1.2}
+/* 布局: 左窄输入, 右宽主区 (推荐占满宽, 下面扫描图 + CI 并排) */
+.layout{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:16px;align-items:start}
+.layout>aside{position:sticky;top:14px}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;align-items:start}
+.duo>.card{margin-bottom:0}
+@media (max-width:860px){ .layout{grid-template-columns:minmax(0,1fr)} .layout>aside{position:static} }
+/* 推荐结果 */
+#rec{padding:1.1rem 1.25rem}
+.goal{font-size:.95rem;color:var(--ink2);margin:0 0 1rem;line-height:1.5}
+.goal b{color:var(--ink)}
+.goal .band{color:var(--muted);font-size:.82rem;white-space:nowrap}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;min-width:0}
+.tile.ok{border-top:4px solid var(--good)} .tile.bad{border-top:4px solid var(--crit)} .tile.na{border-top:4px solid var(--muted)}
+.t-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.t-ht{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.chip{font-size:.76rem;font-weight:700;border-radius:999px;padding:.12rem .6rem;white-space:nowrap}
+.chip.ok{color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.chip.bad{color:var(--crit);background:color-mix(in srgb,var(--crit) 12%,transparent)}
+.chip.na{color:var(--ink2);background:var(--head)}
+.t-big{font-size:2.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.t-big small{font-size:1rem;font-weight:500;color:var(--ink2);margin-left:.3rem}
+.t-big .t-note{font-size:.78rem;font-weight:600;color:var(--crit);margin-left:.5rem;text-transform:uppercase;letter-spacing:.05em}
+.t-kv{display:grid;grid-template-columns:auto 1fr auto;gap:.3rem .8rem;margin:0;font-size:.9rem;font-variant-numeric:tabular-nums;
+  border-top:1px solid var(--line);padding-top:.6rem}
+.t-kv dt{color:var(--ink2)} .t-kv dd{margin:0;text-align:right;font-weight:600}
+.t-kv dd.dev{font-weight:400;color:var(--ink2);min-width:4.2em}
+.t-why{font-size:.82rem;color:var(--ink2);line-height:1.5;margin:0}
+.recfoot{margin-top:1rem;padding-top:.7rem;border-top:1px solid var(--line)}
+@media (max-width:520px){ .wrap{padding:12px 16px} .t-big{font-size:2.2rem} }
+/* ── 测量流水线 ── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:10px}
+.step{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.step.user{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 6%,transparent)}
+.step .n{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.step .n b{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;border-radius:50%;border:1.5px solid currentColor;margin-right:.35rem;font-size:.7rem}
+.step .v{font-size:1.45rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.step .v small{font-size:.8rem;font-weight:500;color:var(--ink2);margin-left:.2rem}
+.step .d{font-size:.76rem;color:var(--ink2);line-height:1.45}
+.step .who{font-size:.68rem;font-weight:600;color:var(--muted)}
+.step.user .who{color:var(--blue)}
+.guards{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.guard{font-size:.78rem;border-radius:6px;padding:.3rem .6rem;border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.guard.ok{border-color:color-mix(in srgb,var(--good) 55%,var(--line))} .guard.bad{border-color:var(--crit)}
+.guard .ic{font-weight:700;margin-right:.3rem} .guard.ok .ic{color:var(--good)} .guard.bad .ic{color:var(--crit)}
+/* ── 分量拆解 ── */
+.comp{display:grid;grid-template-columns:4.2rem minmax(0,1fr) 4.6rem;gap:.25rem .6rem;align-items:center;font-size:.76rem;font-variant-numeric:tabular-nums}
+.comp .k{color:var(--ink2);font-weight:600} .comp .k small{display:block;font-weight:400;color:var(--muted);font-size:.68rem}
+.comp .tot{text-align:right;color:var(--ink2)}
+.bars{display:flex;flex-direction:column;gap:3px}
+.bar{display:flex;height:13px;gap:2px;border-radius:4px;overflow:hidden}
+.bar>span{display:block;min-width:0;height:100%}
+.bar>span.ns{background:repeating-linear-gradient(135deg,var(--c-ns) 0 3px,transparent 3px 6px)}
+.comp .sep{grid-column:1/-1;border-top:1px solid var(--line);margin:.15rem 0}
+/* ── 找错 ── */
+.hunt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+@media (max-width:900px){ .hunt{grid-template-columns:minmax(0,1fr)} }
+.hunt h3{margin:0 0 .35rem;font-size:.78rem;color:var(--ink2);font-weight:600}
+.hm{border-collapse:separate;border-spacing:2px;font-size:.72rem;width:100%}
+.hm th{background:none;color:var(--muted);font-weight:500;padding:.1rem .2rem;text-align:center;border:0;font-size:.68rem}
+.hm th:first-child{text-align:right}
+.hm td{padding:0;border:0;text-align:center}
+.hm button{width:100%;min-width:1.7rem;height:1.6rem;border-radius:4px;border:1px solid transparent;font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}
+.hm button.ok{background:color-mix(in srgb,var(--good) 14%,var(--card));color:var(--good)}
+.hm button.bad{background:color-mix(in srgb,var(--crit) 18%,var(--card));color:var(--crit)}
+.hm button.sel{outline:2px solid var(--ink);outline-offset:1px}
+.huntdet{margin-top:1rem;border-top:1px solid var(--line);padding-top:.8rem}
+.huntdet td.in{color:var(--good);font-weight:700} .huntdet tr.pick td{background:var(--head);font-weight:600}
+label.chk{display:inline-flex;gap:.35rem;align-items:center;font-weight:400;font-size:.74rem;color:var(--ink2);cursor:pointer}
+label.chk input{width:auto}
+#sweep .ser.zero{stroke-width:1.5;stroke-dasharray:2 4;opacity:.9}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="brand">PhoebeCaster <small>Configuration-to-performance forecasting for AI-agent applications · PostgreSQL 17 + PhoebeDB transactional vector index</small></div>
+  <div class="right">
+    <button class="tgl" id="themebtn" type="button">Theme</button>
+  </div>
+</div>
+
+<div class="wrap"><div class="layout">
+
+<!-- ───────── 左: 客户目标 ───────── -->
+<aside>
+<div class="card">
+  <h2>Customer target</h2>
+  <div class="body">
+    <p class="lab">Workload</p>
+    <div class="seg" id="wl">
+      <button type="button" data-v="test2" aria-pressed="true">test2</button>
+      <button type="button" data-v="bal_test" aria-pressed="false">bal_test</button>
+    </div>
+
+    <p class="lab">Completion-time limit <span class="note">(seconds, wall clock)</span></p>
+    <input type="number" id="target" value="60" min="1" step="any">
+
+    <div class="row" style="margin-top:.9rem">
+      <div>
+        <p class="lab">Concurrent agents</p>
+        <select id="agents"></select>
+      </div>
+      <div>
+        <p class="lab">Max physical cores</p>
+        <select id="maxcores"></select>
+      </div>
+    </div>
+
+    <button class="btn" id="go" type="button">Recommend</button>
+    <p class="lab" style="margin-top:.9rem">Try a case from the paper</p>
+    <div class="cases" id="cases">
+      <button type="button" data-wl="test2" data-t="130" data-ag="64"><b>Case 1 · a recommendation</b>test2, 130 s at 64 agents → 3 cores (between the grid's counts, measured live)</button>
+      <button type="button" data-wl="bal_test" data-t="60" data-ag="8"><b>Case 2 · none fits</b>bal_test, 60 s at 8 agents → even 16 cores is too slow</button>
+    </div>
+    <p class="hint">The answer is picked among the core counts measured in the training grid (2, 4, 6, 8, 11, 13, 16) and any count measured live (such as 3); the 224 graded targets use the grid counts only. Only concurrency levels measured in the training grid are offered. Cores are capped at 16:
+      the grid tops out at 16, and since the server is pinned from core 0 while the load generator owns cores 16–19,
+      anything higher would contend with the load generator — <strong>this machine cannot even measure</strong> a clean point there.</p>
+  </div>
+</div>
+</aside>
+
+<!-- ───────── 右: 推荐 (占满宽) + 扫描图与 CI 并排 ───────── -->
+<main>
+<div class="card" style="margin-bottom:16px">
+  <h2>Recommendation <span class="sub" id="rec-sub">—</span></h2>
+  <div class="body" id="rec">
+    <p class="hint">Fill in the target on the left and press “Recommend”.</p>
+  </div>
+</div>
+
+<div class="card" id="pipecard" hidden style="margin-bottom:16px">
+  <h2>How this answer was measured <span class="sub">steps ①–⑤ of the architecture figure · the shaded steps are all the user runs</span></h2>
+  <div class="body"><div class="steps" id="steps"></div><div class="guards" id="guards"></div></div>
+</div>
+
+<div class="card" id="sweepcard" hidden style="margin-bottom:16px">
+  <h2>Core sweep <label class="chk"><input type="checkbox" id="zerotgl"> also show the prior before the two anchor runs</label></h2>
+  <div class="body">
+    <div id="sweep"></div>
+    <div class="legend" id="sweeplg"></div>
+    <details><summary>Data table</summary><div id="sweeptbl"></div></details>
+  </div>
+</div>
+
+<div class="card" id="compcard" hidden style="margin-bottom:16px">
+  <h2>Where the database time goes <span class="sub" id="compsub"></span></h2>
+  <div class="body">
+    <div class="seg" id="compht" style="max-width:260px">
+      <button type="button" data-v="on" aria-pressed="true">HT on</button>
+      <button type="button" data-v="off" aria-pressed="false">HT off</button>
+    </div>
+    <div class="comp" id="comp"></div>
+    <div class="legend">
+      <span><i style="background:var(--c-sql)"></i>Analytical SQL</span>
+      <span><i style="background:var(--c-txn)"></i>Write-back transaction</span>
+      <span><i style="background:var(--c-mem)"></i>Memory vector search</span>
+      <span><i style="background:var(--c-val)"></i>Business vector search</span>
+      <span><i style="background:repeating-linear-gradient(135deg,var(--c-ns) 0 3px,transparent 3px 6px)"></i>Non-SQL (model does not split it)</span>
+    </div>
+    <p class="hint" id="comphint"></p>
+    <details><summary>Data table</summary><div id="comptbl" class="tscroll"></div></details>
+  </div>
+</div>
+
+<div class="card" id="huntcard" hidden>
+  <h2>Hunt for failures <span class="sub" id="huntsub"></span></h2>
+  <div class="body">
+    <div class="hunt" id="hunt"></div>
+    <div class="legend" id="huntlg"></div>
+    <p class="hint">Each cell is one mechanically generated target: a completion time (column, a multiple of the measured 16-core / 224-agent run)
+      at a concurrency (row). The recommender picks among the measured core counts, so every verdict is checked against a real run. Click a cell to see why.</p>
+    <div class="huntdet" id="huntdet" hidden></div>
+  </div>
+</div>
+</main>
+
+</div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = (x, d=0) => x==null ? "—" : Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = x => x==null ? "—" : (x>=0?"+":"") + (100*x).toFixed(1) + "%";
+const esc = s => String(s).replace([&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ── 主题 ── */
+(function{
+  let t = null;
+  try { t = localStorage.getItem("phoebe-theme"); } catch(e){}
+  if (t) document.documentElement.setAttribute("data-theme", t);
+  $("#themebtn").onclick =  => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const dark = cur ? cur === "dark"
+                     : matchMedia("(prefers-color-scheme: dark)").matches;
+    const next = dark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("phoebe-theme", next); } catch(e){}
+  };
+});
+
+/* ── 选项 ── */
+[8,16,32,64,96,128,160,192,224].forEach(v=>{
+  const o=document.createElement("option"); o.value=v; o.textContent=v;
+  if(v===64) o.selected=true; $("#agents").appendChild(o);
+});
+[2,4,6,8,11,13,16].forEach(v=>{
+  const o=document.createElement("option"); o.value=v; o.textContent=v+" cores";
+  if(v===16) o.selected=true; $("#maxcores").appendChild(o);
+});
+$("#wl").onclick = e => {
+  const b = e.target.closest("button"); if(!b) return;
+  [...$("#wl").children].forEach(x=>x.setAttribute("aria-pressed", x===b));
+};
+const wl =  => $("#wl").querySelector('[aria-pressed="true"]').dataset.v;
+
+/* ── 推荐 ── */
+async function advise{
+  const btn=$("#go"); btn.disabled=true; btn.textContent="Computing…";
+  const q = new URLSearchParams({target:$("#target").value, agents:$("#agents").value,
+                                workload:wl, max_cores:$("#maxcores").value});
+  try{
+    const r = await fetch("/api/advise?"+q);
+    const d = await r.json;
+    if(!r.ok){ $("#rec").innerHTML = `<div class="warnbox">⚠ ${esc(d.error||r.statusText)}</div>`;
+               $("#sweepcard").hidden = true; return; }
+    renderRec(d);
+    loadPanels(wl, $("#agents").value, $("#maxcores").value);
+  }catch(e){
+    $("#rec").innerHTML = `<div class="warnbox">⚠ Request failed: ${esc(e.message)}</div>`;
+  }finally{ btn.disabled=false; btn.textContent="Recommend"; }
+}
+$("#go").onclick = advise;
+$("#cases").onclick = e => {
+  const b = e.target.closest("button"); if(!b) return;
+  [...$("#wl").children].forEach(x=>x.setAttribute("aria-pressed", x.dataset.v===b.dataset.wl));
+  $("#target").value = b.dataset.t; $("#agents").value = b.dataset.ag; $("#maxcores").value = 16;
+  advise;
+};
+
+const cores = n => `${n} core${n===1?"":"s"}`;
+function whyText(r, d){
+  const n = r.nearest, tol = (100*d.tol).toFixed(0);
+  if(r.kind==="too_tight"){
+    const lim = r.cap ? `${cores(r.cap)} — at ${d.agents} agents, more cores than that no longer shorten the run`
+                      : `${cores(d.max_cores)}, the most allowed`;
+    return `Target too tight: even ${lim}, this takes ${fmt(n.pred)} s.`;
+  }
+  if(r.kind==="too_loose")
+    return `Target too loose: even ${cores(n.srv)} finish in ${fmt(n.pred)} s, more than ${tol}% ahead of the target — any configuration over-delivers.`;
+  const br = (r.options||[]).map(o=>`${cores(o.srv)} → ${fmt(o.pred)} s (${pct(o.dev)})`).join(", ");
+  return `Target falls between two core counts: ${br}; neither is within ±${tol}%.`;
+}
+
+/* 现场实测按钮: 网格之间预测能达标的那一档 */
+let LIVE_T = null;
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".livebtn"); if(!b) return;
+  b.disabled = true; b.textContent = "Starting…";
+  const body = new URLSearchParams({workload:wl, srv:b.dataset.srv, th:b.dataset.th, agents:$("#agents").value});
+  const r = await fetch("/api/measure", {method:"POST", body});
+  if(!r.ok){ const j = await r.json.catch(=>({})); b.textContent = j.error || "Could not start"; return; }
+  pollLive(b);
+});
+function pollLive(b){
+  clearInterval(LIVE_T);
+  LIVE_T = setInterval(async =>{
+    const s = await (await fetch("/api/measure_status")).json;
+    const el = s.started_ts ? Math.round(Date.now/1000 - (+s.started_ts)) : 0;
+    if(s.state==="running" || s.state==="starting"){ b.textContent = `Measuring… ${Math.floor(el/60)}:${String(el%60).padStart(2,"0")}`; return; }
+    clearInterval(LIVE_T);
+    if(s.state==="done") advise; else b.textContent = "Failed: " + (s.msg||"");
+  }, 3000);
+}
+
+function renderRec(d){
+  $("#rec-sub").textContent = `${d.workload}`;
+  const tol = d.tol, T = d.target;
+  let h = `<p class="goal">Finish in <b>${fmt(T)} s</b> with <b>${d.agents} concurrent agents</b>
+           <span class="band">· met if measured ${fmt(T*(1-tol))}–${fmt(T*(1+tol))} s (±${(100*tol).toFixed(0)}%, either direction)</span></p>`;
+  /* 说明性提示(τ 地板已启用)不是警告: 去掉 "!!", 用灰色小字; 其余仍按警告显示 */
+  (d.warnings||[]).forEach(w => {
+    const t = w.replace(^!!\s*/, "");
+    h += /floor enabled|地板已启用/.test(t) ? `<p class="hint" style="margin:-.4rem 0 .8rem">ℹ ${esc(t)}</p>`
+                                           : `<div class="warnbox">⚠ ${esc(t)}</div>`;
+  });
+  if(!d.feasible){
+    /* 两档都无解: 最上面直说达不到, 并给出离目标最近的那个配置 (核数 + 时间) */
+    const cand = (d.rows||[]).filter(r=>r.nearest).map(r=>({ht:r.ht, ...r.nearest}));
+    cand.sort((a,b)=>Math.abs(Math.log(1+a.dev))-Math.abs(Math.log(1+b.dev)));
+    const c = cand[0];
+    h += `<div class="critbox"><strong class="h">✗ No measured core count fits.</strong>
+          No configuration lands within ±${(100*tol).toFixed(0)}% of ${fmt(T)} s.`
+      + (c ? `<br>Closest: <strong>${cores(c.srv)}, HT ${c.ht}</strong> → ${fmt(c.pred)} s predicted`
+           + (c.measured!=null ? `, <strong>${fmt(c.measured)} s measured</strong>` : " (not measured)")
+           + `. A target of about <strong>${fmt(c.measured ?? c.pred)} s</strong> is reachable.` : "")
+      + (=>{ const ok = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_met);
+               if(ok.length) return `<br>But measured live, <strong>${ok.map(r=>`${cores(r.unverified.srv)}, HT ${r.ht} → ${fmt(r.unverified.live_measured)} s`).join("; ")}</strong> lands within the band.`;
+               const un = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_measured==null);
+               return un.length ? `<br>${un.map(r=>`${cores(r.unverified.srv)} (HT ${r.ht})`).join(" and ")}, not in the grid, ${un.length>1?"are":"is"} predicted to fit — measure ${un.length>1?"them":"it"} below.` : ""; })
+      + `</div>`;
+  }
+  const kv = (lab, v, dev) => `<dt>${lab}</dt><dd>${v==null?"—":fmt(v)+" s"}</dd><dd class="dev">${v==null?"":pct(dev)}</dd>`;
+  const ext = `<span title="Outside the training grid (extrapolated)"> ⚠</span>`;
+  h += `<div class="tiles">`;
+  for(const r of d.rows||[]){
+    const ht = `Hyper-threading ${r.ht}`;
+    if(!r.ok){
+      const n = r.nearest;
+      if(!n){ h += `<div class="tile bad"><div class="t-head"><span class="t-ht">${ht}</span><span class="chip bad">✗ Unreachable</span></div>
+                    <p class="t-why">${esc(r.reason||"")}</p></div>`; continue; }
+      const u = r.unverified;
+      if(u && u.live_measured==null){
+        /* 网格里没有达标的, 但网格之间有一档【预测】能达标: 卡片讲的就是这一档, 只有预测, 没有实测行 */
+        h += `<div class="tile na">
+          <div class="t-head"><span class="t-ht">${ht}</span><span class="chip na">Predicted only</span></div>
+          <div class="t-big">${u.srv}<small>${u.srv===1?"core":"cores"}</small></div>
+          <dl class="t-kv">${kv("Predicted", u.pred, u.dev)}</dl>
+          <p class="t-why">${cores(u.srv)} is not in the measured grid, so this has not been checked yet.
+            Nearest measured: ${cores(n.srv)} → ${n.measured!=null?fmt(n.measured)+" s ("+pct(n.meas_dev)+")":"—"}, outside ±${(100*d.tol).toFixed(0)}%.</p>
+          <div><button class="btn livebtn" type="button" data-srv="${u.srv}" data-th="${r.ht==="on"?2:1}" style="width:auto;padding:.4rem .9rem;background:var(--blue)">Measure ${cores(u.srv)} now (2–6 min)</button></div></div>`;
+        continue;
+      }
+      h += `<div class="tile bad">
+        <div class="t-head"><span class="t-ht">${ht}</span><span class="chip bad">✗ None fits</span></div>
+        <div class="t-big">${n.srv}<small>${n.srv===1?"core":"cores"}</small>${n.extrapolated?ext:""}<span class="t-note">nearest</span></div>
+        <dl class="t-kv">${kv("Predicted", n.pred, n.dev)}${n.measured!=null?kv("Measured", n.measured, n.meas_dev):""}</dl>
+        <p class="t-why">${whyText(r, d)}</p></div>`;
+      continue;
+    }
+    const st = r.met===null ? ["na","Not measured"] : r.met ? ["ok","✓ Met"] : ["bad","✗ Missed"];
+    h += `<div class="tile ${st[0]}">
+      <div class="t-head"><span class="t-ht">${ht}</span><span class="chip ${st[0]}">${st[1]}</span></div>
+      <div class="t-big">${r.srv}<small>${r.srv===1?"core":"cores"}</small>${r.extrapolated?ext:""}</div>
+      <dl class="t-kv">${kv("Predicted", r.pred, r.pred_dev)}${r.measured!=null?kv(r.live?"Measured live":"Measured", r.measured, r.meas_dev):""}</dl>
+      ${r.live?`<p class="t-why">${cores(r.srv)} is not in the training grid; it was measured live on this machine and is now a candidate.</p>
+        <div><button class="btn livebtn" type="button" data-srv="${r.srv}" data-th="${r.ht==="on"?2:1}" style="width:auto;padding:.35rem .8rem;background:var(--blue)">Measure again (2–6 min)</button></div>`:""}</div>`;
+  }
+  h += `</div>`;
+  const an = (d.anchors||[]).map(a=>`${a.srv} cores / HT ${(a.th??2)===2?"on":"off"} / ${a.agents} agents`).join("  +  ");
+  h += `<div class="recfoot"><p class="hint" style="margin:0"><strong>Anchors</strong> ${esc(an||"none")} ·
+        <span id="headline">Loading validation figures…</span></p>
+        <details><summary>Equivalent CLI output</summary><div class="mono">${esc((d.text||"").trim)}</div></details></div>`;
+  $("#rec").innerHTML = h;
+  paintHead;
+  renderSweep(d);
+}
+
+/* ── 核数扫描: 预测完成时间 vs 核数 ──
+   形式: 两条折线 (超线程开/关) + 实测空心点 + 目标参考线。
+   一条 y 轴; 颜色只区分"超线程开/关"这一个身份维度; 实测与预测靠标记形状区分,
+   不另起颜色。参考线用中性墨色, 不占用系列色。 */
+const SER = {on:{c:"var(--ser1)",n:"HT on"}, off:{c:"var(--ser2)",n:"HT off"}};
+
+let LASTSWEEP = null, _rz = null;
+addEventListener("resize", =>{ clearTimeout(_rz); _rz = setTimeout(=>{ if(LASTSWEEP) renderSweep(LASTSWEEP); }, 150); });
+function renderSweep(d){
+  LASTSWEEP = d;
+  const sw = d.sweep||[];
+  const card = $("#sweepcard");
+  if(!sw.length){ card.hidden = true; return; }
+  card.hidden = false;
+
+  const W=Math.max(360, Math.min(1100, $("#sweep").clientWidth||560)), H=280, L=46, R=96, Tp=14, B=30;
+  const xs = d.rungs, ymaxData = Math.max(d.target, ...sw.map(p=>Math.max(p.pred, p.measured||0)),
+                                          ...["on","off"].flatMap(k=>zeroPts(k).map(p=>p.pred_zero)));
+  const ymax = ymaxData*1.08, ymin = 0;
+  const X = v => L + (v - xs[0])/(xs[xs.length-1]-xs[0]) * (W-L-R);
+  const Y = v => Tp + (1 - (v-ymin)/(ymax-ymin)) * (H-Tp-B);
+
+  /* y 轴刻度: 4~5 个整齐的数 */
+  const step = Math.pow(10, Math.floor(Math.log10(ymax/4)));
+  const nice = [1,2,2.5,5,10].map(m=>m*step).find(v=>ymax/v<=5) || step*10;
+  const yt = []; for(let v=0; v<=ymax; v+=nice) yt.push(v);
+
+  let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Predicted completion time versus cores">`;
+  yt.forEach(v=>{ g += `<line class="grid-l" x1="${L}" x2="${W-R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/>
+      <text class="tick" x="${L-6}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end">${v}</text>`; });
+  g += `<line class="axis" x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}"/>`;
+  xs.forEach(v=>{ g += `<text class="tick" x="${X(v).toFixed(1)}" y="${H-B+15}" text-anchor="middle">${v}</text>`; });
+  g += `<text class="tick" x="${(L+(W-R))/2}" y="${H-2}" text-anchor="middle">physical cores</text>`;
+  g += `<text class="tick" x="${L-6}" y="${Tp-3}" text-anchor="end">s</text>`;
+
+  /* 目标参考线 */
+  if(d.target<=ymax){
+    g += `<line class="ref" x1="${L}" x2="${W-R}" y1="${Y(d.target).toFixed(1)}" y2="${Y(d.target).toFixed(1)}"/>
+          <text class="reft" x="${W-R+5}" y="${(Y(d.target)+3.5).toFixed(1)}">target ${fmt(d.target)} s</text>`;
+  }
+
+  /* 两条线 + 点 */
+  const ends = [];
+  for(const k of ["on","off"]){
+    const pts = sw.filter(p=>p.ht===k).sort((a,b)=>a.srv-b.srv);
+    if(!pts.length) continue;
+    g += `<path class="ser" stroke="${SER[k].c}" d="${pts.map((p,i)=>(i?"L":"M")+X(p.srv).toFixed(1)+" "+Y(p.pred).toFixed(1)).join(" ")}"/>`;
+    pts.forEach(p=>{
+      g += `<circle cx="${X(p.srv).toFixed(1)}" cy="${Y(p.pred).toFixed(1)}" r="4.5" fill="${SER[k].c}"
+             stroke="var(--card)" stroke-width="2"/>`;
+      if(p.measured!=null)
+        g += `<circle cx="${X(p.srv).toFixed(1)}" cy="${Y(p.measured).toFixed(1)}" r="4.5" fill="none"
+               stroke="${SER[k].c}" stroke-width="2"/>`;
+      g += `<circle class="hit" cx="${X(p.srv).toFixed(1)}" cy="${Y(p.pred).toFixed(1)}" r="13"><title>${SER[k].n} · ${p.srv} cores
+predicted ${fmt(p.pred)} s${p.measured!=null?`\nmeasured ${fmt(p.measured)} s`:""}</title></circle>`;
+    });
+    ends.push({k, x:X(pts[pts.length-1].srv), y:Y(pts[pts.length-1].pred)});
+    const zp = zeroPts(k);
+    if(zp.length) g += `<path class="ser zero" stroke="${SER[k].c}" d="${zp.map((p,i)=>(i?"L":"M")+X(p.srv).toFixed(1)+" "+Y(p.pred_zero).toFixed(1)).join(" ")}"/>`;
+  }
+  /* 直接标注末端。两条线在高核档会收敛到几乎同一个 y, 标签原地放就叠住了,
+     所以先排序再按最小 13px 间距往下推。 */
+  ends.sort((a,b)=>a.y-b.y);
+  for(let i=1;i<ends.length;i++) if(ends[i].y - ends[i-1].y < 13) ends[i].y = ends[i-1].y + 13;
+  ends.forEach(e=>{ g += `<text class="dlab" fill="${SER[e.k].c}" x="${(e.x+9).toFixed(1)}" y="${(e.y+3.5).toFixed(1)}">${SER[e.k].n}</text>`; });
+
+  /* 圈出推荐档。注意推荐的核数不一定是实采档 —— 顾问会落在两档【之间】
+     (本例 3 核就不在 2/4/6/8/11/13/16 里), 所以直接用推荐行自己的 (srv, pred),
+     不去 rung 列表里找, 找不到就不画是错的。 */
+  let offrung = false;
+  for(const r of d.rows||[]) if(r.ok && r.srv>=xs[0] && r.srv<=xs[xs.length-1]){
+    g += `<circle class="pick" cx="${X(r.srv).toFixed(1)}" cy="${Y(r.pred).toFixed(1)}" r="9"/>`;
+    if(!xs.includes(r.srv)) offrung = true;
+  }
+  for(const r of d.rows||[]) if(!r.ok && r.nearest && r.nearest.srv>=xs[0] && r.nearest.srv<=xs[xs.length-1])
+    g += `<circle class="pick near" cx="${X(r.nearest.srv).toFixed(1)}" cy="${Y(r.nearest.pred).toFixed(1)}" r="9"/>`;
+  g += `</svg>`;
+  $("#sweep").innerHTML = g;
+
+  $("#sweeplg").innerHTML =
+    `<span><i style="background:var(--ser1)"></i>HT on</span>
+     <span><i style="background:var(--ser2)"></i>HT off</span>
+     <span style="color:var(--muted)">● predicted &nbsp; ○ measured &nbsp; ◎ recommended &nbsp; ╌ target</span>`
+    + ((d.rows||[]).some(r=>!r.ok&&r.nearest) ? `<span style="color:var(--crit)">◌ nearest (unreachable)</span>` : "")
+    + (zeroPts("on").length ? `<span style="color:var(--muted)">┈ prior before anchors</span>` : "")
+    + zeroErr
+    + (offrung ? `<span style="color:var(--muted)">◎ off the grid's rungs: that core count was measured live on this machine</span>` : "");
+
+  let t = `<table><thead><tr><th>Cores</th><th>on · pred</th><th>on · meas</th><th>off · pred</th><th>off · meas</th></tr></thead><tbody>`;
+  for(const c of d.rungs){
+    const on = sw.find(p=>p.ht==="on"&&p.srv===c), off = sw.find(p=>p.ht==="off"&&p.srv===c);
+    t += `<tr><td>${c}</td><td>${on?fmt(on.pred)+"s":"—"}</td><td>${on&&on.measured!=null?fmt(on.measured)+"s":"—"}</td>
+          <td>${off?fmt(off.pred)+"s":"—"}</td><td>${off&&off.measured!=null?fmt(off.measured)+"s":"—"}</td></tr>`;
+  }
+  $("#sweeptbl").innerHTML = t + `</tbody></table>`;
+}
+
+/* ══════════ 解释面板: /api/panels(demo_panels.py, 与 advise.py 同一条生产路径) ══════════ */
+let PANELS = null;
+const zeroOn =  => $("#zerotgl").checked && PANELS && LASTSWEEP && PANELS.agents == LASTSWEEP.agents;
+function zeroPts(k){
+  if(!zeroOn) return [];
+  return PANELS.sweep.filter(p=>p.ht===k && LASTSWEEP.rungs.includes(p.srv)).sort((a,b)=>a.srv-b.srv);
+}
+/* 本并发下、有实测的核档上: 两锚点 vs 零实测 的中位 |误差| —— 现算, 不写死 */
+const med = a => { const b=[...a].sort((x,y)=>x-y), n=b.length; return n? (n%2? b[(n-1)/2] : (b[n/2-1]+b[n/2])/2) : null; };
+function zeroErr{
+  if(!zeroOn) return "";
+  const m = PANELS.sweep.filter(p=>p.measured!=null);
+  if(!m.length) return "";
+  const e1 = med(m.map(p=>Math.abs(p.pred/p.measured-1))), e0 = med(m.map(p=>Math.abs(p.pred_zero/p.measured-1)));
+  return `<span>median error at ${PANELS.agents} agents (${m.length} measured configs): <strong>${(100*e1).toFixed(1)}%</strong> with the two anchors,
+          <strong>${(100*e0).toFixed(1)}%</strong> without</span>`;
+}
+$("#zerotgl").onchange =  => { if(LASTSWEEP) renderSweep(LASTSWEEP); };
+
+async function loadPanels(w, agents, mc){
+  try{
+    const r = await fetch("/api/panels?"+new URLSearchParams({workload:w, agents, max_cores:mc}));
+    if(!r.ok) return;
+    PANELS = await r.json;
+    renderPipe(PANELS); renderComp; if(LASTSWEEP) renderSweep(LASTSWEEP);
+  }catch(e){}
+}
+
+const sec = x => x<60 ? `${x.toFixed(1)}<small>s</small>` : `${(x/60).toFixed(1)}<small>min</small>`;
+const htn = th => th===2 ? "HT on" : "HT off";
+function renderPipe(P){
+  $("#pipecard").hidden = false;
+  const an = P.anchors, aw = an.reduce((s,a)=>s+a.wall_s,0);
+  const cal = P.calibration.total || P.calibration.sql, N = P.agents;
+  const mult = cal ? Math.exp(cal[0]*Math.log(N)+cal[1]) : null;
+  const sgn = v => (v>=0?"+":"−")+Math.abs(v).toFixed(3);
+  $("#steps").innerHTML = `
+   <div class="step user"><span class="n"><b>1</b>Probe</span><span class="v">${P.probe.n_queries}<small>queries</small></span>
+     <span class="d">each run ${P.probe.repeats}× serially, off-load; median of the last ${P.probe.repeats-1} is its offline cost.
+     Σ over queries ${fmt(P.probe.sum_cost_ms)} ms (median ${P.probe.median_cost_ms.toFixed(2)} ms, max ${fmt(P.probe.max_cost_ms)} ms)</span>
+     <span class="who">user · query execution ≈ ${P.probe.offline_cost_s.toFixed(0)} s</span></div>
+   <div class="step user"><span class="n"><b>2</b>Two anchor runs</span><span class="v">${sec(aw)}</span>
+     <span class="d">${an.map(a=>`${a.srv} cores · ${htn(a.th)} · ${a.agents} agents → ${a.wall_s.toFixed(1)} s`).join("<br>")}</span>
+     <span class="who">user · the whole application, ${fmt(P.probe.steps)} steps each</span></div>
+   <div class="step"><span class="n"><b>3</b>Prior</span><span class="v">${P.prior.n_workloads}<small>workloads</small></span>
+     <span class="d">per-query dilation under concurrency, fitted once offline on other workloads; ships with the tool</span>
+     <span class="who">offline · no cost to the user</span></div>
+   <div class="step"><span class="n"><b>4</b>Calibration</span><span class="v">${mult==null?"—":"×"+mult.toFixed(2)}<small>at ${N} agents</small></span>
+     <span class="d">${cal? `correction exp(κ₀·ln N + κ₁), κ₀ = ${sgn(cal[0])}, κ₁ = ${sgn(cal[1])}, solved exactly from the two anchors` : "discarded (anchors disagree)"}</span>
+     <span class="who">computed · milliseconds</span></div>
+   <div class="step"><span class="n"><b>5</b>Inverter</span><span class="v">2<small>answers</small></span>
+     <span class="d">scans the measured core counts (grid 2–16, plus any measured live), HT on and off; keeps the prediction closest to the target, or says none lands within ±15%</span>
+     <span class="who">computed · milliseconds</span></div>`;
+  $("#guards").innerHTML = P.guards.map(g=>`<span class="guard ${g.passed?"ok":"bad"}" title="${esc(g.note)}"><span class="ic">${g.passed?"✓":"✗"}</span>
+     Guardrail (${g.id}) ${esc(g.name)}: ${esc(g.unit)} = ${g.value==null?"—":(g.id==="iii"?(100*g.value).toFixed(0)+"%":g.value.toFixed(g.id==="i"?3:2))}
+     ${g.op} ${g.id==="iii"?(100*g.threshold).toFixed(0)+"%":g.threshold}</span>`).join("");
+}
+
+/* 分量拆解: 100% 堆叠, 每个核档两根(上: 模型 SQL/非SQL; 下: 实测四分量) */
+$("#compht").onclick = e => { const b=e.target.closest("button"); if(!b) return;
+  [...$("#compht").children].forEach(x=>x.setAttribute("aria-pressed", x===b)); renderComp; };
+const COMPS = [["sql","--c-sql","Analytical SQL"],["tp_txn","--c-txn","Write-back"],["vec_mem","--c-mem","Memory search"],["vec_value","--c-val","Business search"]];
+function renderComp{
+  if(!PANELS) return;
+  const ht = $("#compht").querySelector('[aria-pressed="true"]').dataset.v;
+  const rows = PANELS.sweep.filter(p=>p.ht===ht).sort((a,b)=>a.srv-b.srv);
+  $("#compcard").hidden = !rows.length;
+  $("#compsub").textContent = `share of database time · ${PANELS.workload} · ${PANELS.agents} agents`;
+  let h = "", t = `<table><thead><tr><th>Cores</th><th>model SQL</th>${COMPS.map(c=>`<th>meas ${c[2]}</th>`).join("")}<th>meas db_time</th></tr></thead><tbody>`;
+  const sh = [];
+  rows.forEach((r,i)=>{
+    const ps = r.pred_sql_db/(r.pred_sql_db+r.pred_ns_db), b = r.meas_breakdown, tot = b ? COMPS.reduce((s,c)=>s+(b[c[0]]||0),0) : 0;
+    const seg = (v,c,lab) => v>0 ? `<span style="width:${(100*v).toFixed(2)}%;background:var(${c})" title="${lab} ${(100*v).toFixed(1)}%"></span>` : "";
+    h += (i? `<div class="sep"></div>`:"")
+      + `<div class="k">${r.srv} cores<small>model / measured</small></div><div class="bars">
+          <div class="bar">${seg(ps,"--c-sql","Model: SQL")}<span class="ns" style="width:${(100*(1-ps)).toFixed(2)}%" title="Model: non-SQL ${(100*(1-ps)).toFixed(1)}%"></span></div>
+          <div class="bar">${b? COMPS.map(c=>seg((b[c[0]]||0)/tot, c[1], "Measured: "+c[2])).join("") : `<span style="width:100%;background:var(--line)" title="not measured"></span>`}</div></div>
+        <div class="tot">${b? fmt(r.meas_db??tot)+" s" : "—"}</div>`;
+    t += `<tr><td>${r.srv}</td><td>${(100*ps).toFixed(1)}%</td>${COMPS.map(c=>`<td>${b?(100*(b[c[0]]||0)/tot).toFixed(1)+"%":"—"}</td>`).join("")}<td>${b?fmt(r.meas_db??tot)+" s":"—"}</td></tr>`;
+    if(b) sh.push({srv:r.srv, sql:b.sql/tot, txn:b.tp_txn/tot, ps});
+  });
+  $("#comp").innerHTML = h; $("#comptbl").innerHTML = t + "</tbody></table>";
+  if(sh.length>=2){
+    const a = sh[0], z = sh[sh.length-1];
+    $("#comphint").innerHTML = `From ${a.srv} to ${z.srv} cores the measured SQL share moves ${(100*a.sql).toFixed(0)}% → ${(100*z.sql).toFixed(0)}%
+      and the write-back share ${(100*a.txn).toFixed(0)}% → ${(100*z.txn).toFixed(0)}%; the model's SQL share moves ${(100*a.ps).toFixed(0)}% → ${(100*z.ps).toFixed(0)}%.
+      The parts do not scale together, so sizing any one of them alone would not size the whole.`;
+  } else $("#comphint").textContent = "";
+}
+
+/* 找错: 224 个目标, 4 张小图(负载 × 超线程), 行 = 并发, 列 = 目标倍数 */
+/* 与论文第 4 节同口径: 选中的核数实测比 T 慢 >15% = 资源不足, 快 >15% = 过度配置; 可行却报 none fits = 漏报 */
+const KIND = {right:"right", under:"under-provision: the chosen count measures over 15% slower than the target",
+              over:"over-provision: the chosen count measures over 15% faster than the target",
+              missed:"said none fits, but a core count does"};
+const kindOf = t => { if(t.ok) return "right"; if(!t.said_fit) return "missed";
+  const m = t.rungs.find(r=>r.srv===t.srv).measured; return m > t.target ? "under" : "over"; };
+let FAIL = null, FSEL = null;
+fetch("/api/failmap").then(r=>r.ok?r.json:null).then(d=>{ if(d){ FAIL=d; renderHunt; } }).catch(=>{});
+function renderHunt{
+  const F = FAIL; $("#huntcard").hidden = false;
+  $("#huntsub").innerHTML = `${F.ok} / ${F.n} right (${(100*F.ok/F.n).toFixed(1)}%) · reproduce: <code>${esc(F.cmd)}</code>`;
+  const cnt = {}; F.targets.forEach(t=>cnt[kindOf(t)]=(cnt[kindOf(t)]||0)+1);
+  let h = "";
+  for(const w of ["bal_test","test2"]) for(const ht of ["on","off"]){
+    const T = F.targets.filter(t=>t.workload===w && t.ht===ht);
+    const ags = [...new Set(T.map(t=>t.agents))].sort((a,b)=>a-b), ks = [...new Set(T.map(t=>t.k))].sort((a,b)=>a-b);
+    const base = T.find(t=>t.k===ks[0]).target/ks[0];
+    h += `<div><h3>${w} · HT ${ht}</h3><div class="tscroll"><table class="hm"><thead><tr><th>agents \\ s</th>${ks.map(k=>`<th>${fmt(base*k)}</th>`).join("")}</tr></thead><tbody>`;
+    for(const ag of ags){
+      h += `<tr><th>${ag}</th>`;
+      for(const k of ks){
+        const t = T.find(x=>x.agents===ag && x.k===k), i = F.targets.indexOf(t);
+        h += `<td><button type="button" class="${t.ok?"ok":"bad"}${FSEL===i?" sel":""}" data-i="${i}" title="${esc(KIND[kindOf(t)])}">${t.ok?"✓":"✗"}</button></td>`;
+      }
+      h += `</tr>`;
+    }
+    h += `</tbody></table></div></div>`;
+  }
+  $("#hunt").innerHTML = h;
+  $("#huntlg").innerHTML = Object.entries(KIND).filter(([k])=>k!=="right").map(([k,v])=>`<span><b style="color:var(--crit)">✗</b> ${esc(v)}: ${cnt[k]||0}</span>`).join("");
+  $("#hunt").querySelectorAll("button").forEach(b=>b.onclick==>{ FSEL=+b.dataset.i; renderHunt; huntDetail(FAIL.targets[FSEL]); });
+}
+function huntDetail(t){
+  const el = $("#huntdet"); el.hidden = false; const tol = FAIL.tol;
+  const v = t.ok ? `<span class="met">✓ Right</span>` : `<span class="miss">✗ Wrong — ${esc(KIND[kindOf(t)])}</span>`;
+  let h = `<p class="goal" style="margin:0 0 .6rem">${v} · ${t.workload}, HT ${t.ht}, ${t.agents} agents, target <b>${fmt(t.target,1)} s</b>
+     <span class="band">· right band ${fmt(t.target*(1-tol),1)}–${fmt(t.target*(1+tol),1)} s</span><br>
+     Tool: ${t.said_fit ? `<b>${t.srv} cores</b> (prediction ${pct(t.pred_dev)} off the target)` : `<b>none fits</b> (closest prediction ${(100*t.pred_dev).toFixed(1)}% off, at ${t.srv} cores)`}
+     · truth: ${t.feasible ? "a measured core count lands in the band" : "no measured core count lands in the band"}</p>`;
+  h += `<div class="tscroll"><table><thead><tr><th>Cores</th><th>Predicted</th><th>vs target</th><th>Measured</th><th>vs target</th></tr></thead><tbody>`;
+  for(const r of t.rungs){
+    const pin = Math.abs(r.pred/t.target-1)<=tol, min = Math.abs(r.measured/t.target-1)<=tol;
+    h += `<tr class="${r.srv===t.srv?"pick":""}"><td>${r.srv}${r.srv===t.srv?" ◀":""}</td><td>${fmt(r.pred,1)} s</td><td class="${pin?"in":""}">${pct(r.pred/t.target-1)}</td>
+          <td>${fmt(r.measured,1)} s</td><td class="${min?"in":""}">${pct(r.measured/t.target-1)}</td></tr>`;
+  }
+  el.innerHTML = h + `</tbody></table></div><p class="hint">Green = within ±${(100*tol).toFixed(0)}%. ◀ = the core count the tool chose (closest prediction).</p>`;
+}
+
+/* ── 验证口径的两个数: 读实跑落盘的 validation_headline.json, 不写死 ── */
+let HEAD=null;
+fetch("/api/headline").then(r=>r.ok?r.json:null).then(d=>{HEAD=d; paintHead;}).catch(=>{});
+function paintHead{
+  const el=$("#headline"); if(!el) return;
+  if(!HEAD){ el.textContent="Validation figures not generated — run python3 make_headline.py"; return; }
+  const m=HEAD.met_rate, e=HEAD.wall_err_median_pct||{};
+  el.innerHTML = `Validation (${m.total} cases): recommendation success <strong>${m.pct}%</strong> (${m.good}/${m.total})`
+    + `; median wall-clock prediction error <strong>${e.bal_test}%</strong> / <strong>${e.test2}%</strong> (bal_test / test2).`
+    + `<br><span style="color:var(--muted)">computed ${HEAD.generated} · reproduce with <code>${esc(m.cmd)}</code></span>`;
+}
+
+advise;                       /* demo: 打开就给一条默认推荐, 不用先点 */
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+[
+ {
+  "srv": 16,
+  "th": 2,
+  "agents": 224,
+  "db_time_s": 4901.73,
+  "sql_s": 3374.48,
+  "ns_s": 1527.25,
+  "wall_s": 23.473,
+  "source": "testv2/test2/s16_l4_t2_a224_b0"
+ },
+ {
+  "srv": 8,
+  "th": 2,
+  "agents": 8,
+  "db_time_s": 486.45,
+  "sql_s": 308.94,
+  "ns_s": 177.5,
+  "wall_s": 63.513,
+  "source": "testv2/test2/s8_l4_t2_a8_b0"
+ }
+]

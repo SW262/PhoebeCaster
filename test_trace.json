@@ -1,0 +1,2850 @@
+[
+ {
+  "qid": 900090,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"userid\"\nFROM \"u2base\"\nWHERE \"rating\" = '5'\nGROUP BY \"userid\"\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 403,
+    "out_tok": 38
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900037,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  ca.\"community_area_name\"\nFROM \"chicago_crime\".\"Community_Area\" ca\nJOIN \"chicago_crime\".\"Crime\" c ON ca.\"community_area_no\" = c.\"community_area_no\"\nJOIN \"chicago_crime\".\"FBI_Code\" f ON c.\"fbi_code_no\" = f.\"fbi_code_no\"\nWHERE ca.\"side\" = 'South'\n  AND f.\"description\" = 'unlawful taking, carrying, leading, or riding away of property from the possession or constructive possession of another person'\nGROUP BY ca.\"community_area_name\"\nORDER BY COUNT(c.\"fbi_code_no\") DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 730,
+    "out_tok": 146
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900056,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  COUNT(\"T1\".\"Code\") * 1.0 / 31\nFROM \"Air Carriers\" AS \"T1\"\nJOIN \"Airlines\" AS \"T2\"\n  ON \"T1\".\"Code\" = \"T2\".\"OP_CARRIER_AIRLINE_ID\"\nWHERE\n  \"T1\".\"Description\" = 'American Airlines Inc.: AA'\n  AND \"T2\".\"FL_DATE\" LIKE '2018/8%'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.8-flash",
+    "cached": true,
+    "in_tok": 541,
+    "out_tok": 104
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900064,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"Description\" FROM \"Airports\" WHERE \"Code\" LIKE '%3'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 478,
+    "out_tok": 18
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900078,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"movieid\"\nFROM \"movies\" AS \"m\"\nJOIN \"u2base\" AS \"u\" ON \"m\".\"movieid\" = \"u\".\"movieid\"\nWHERE \"m\".\"year\" = (SELECT MAX(\"year\") FROM \"movies\")\n  AND \"u\".\"rating\" = '1'",
+    "outcome": "ERROR: column reference \"movieid\" is ambiguous",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 459,
+    "out_tok": 583
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT m.\"movieid\"\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"year\" = (SELECT MAX(\"year\") FROM \"movies\")\n  AND u.\"rating\" = '1'",
+    "outcome": "returned 2295 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 566,
+    "out_tok": 522
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900070,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS delayed_flights\nFROM \"airline\".\"Airlines\" AS a\nJOIN \"airline\".\"Air Carriers\" AS ac\n  ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" = 'Alaska Airlines Inc.: AS'\n  AND a.\"FL_DATE\" = '2018/8/2'\n  AND a.\"DEP_DELAY\" > 0",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 528,
+    "out_tok": 205
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900050,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"TAIL_NUM\"\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" = 'Iscargo Hf: ICQ'\n  AND a.\"ARR_TIME\" <= 1000\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 542,
+    "out_tok": 316
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900039,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT d.\"district_name\"\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"domestic\" = 'TRUE'\nGROUP BY d.\"district_name\"\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 686,
+    "out_tok": 224
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900027,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Crime\" c\nJOIN \"FBI_Code\" f ON c.\"fbi_code_no\" = f.\"fbi_code_no\"\nJOIN \"Ward\" w ON c.\"ward_no\" = w.\"ward_no\"\nWHERE f.\"title\" = 'Vandalism'\n  AND c.\"arrest\" = 'TRUE'\n  AND w.\"alderman_first_name\" = 'Edward'\n  AND w.\"alderman_last_name\" = 'Burke'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1635,
+    "out_tok": 470
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900083,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT m.\"movieid\", m.\"year\", m.\"country\", m.\"runningtime\", AVG(CAST(u.\"rating\" AS numeric)) AS avg_rating\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"isEnglish\" = 'F'\nGROUP BY m.\"movieid\", m.\"year\", m.\"country\", m.\"runningtime\"\nORDER BY avg_rating DESC\nLIMIT 5",
+    "outcome": "returned 5 rows, expected 5, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 434,
+    "out_tok": 390
+   },
+   {
+    "round": 2,
+    "sql": "SELECT m.\"movieid\",\n       m.\"year\",\n       m.\"country\",\n       m.\"runningtime\",\n       AVG(CAST(u.\"rating\" AS numeric)) AS avg_rating\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"isEnglish\" = 'F'\n  AND m.\"country\" IS NOT NULL\n  AND m.\"country\" <> 'USA'\nGROUP BY m.\"movieid\", m.\"year\", m.\"country\", m.\"runningtime\"\nORDER BY avg_rating DESC\nLIMIT 5",
+    "outcome": "returned 5 rows, expected 5, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 574,
+    "out_tok": 520
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  m.\"movieid\",\n  m.\"year\",\n  m.\"country\",\n  m.\"runningtime\",\n  AVG(CAST(u.\"rating\" AS numeric)) AS avg_rating\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"isEnglish\" = 'F'\n  AND m.\"country\" IS NOT NULL\n  AND m.\"country\" <> 'USA'\nGROUP BY m.\"movieid\", m.\"year\", m.\"country\", m.\"runningtime\"\nORDER BY avg_rating DESC, m.\"movieid\"\nLIMIT 5",
+    "outcome": "returned 5 rows, expected 5, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 718,
+    "out_tok": 415
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900023,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT b.\"city\") AS city_count,\n       (SUM(CASE WHEN c.\"category_name\" = 'Active Life' THEN 1 ELSE 0 END) * 1.0 / SUM(CASE WHEN b.\"review_count\" = 'LOW' THEN 1 ELSE 0 END)) * 100 AS percentage\nFROM \"Business\" b\nJOIN \"Business_Categories\" bc ON b.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE c.\"category_name\" = 'Active Life'",
+    "outcome": "ERROR: division by zero",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1043,
+    "out_tok": 134
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT b.\"city\") AS city_count,\n       (SUM(CASE WHEN c.\"category_name\" = 'Active Life' THEN 1 ELSE 0 END) * 1.0 / NULLIF(SUM(CASE WHEN b.\"review_count\" = 'LOW' THEN 1 ELSE 0 END), 0)) * 100 AS percentage\nFROM \"Business\" b\nJOIN \"Business_Categories\" bc ON b.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE c.\"category_name\" = 'Active Life'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1211,
+    "out_tok": 135
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT b.\"city\") AS city_count,\n       (SUM(CASE WHEN c.\"category_name\" = 'Active Life' THEN 1 ELSE 0 END) * 1.0 / NULLIF(SUM(CASE WHEN b.\"review_count\" = 'LOW' THEN 1 ELSE 0 END), 0)) * 100 AS percentage\nFROM \"Business\" b\nJOIN \"Business_Categories\" bc ON b.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE c.\"category_name\" = 'Active Life'\n  AND b.\"review_count\" = 'LOW'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1369,
+    "out_tok": 147
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900077,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n    ROUND(100.0 * SUM(CASE WHEN d.\"avg_revenue\" > d.\"d_quality\" THEN 1 ELSE 0 END) / COUNT(*), 2) AS proportion_percent\nFROM (\n    SELECT DISTINCT md.\"directorid\"\n    FROM \"movies2directors\" md\n    WHERE md.\"genre\" = 'Action'\n) AS ad\nJOIN \"directors\" d ON d.\"directorid\" = ad.\"directorid\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 455,
+    "out_tok": 437
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  ROUND(100.0 * SUM(CASE WHEN d.\"avg_revenue\" > d.\"d_quality\" THEN 1 ELSE 0 END) / COUNT(*), 2) AS proportion_percent\nFROM (\n  SELECT DISTINCT \"directorid\"\n  FROM \"movies2directors\"\n  WHERE \"genre\" = 'Action'\n) AS ad\nJOIN \"directors\" d ON d.\"directorid\" = ad.\"directorid\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 594,
+    "out_tok": 609
+   },
+   {
+    "round": 3,
+    "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN d.\"avg_revenue\" > d.\"d_quality\" THEN 1 ELSE 0 END) / COUNT(*), 2) AS proportion_percent\nFROM \"movies2directors\" md\nJOIN \"directors\" d ON d.\"directorid\" = md.\"directorid\"\nWHERE md.\"genre\" = 'Action'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 708,
+    "out_tok": 563
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900019,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Business\" \nWHERE \"state\" = 'AZ' \n  AND \"stars\" < 3",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2220,
+    "out_tok": 178
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900035,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"Neighborhood\".\"neighborhood_name\")\nFROM \"Neighborhood\"\nJOIN \"Community_Area\" ON \"Neighborhood\".\"community_area_no\" = \"Community_Area\".\"community_area_no\"\nWHERE \"Community_Area\".\"community_area_name\" = 'Roseland'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 662,
+    "out_tok": 170
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900029,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"Neighborhood\" WHERE \"community_area_no\" = (SELECT \"community_area_no\" FROM \"Community_Area\" WHERE \"community_area_name\" = 'Forest Glen')",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 667,
+    "out_tok": 205
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900068,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT MIN(\"DEP_TIME\") AS earliest_dep_time\nFROM \"Airlines\" a\nJOIN \"Airports\" ap ON a.\"ORIGIN\" = ap.\"Code\"\nWHERE ap.\"Description\" = 'New York, NY: John F. Kennedy International'\n  AND a.\"FL_DATE\" = '2018/8/1'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 558,
+    "out_tok": 337
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900093,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"userid\")\nFROM \"u2base\"\nJOIN \"movies\" ON \"u2base\".\"movieid\" = \"movies\".\"movieid\"\nWHERE \"movies\".\"country\" = 'UK'\n  AND \"movies\".\"year\" = 2\n  AND \"movies\".\"runningtime\" = 2\n  AND \"u2base\".\"rating\" = '1'",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 450,
+    "out_tok": 507
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900013,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT T1.\"user_id\" FROM \"Users\" AS T1 JOIN \"Users_Compliments\" AS T2 ON T1.\"user_id\" = T2.\"user_id\" WHERE T2.\"number_of_compliments\" = 'Low' AND T1.\"user_yelping_since_year\" = 2012",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.6-flash",
+    "cached": false,
+    "in_tok": 1128,
+    "out_tok": 76
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900028,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  CAST(SUM(CASE WHEN d.\"district_name\" = 'Central' THEN 1 ELSE 0 END) AS FLOAT) * 100 / COUNT(c.\"case_number\") AS percentage\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 694,
+    "out_tok": 68
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900059,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" = 'American Airlines Inc.: AA'\n  AND a.\"CANCELLED\" = 1\n  AND a.\"CANCELLATION_CODE\" = 'A'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1338,
+    "out_tok": 353
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900025,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT (COUNT(*) FILTER (WHERE i.\"primary_description\" = 'CRIME SEXUAL ASSAULT')::numeric / COUNT(*)) * 100 AS percentage\nFROM \"Crime\" c\nJOIN \"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"index_code\" = 'I'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 712,
+    "out_tok": 611
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 824,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  (COUNT(*) FILTER (WHERE i.\"primary_description\" = 'CRIME SEXUAL ASSAULT')::numeric / COUNT(*)) * 100 AS \"percentage\"\nFROM \"Crime\" c\nJOIN \"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"index_code\" = 'I'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 843,
+    "out_tok": 374
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900002,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT ba.\"attribute_value\"\nFROM \"Business_Attributes\" ba\nJOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\nWHERE a.\"attribute_name\" = 'Wi-Fi'\n  AND ba.\"business_id\" = 10172",
+    "outcome": "returned 1 rows, expected 0, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1025,
+    "out_tok": 61
+   },
+   {
+    "round": 2,
+    "sql": "SELECT ba.\"attribute_value\"\nFROM \"Business_Attributes\" ba\nJOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\nWHERE a.\"attribute_name\" = 'Wi-Fi'\n  AND ba.\"business_id\" = 10172\n  AND ba.\"attribute_value\" IS NOT NULL\n  AND ba.\"attribute_value\" != ''",
+    "outcome": "returned 1 rows, expected 0, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1130,
+    "out_tok": 81
+   },
+   {
+    "round": 3,
+    "sql": "SELECT ba.\"attribute_value\"\nFROM \"Business_Attributes\" ba\nJOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\nWHERE a.\"attribute_name\" = 'Wi-Fi'\n  AND ba.\"business_id\" = 10172\n  AND ba.\"attribute_value\" IS NOT NULL\n  AND ba.\"attribute_value\" <> ''\n  AND ba.\"attribute_value\" <> 'false'\n  AND ba.\"attribute_value\" <> '0'\n  AND ba.\"attribute_value\" <> 'no'",
+    "outcome": "returned 1 rows, expected 0, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1234,
+    "out_tok": 117
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900062,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"FL_DATE\"\nFROM \"Airlines\"\nWHERE \"CANCELLED\" = 1\n  AND \"CANCELLATION_CODE\" = 'A'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 498,
+    "out_tok": 35
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900098,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*)\nFROM \"movies\" m\nJOIN \"movies2directors\" md ON m.\"movieid\" = md.\"movieid\"\nWHERE m.\"country\" = 'USA'\n  AND md.\"genre\" = 'Action'\n  AND m.\"isEnglish\" = 'F'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 415,
+    "out_tok": 64
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900003,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"business_id\"\nFROM \"Business_Hours\"\nWHERE \"opening_time\" = '10AM' AND \"day_id\" = 6",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2236,
+    "out_tok": 229
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900024,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT ba.\"business_id\")\nFROM \"Business_Attributes\" ba\nJOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\nWHERE a.\"attribute_name\" = 'Accepts Insurance'\n  AND ba.\"attribute_value\" = 'true'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2212,
+    "out_tok": 332
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900069,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT ac.\"Description\", ac.\"Code\"\nFROM \"airline\".\"Airlines\" a\nJOIN \"airline\".\"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nORDER BY a.\"ARR_TIME\" ASC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 475,
+    "out_tok": 61
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900010,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"ba\".\"attribute_value\"\nFROM \"Business_Attributes\" \"ba\"\nJOIN \"Business\" \"b\" ON \"ba\".\"business_id\" = \"b\".\"business_id\"\nJOIN \"Business_Categories\" \"bc\" ON \"b\".\"business_id\" = \"bc\".\"business_id\"\nJOIN \"Categories\" \"c\" ON \"bc\".\"category_id\" = \"c\".\"category_id\"\nWHERE \"c\".\"category_name\" = 'Fashion'\n  AND \"b\".\"city\" = 'Scottsdale'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1018,
+    "out_tok": 111
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900063,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Airlines\" \nWHERE \"FL_DATE\" = '2018/8/15' \n  AND \"DEST\" = (SELECT \"Code\" FROM \"Airports\" WHERE \"Description\" = 'Lake Charles, LA: Lake Charles Regional')",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1360,
+    "out_tok": 363
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900045,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"community_area_name\"\nFROM \"Community_Area\"\nWHERE \"community_area_no\" = (\n  SELECT \"community_area_no\"\n  FROM \"Neighborhood\"\n  WHERE \"neighborhood_name\" = 'Albany Park'\n)",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 672,
+    "out_tok": 55
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900041,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT ca.\"community_area_name\"\nFROM \"chicago_crime\".\"Community_Area\" ca\nJOIN \"chicago_crime\".\"Crime\" c ON ca.\"community_area_no\" = c.\"community_area_no\"\nJOIN \"chicago_crime\".\"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"primary_description\" = 'THEFT'\n  AND i.\"secondary_description\" = 'POCKET-PICKING'\nGROUP BY ca.\"community_area_name\"\nORDER BY COUNT(c.\"case_number\") DESC\nLIMIT 1",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 698,
+    "out_tok": 125
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900089,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT \"directorid\") FROM \"directors\" d JOIN \"movies2directors\" md ON d.\"directorid\" = md.\"directorid\" WHERE d.\"avg_revenue\" = 4 AND md.\"genre\" IN ('action','adventure')",
+    "outcome": "ERROR: column reference \"directorid\" is ambiguous",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": true,
+    "in_tok": 1128,
+    "out_tok": 331
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT d.\"directorid\")\nFROM \"directors\" d\nJOIN \"movies2directors\" md ON d.\"directorid\" = md.\"directorid\"\nWHERE d.\"avg_revenue\" = 4\n  AND md.\"genre\" IN ('action','adventure')",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1324,
+    "out_tok": 383
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT d.\"directorid\")\nFROM \"directors\" d\nJOIN \"movies2directors\" md ON d.\"directorid\" = md.\"directorid\"\nWHERE d.\"avg_revenue\" = 4\n  AND md.\"genre\" IN ('action','adventure')",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1490,
+    "out_tok": 505
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900038,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT i.\"secondary_description\"\nFROM \"Crime\" c\nJOIN \"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"primary_description\" = 'NARCOTICS'",
+    "outcome": "returned 40 rows, expected 48, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 671,
+    "out_tok": 313
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT i.\"secondary_description\"\nFROM \"IUCR\" i\nWHERE TRIM(UPPER(i.\"primary_description\")) = 'NARCOTICS'\n  AND EXISTS (\n    SELECT 1\n    FROM \"Crime\" c\n    WHERE c.\"iucr_no\" = i.\"iucr_no\"\n  )",
+    "outcome": "returned 40 rows, expected 48, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 759,
+    "out_tok": 1004
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT i.\"secondary_description\"\nFROM \"Crime\" c\nJOIN \"IUCR\" i\n  ON TRIM(c.\"iucr_no\") = TRIM(i.\"iucr_no\")\nWHERE TRIM(UPPER(i.\"primary_description\")) = 'NARCOTICS'",
+    "outcome": "returned 40 rows, expected 48, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 846,
+    "out_tok": 427
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900053,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS cancelled_count\nFROM \"Airlines\"\nWHERE \"OP_CARRIER_AIRLINE_ID\" = (\n    SELECT \"Code\"\n    FROM \"Air Carriers\"\n    WHERE \"Description\" = 'American Airlines Inc.: AA'\n)\nAND \"FL_DATE\" = '2018/8/1'\nAND \"CANCELLED\" = 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 525,
+    "out_tok": 83
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900071,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"ORIGIN\"\nFROM \"Airlines\"\nORDER BY \"ACTUAL_ELAPSED_TIME\" ASC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 496,
+    "out_tok": 217
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900051,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT ac.\"Description\"\nFROM \"Airlines\" a\nJOIN \"Airports\" ap ON a.\"DEST\" = ap.\"Code\"\nJOIN \"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ap.\"Description\" = 'Chicago, IL: Chicago Midway International'\nGROUP BY ac.\"Description\"\nORDER BY COUNT(*) DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1380,
+    "out_tok": 491
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900026,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT d.\"commander\"\nFROM \"chicago_crime\".\"Crime\" c\nJOIN \"chicago_crime\".\"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"beat\" = 532\n  AND c.\"location_description\" = 'YARD'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 696,
+    "out_tok": 66
+   },
+   {
+    "round": 2,
+    "sql": "SELECT d.\"commander\"\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"beat\" = 532\n  AND c.\"location_description\" = 'YARD'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 807,
+    "out_tok": 55
+   },
+   {
+    "round": 3,
+    "sql": "SELECT d.\"commander\"\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"beat\" = 532\n  AND c.\"location_description\" = 'YARD'\nLIMIT 1",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 885,
+    "out_tok": 59
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900086,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT m2a.\"actorid\")\nFROM \"movielens\".\"movies2actors\" m2a\nJOIN \"movielens\".\"u2base\" u2b ON m2a.\"movieid\" = u2b.\"movieid\"\nWHERE u2b.\"rating\" = '5'",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 402,
+    "out_tok": 69
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900008,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"business_id\"\nFROM \"Reviews\"\nWHERE \"review_stars\" = 5\n  AND \"review_votes_funny\" = 'Uber'\n  AND \"business_id\" IN (\n    SELECT \"business_id\"\n    FROM \"Business\"\n    WHERE \"city\" = 'Phoenix'\n  )",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1062,
+    "out_tok": 69
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900017,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n  (COUNT(CASE WHEN b.\"stars\" < 4 THEN b.\"business_id\" END) * 100.0 / COUNT(b.\"business_id\")) AS percentage\nFROM \"Business\" b\nJOIN \"Business_Categories\" bc ON b.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE c.\"category_name\" = 'Accessories'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1051,
+    "out_tok": 96
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  (COUNT(CASE WHEN b.\"stars\" < 4 THEN b.\"business_id\" END) * 100.0 / COUNT(b.\"business_id\")) AS percentage\nFROM \"Business\" b\nJOIN \"Business_Categories\" bc ON b.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE c.\"category_name\" = 'Accessories'\n  AND b.\"stars\" IS NOT NULL",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1192,
+    "out_tok": 107
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  (COUNT(CASE WHEN \"Business\".\"stars\" < 4 THEN \"Business\".\"business_id\" END) * 100.0 / COUNT(\"Business\".\"business_id\")) AS percentage\nFROM \"Business\"\nJOIN \"Business_Categories\" ON \"Business\".\"business_id\" = \"Business_Categories\".\"business_id\"\nJOIN \"Categories\" ON \"Business_Categories\".\"category_id\" = \"Categories\".\"category_id\"\nWHERE \"Categories\".\"category_name\" = 'Accessories'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1321,
+    "out_tok": 105
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900084,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH rating_counts AS (\n  SELECT m.\"movieid\", COUNT(*) AS rating_cnt\n  FROM \"movies\" m\n  JOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\n  WHERE m.\"country\" = 'UK'\n  GROUP BY m.\"movieid\"\n),\nmax_cnt AS (\n  SELECT MAX(rating_cnt) AS max_rating_cnt FROM rating_counts\n)\nSELECT COUNT(*) AS num_movies\nFROM rating_counts rc\nJOIN \"movies\" m ON rc.\"movieid\" = m.\"movieid\"\nJOIN max_cnt mc ON rc.rating_cnt = mc.max_rating_cnt\nWHERE m.\"runningtime\" < 2",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 429,
+    "out_tok": 596
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900014,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT EXISTS (\n  SELECT 1\n  FROM \"Business_Attributes\" ba\n  JOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\n  WHERE ba.\"business_id\" = 14033\n    AND a.\"attribute_name\" = 'good_for_dinner'\n    AND ba.\"attribute_value\" = 'True'\n) AS is_good_for_supper",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": true,
+    "in_tok": 2242,
+    "out_tok": 475
+   },
+   {
+    "round": 2,
+    "sql": "SELECT EXISTS (\n    SELECT 1\n    FROM \"Business_Attributes\" ba\n    JOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\n    WHERE ba.\"business_id\" = 14033\n      AND a.\"attribute_name\" = 'good_for_dinner'\n      AND lower(ba.\"attribute_value\") = 'true'\n) AS is_good_for_supper",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2486,
+    "out_tok": 485
+   },
+   {
+    "round": 3,
+    "sql": "SELECT CASE\n         WHEN EXISTS (\n           SELECT 1\n           FROM \"Business_Attributes\" ba\n           JOIN \"Attributes\" a ON ba.\"attribute_id\" = a.\"attribute_id\"\n           WHERE ba.\"business_id\" = 14033\n             AND a.\"attribute_name\" = 'good_for_dinner'\n             AND (ba.\"attribute_value\" IS NULL\n                  OR lower(ba.\"attribute_value\") IN ('true','yes','1'))\n         ) THEN true\n         ELSE false\n       END AS is_good_for_supper",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2694,
+    "out_tok": 594
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900052,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT a.\"TAIL_NUM\") AS plane_count\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" c ON a.\"OP_CARRIER_AIRLINE_ID\" = c.\"Code\"\nWHERE c.\"Description\" = 'Spirit Air Lines: NK'\n  AND a.\"FL_DATE\" = '2018/8/7'\n  AND a.\"CANCELLED\" = 0\n  AND a.\"DEP_TIME\" IS NOT NULL",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 519,
+    "out_tok": 363
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT a.\"TAIL_NUM\") AS plane_count\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" c ON a.\"OP_CARRIER_AIRLINE_ID\" = c.\"Code\"\nWHERE c.\"Description\" = 'Spirit Air Lines: NK'\n  AND a.\"CANCELLED\" = 0\n  AND a.\"DEP_TIME\" IS NOT NULL\n  AND to_date(a.\"FL_DATE\", 'YYYY/MM/DD') = DATE '2018-08-07'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 657,
+    "out_tok": 705
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(*) AS plane_count\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" c ON a.\"OP_CARRIER_AIRLINE_ID\" = c.\"Code\"\nWHERE c.\"Description\" = 'Spirit Air Lines: NK'\n  AND a.\"FL_DATE\" = '2018/8/7'\n  AND a.\"CANCELLED\" = 0\n  AND a.\"DEP_TIME\" IS NOT NULL",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 783,
+    "out_tok": 501
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900087,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH divergent",
+    "outcome": "ERROR: syntax error at end of input",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 427,
+    "out_tok": 1500
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 469,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 488,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900049,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS property_crime_count\nFROM \"Crime\" c\nJOIN \"FBI_Code\" f ON c.\"fbi_code_no\" = f.\"fbi_code_no\"\nWHERE f.\"crime_against\" = 'Property'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 643,
+    "out_tok": 199
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(*) AS property_crime_count\nFROM \"Crime\" c\nJOIN \"FBI_Code\" f ON c.\"fbi_code_no\" = f.\"fbi_code_no\"\nWHERE TRIM(f.\"crime_against\") = 'Property'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 734,
+    "out_tok": 601
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(*) AS property_crime_count\nFROM \"Crime\" c\nJOIN \"FBI_Code\" f ON c.\"fbi_code_no\" = f.\"fbi_code_no\"\nWHERE lower(TRIM(f.\"crime_against\")) = 'property'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 807,
+    "out_tok": 796
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900061,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"Code\" FROM \"Airports\" WHERE \"Description\" = 'Driftwood Bay, AK: Driftwood Bay Airport'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 513,
+    "out_tok": 128
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900020,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS short_tip_count\nFROM \"Tips\"\nWHERE \"business_id\" = 2\n  AND \"tip_length\" = 'Short'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1012,
+    "out_tok": 33
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900016,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT MAX((\"Business_Hours\".\"closing_time\")::time - (\"Business_Hours\".\"opening_time\")::time) AS longest_monday_duration\nFROM \"Business_Hours\"\nJOIN \"Days\" ON \"Business_Hours\".\"day_id\" = \"Days\".\"day_id\"\nJOIN \"Business_Categories\" ON \"Business_Hours\".\"business_id\" = \"Business_Categories\".\"business_id\"\nJOIN \"Categories\" ON \"Business_Categories\".\"category_id\" = \"Categories\".\"category_id\"\nWHERE \"Days\".\"day_of_week\" = 'Monday'\n  AND \"Categories\".\"category_name\" = 'Shopping'",
+    "outcome": "ERROR: invalid input syntax for type time: \"7PM\"",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": true,
+    "in_tok": 2276,
+    "out_tok": 628
+   },
+   {
+    "round": 2,
+    "sql": "SELECT MAX(\n    to_timestamp(\n        regexp_replace(bh.\"closing_time\", '^([0-9]+)([AP]M)$', '\\1:00 \\2'),\n        'HH12:MI PM'\n    )::time -\n    to_timestamp(\n        regexp_replace(bh.\"opening_time\", '^([0-9]+)([AP]M)$', '\\1:00 \\2'),\n        'HH12:MI PM'\n    )::time\n) AS longest_monday_duration\nFROM \"Business_Hours\" bh\nJOIN \"Days\" d ON bh.\"day_id\" = d.\"day_id\"\nJOIN \"Business_Categories\" bc ON bh.\"business_id\" = bc.\"business_id\"\nJOIN \"Categories\" c ON bc.\"category_id\" = c.\"category_id\"\nWHERE d.\"day_of_week\" = 'Monday'\n  AND c.\"category_name\" = 'Shopping'",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2610,
+    "out_tok": 1194
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900080,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT m.\"movieid\"\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"country\" = 'France'\nGROUP BY m.\"movieid\"\nORDER BY COUNT(u.\"rating\") ASC\nLIMIT 1",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 394,
+    "out_tok": 64
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900058,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT t1.\"FL_DATE\" FROM \"airline\".\"Airlines\" AS t1 INNER JOIN \"airline\".\"Airports\" AS t2 ON t1.\"ORIGIN\" = t2.\"Code\" WHERE t1.\"FL_DATE\" LIKE '2018/8%' AND t1.\"CANCELLED\" = 1 AND t1.\"CANCELLATION_CODE\" = 'A' AND t2.\"Description\" = 'Dallas/Fort Worth, TX: Dallas/Fort Worth International' GROUP BY t1.\"FL_DATE\" ORDER BY COUNT(*) DESC LIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "cached": false,
+    "in_tok": 584,
+    "out_tok": 123
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900031,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT c.\"case_number\"\nFROM \"chicago_crime\".\"Crime\" c\nJOIN \"chicago_crime\".\"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"primary_description\" = 'BATTERY'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 678,
+    "out_tok": 57
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900076,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT a.\"actorid\")\nFROM \"actors\" a\nJOIN \"movies2actors\" m2a ON a.\"actorid\" = m2a.\"actorid\"\nJOIN \"u2base\" u2 ON m2a.\"movieid\" = u2.\"movieid\"\nWHERE a.\"a_quality\" = 0\n  AND u2.\"rating\"::numeric > 3",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 444,
+    "out_tok": 432
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900011,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH long_counts AS (\n  SELECT \"user_id\", COUNT(*) AS cnt\n  FROM \"Reviews\"\n  WHERE \"review_length\" = 'long'\n  GROUP BY \"user_id\"\n), top_user AS (\n  SELECT \"user_id\"\n  FROM long_counts\n  ORDER BY cnt DESC\n  LIMIT 1\n)\nSELECT AVG(\"review_stars\")::numeric AS average_rating\nFROM \"Reviews\"\nWHERE \"user_id\" = (SELECT \"user_id\" FROM top_user)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 988,
+    "out_tok": 352
+   },
+   {
+    "round": 2,
+    "sql": "WITH long_counts AS (\n  SELECT \"user_id\", COUNT(*) AS cnt\n  FROM \"Reviews\"\n  WHERE \"review_length\" = 'long'\n  GROUP BY \"user_id\"\n), top_user AS (\n  SELECT \"user_id\"\n  FROM long_counts\n  ORDER BY cnt DESC, \"user_id\" ASC\n  LIMIT 1\n)\nSELECT AVG(\"review_stars\")::numeric AS average_rating\nFROM \"Reviews\"\nWHERE \"user_id\" = (SELECT \"user_id\" FROM top_user)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1129,
+    "out_tok": 591
+   },
+   {
+    "round": 3,
+    "sql": "SELECT AVG(r.\"review_stars\")::numeric AS average_rating\nFROM \"Reviews\" r\nWHERE r.\"user_id\" = (\n    SELECT \"user_id\"\n    FROM (\n        SELECT \"user_id\", COUNT(*) AS cnt\n        FROM \"Reviews\"\n        WHERE \"review_length\" = 'long'\n        GROUP BY \"user_id\"\n        ORDER BY cnt DESC, \"user_id\" ASC\n        LIMIT 1\n    ) AS top_user\n)",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1256,
+    "out_tok": 728
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900012,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"bh\".\"business_id\"\nFROM \"Business_Hours\" \"bh\"\nJOIN \"Business\" \"b\" ON \"bh\".\"business_id\" = \"b\".\"business_id\"\nWHERE \"bh\".\"opening_time\" = '7AM'\n  AND \"bh\".\"closing_time\" = '8PM'\n  AND \"b\".\"active\" = 'true'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1046,
+    "out_tok": 80
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900040,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) AS arrested_domestic_violence\nFROM \"Crime\" c\nJOIN \"Ward\" w ON c.\"ward_no\" = w.\"ward_no\"\nWHERE w.\"alderman_first_name\" = 'Walter'\n  AND w.\"alderman_last_name\" = 'Burnett'\n  AND w.\"alderman_name_suffix\" = 'Jr.'\n  AND c.\"domestic\" = 'TRUE'\n  AND c.\"arrest\" = 'TRUE'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 682,
+    "out_tok": 442
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900018,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"Reviews\" WHERE \"user_id\" = 36139 AND \"review_length\" = 'long'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 966,
+    "out_tok": 176
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900060,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*)\nFROM \"Airlines\" AS a\nJOIN \"Airports\" AS o ON a.\"ORIGIN\" = o.\"Code\"\nJOIN \"Airports\" AS d ON a.\"DEST\" = d.\"Code\"\nWHERE o.\"Description\" = 'San Diego, CA: San Diego International'\n  AND d.\"Description\" = 'Los Angeles, CA: Los Angeles International'\n  AND a.\"FL_DATE\" LIKE '2018/8%'",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 547,
+    "out_tok": 102
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900009,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"review_length\" FROM \"Reviews\" WHERE \"user_id\" = 60776 AND \"business_id\" = 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1013,
+    "out_tok": 31
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900048,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"case_number\"\nFROM \"Crime\"\nWHERE \"ward_no\" IN (\n    SELECT \"ward_no\"\n    FROM \"Ward\"\n    WHERE \"ward_office_address\" = '1958 N. Milwaukee Ave.'\n)\n  AND \"location_description\" = 'APARTMENT'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 711,
+    "out_tok": 199
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900066,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"Air Carriers\".\"Description\"\nFROM \"Air Carriers\"\nJOIN \"Airlines\" ON \"Air Carriers\".\"Code\" = \"Airlines\".\"OP_CARRIER_AIRLINE_ID\"\nWHERE \"Airlines\".\"TAIL_NUM\" = 'N202NN'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 507,
+    "out_tok": 173
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900099,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT m.\"movieid\")\nFROM \"movies\" m\nJOIN \"movies2actors\" ma ON m.\"movieid\" = ma.\"movieid\"\nWHERE m.\"country\" = 'USA'\n  AND ma.\"cast_num\" > 1",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 421,
+    "out_tok": 504
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(*) FROM (\n  SELECT m.\"movieid\"\n  FROM \"movies\" m\n  JOIN \"movies2actors\" ma ON m.\"movieid\" = ma.\"movieid\"\n  WHERE m.\"country\" = 'USA'\n  GROUP BY m.\"movieid\"\n  HAVING COUNT(*) > 1\n) AS sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 518,
+    "out_tok": 401
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(*) FROM (\n  SELECT m.\"movieid\"\n  FROM \"movies\" m\n  JOIN \"movies2actors\" ma ON m.\"movieid\" = ma.\"movieid\"\n  WHERE m.\"country\" = 'USA'\n  GROUP BY m.\"movieid\"\n  HAVING COUNT(ma.\"actorid\") > 1\n) AS sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 610,
+    "out_tok": 272
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900046,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Crime\" c \nJOIN \"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\" \nJOIN \"Community_Area\" ca ON c.\"community_area_no\" = ca.\"community_area_no\" \nWHERE i.\"secondary_description\" = 'SOLICIT ON PUBLIC WAY' \n  AND i.\"primary_description\" = 'PROSTITUTION' \n  AND c.\"arrest\" = 'TRUE' \n  AND ca.\"community_area_name\" = 'West Garfield Park'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 704,
+    "out_tok": 310
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900091,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT CONCAT(\n    COUNT(*) FILTER (WHERE \"a_gender\" = 'M'),\n    ':',\n    COUNT(*) FILTER (WHERE \"a_gender\" = 'F')\n) AS ratio\nFROM \"actors\"\nWHERE \"a_quality\" = 0",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 458,
+    "out_tok": 288
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \n    COUNT(*) FILTER (WHERE \"a_gender\" = 'M' AND \"a_quality\" = 0)::text || ':' ||\n    COUNT(*) FILTER (WHERE \"a_gender\" = 'F' AND \"a_quality\" = 0)::text AS ratio\nFROM \"actors\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 551,
+    "out_tok": 397
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  (COUNT(*) FILTER (WHERE \"a_quality\" = 0 AND \"a_gender\" IN ('M','Male')))::text ||\n  ':' ||\n  (COUNT(*) FILTER (WHERE \"a_quality\" = 0 AND \"a_gender\" IN ('F','Female')))::text AS ratio\nFROM \"actors\"",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 633,
+    "out_tok": 626
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900047,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT d.\"phone\"\nFROM \"District\" d\nJOIN \"Crime\" c ON d.\"district_no\" = c.\"district_no\"\nJOIN \"Ward\" w ON w.\"ward_no\" = c.\"ward_no\"\nWHERE w.\"alderman_first_name\" = 'Emma'\n  AND w.\"alderman_last_name\" = 'Mitts'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1631,
+    "out_tok": 584
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900096,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT u.\"userid\"\nFROM \"users\" u\nJOIN \"u2base\" ub ON u.\"userid\" = ub.\"userid\"\nJOIN \"movies\" m ON ub.\"movieid\" = m.\"movieid\"\nWHERE u.\"u_gender\" = 'M'\n  AND m.\"country\" = 'France'\n  AND m.\"runningtime\" = 2\n  AND (ub.\"rating\")::numeric < 3",
+    "outcome": "returned 392 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 443,
+    "out_tok": 387
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900033,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"case_number\"\nFROM \"Crime\"\nJOIN \"District\" USING (\"district_no\")\nWHERE \"arrest\" = 'FALSE' AND \"district_name\" = 'Central'",
+    "outcome": "returned 13321 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 675,
+    "out_tok": 166
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"case_number\"\nFROM \"Crime\"\nJOIN \"District\" ON \"Crime\".\"district_no\" = \"District\".\"district_no\"\nWHERE lower(\"arrest\") = 'false' AND \"district_name\" = 'Central'",
+    "outcome": "returned 13321 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 754,
+    "out_tok": 1051
+   },
+   {
+    "round": 3,
+    "sql": "SELECT DISTINCT \"case_number\"\nFROM \"Crime\"\nJOIN \"District\" USING (\"district_no\")\nWHERE \"arrest\" = 'FALSE'\n  AND TRIM(\"district_name\") = 'Central'",
+    "outcome": "returned 13321 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 824,
+    "out_tok": 1369
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900043,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"community_area_name\" FROM \"Community_Area\" ORDER BY \"population\" ASC LIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 663,
+    "out_tok": 22
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900065,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"Airlines\" WHERE \"ORIGIN\" = 'DFW' AND \"DEST\" = 'SNA' AND \"DEP_DELAY\" = 0",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 511,
+    "out_tok": 117
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900001,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"Business\".*\nFROM \"Business\"\nWHERE EXISTS (\n    SELECT 1\n    FROM \"Business_Hours\"\n    WHERE \"Business_Hours\".\"business_id\" = \"Business\".\"business_id\"\n      AND \"Business_Hours\".\"closing_time\" = '8PM'\n)",
+    "outcome": "returned 1019 rows, expected 1019, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 956,
+    "out_tok": 226
+   },
+   {
+    "round": 2,
+    "sql": "SELECT \"Business\".\"business_id\"\nFROM \"Business\"\nWHERE EXISTS (\n    SELECT 1\n    FROM \"Business_Hours\"\n    WHERE \"Business_Hours\".\"business_id\" = \"Business\".\"business_id\"\n      AND \"Business_Hours\".\"closing_time\" = '8PM'\n)",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1057,
+    "out_tok": 413
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900057,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"FL_DATE\", \"TAIL_NUM\"\nFROM \"Airlines\"\nJOIN \"Air Carriers\" ON \"Airlines\".\"OP_CARRIER_AIRLINE_ID\" = \"Air Carriers\".\"Code\"\nWHERE \"Air Carriers\".\"Description\" = 'Ross Aviation Inc.: GWE'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 521,
+    "out_tok": 258
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900074,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT a.\"OP_CARRIER_FL_NUM\"\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" c ON a.\"OP_CARRIER_AIRLINE_ID\" = c.\"Code\"\nWHERE c.\"Description\" = 'American Airlines Inc.: AA'\nORDER BY a.\"DEP_DELAY\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 506,
+    "out_tok": 70
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900072,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" = 'American Airlines Inc.: AA'\n  AND a.\"FL_DATE\" = '2018/8/1'\n  AND a.\"ACTUAL_ELAPSED_TIME\" < a.\"CRS_ELAPSED_TIME\"",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1378,
+    "out_tok": 416
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900055,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" ILIKE '%Republic Airline%' \n  AND a.\"DEP_DELAY\" > 30",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1334,
+    "out_tok": 367
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900067,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"OP_CARRIER_FL_NUM\"\nFROM \"Airlines\" AS a\nJOIN \"Air Carriers\" AS ac\n  ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nJOIN \"Airports\" AS ap\n  ON a.\"ORIGIN\" = ap.\"Code\"\nWHERE ac.\"Description\" = 'American Airlines Inc.: AA'\n  AND ap.\"Description\" = 'New York, NY: John F. Kennedy International'",
+    "outcome": "returned 71 rows, expected 54, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 546,
+    "out_tok": 468
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT a.\"OP_CARRIER_FL_NUM\"\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac\n  ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nJOIN \"Airports\" ap\n  ON a.\"ORIGIN\" = ap.\"Code\"\nWHERE ac",
+    "outcome": "ERROR: argument of WHERE must be type boolean, not type \"Air Carriers\"",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 683,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 774,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900005,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n    CASE WHEN total = 0 THEN 0 ELSE (high * 100.0) / total END AS percentage\nFROM (\n    SELECT\n        COUNT(*) FILTER (WHERE u.\"user_fans\" = 'High') AS high,\n        COUNT(*) AS total\n    FROM \"Elite\" e\n    JOIN \"Years\" y ON e.\"year_id\" = y.\"year_id\"\n    JOIN \"Users\" u ON e.\"user_id\" = u.\"user_id\"\n    WHERE y.\"actual_year\" = 2011\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 1017,
+    "out_tok": 448
+   },
+   {
+    "round": 2,
+    "sql": "SELECT\n  CASE WHEN total = 0 THEN 0 ELSE (high * 100.0) / total END AS percentage\nFROM (\n  SELECT\n    COUNT(DISTINCT e.\"user_id\") FILTER (WHERE u.\"user_fans\" = 'High') AS high,\n    COUNT(DISTINCT e.\"user_id\") AS total\n  FROM \"Elite\" e\n  JOIN \"Years\" y ON e.\"year_id\" = y.\"year_id\"\n  JOIN \"Users\" u ON e.\"user_id\" = u.\"user_id\"\n  WHERE y.\"actual_year\" = 2011\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1174,
+    "out_tok": 422
+   },
+   {
+    "round": 3,
+    "sql": "SELECT\n  CASE WHEN total = 0 THEN 0 ELSE (high_elite * 100.0) / total END AS percentage\nFROM (\n  SELECT\n    COUNT(DISTINCT u.\"user_id\") FILTER (WHERE y.\"actual_year\" = 2011) AS high_elite,\n    COUNT(DISTINCT u.\"user_id\") AS total\n  FROM \"Users\" u\n  LEFT JOIN \"Elite\" e ON u.\"user_id\" = e.\"user_id\"\n  LEFT JOIN \"Years\" y ON e.\"year_id\" = y.\"year_id\"\n  WHERE u.\"user_fans\" = 'High'\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 1325,
+    "out_tok": 1140
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900082,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT t1.\"genre\" FROM \"movies2directors\" AS t1 INNER JOIN \"directors\" AS t2 ON t1.\"directorid\" = t2.\"directorid\" WHERE t2.\"avg_revenue\" = (SELECT MAX(\"avg_revenue\") FROM \"directors\")",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "cached": false,
+    "in_tok": 388,
+    "out_tok": 62
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900004,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT e.\"user_id\", uc.\"number_of_compliments\"\nFROM \"Elite\" e\nJOIN \"Users_Compliments\" uc ON e.\"user_id\" = uc.\"user_id\"\nJOIN \"Compliments\" c ON uc.\"compliment_id\" = c.\"compliment_id\"\nWHERE c.\"compliment_type\" = 'photos'\n  AND e.\"user_id\" IN (\n    SELECT \"user_id\"\n    FROM \"Elite\"\n    WHERE \"year_id\" BETWEEN 2005 AND 2014\n    GROUP BY \"user_id\"\n    HAVING COUNT(DISTINCT \"year_id\") = 10\n  )",
+    "outcome": "returned 60 rows, expected 11315, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 1052,
+    "out_tok": 145
+   },
+   {
+    "round": 2,
+    "sql": "SELECT e.\"user_id\", uc.\"number_of_compliments\"\nFROM \"Elite\" e\nJOIN \"Users_Compliments\" uc ON e.\"user_id\" = uc.\"user_id\"\nJOIN \"Compliments\" c ON uc.\"compliment_id\" = c.\"compliment_id\"\nWHERE c.\"compliment_type\" = 'photos'\n  AND e.\"user_id\" IN (\n    SELECT \"user_id\"\n    FROM \"Elite\"\n    WHERE \"year_id\" BETWEEN 2005 AND 2014\n    GROUP BY \"user_id\"\n    HAVING COUNT(DISTINCT \"year_id\") = 10\n  )",
+    "outcome": "returned 60 rows, expected 11315, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1247,
+    "out_tok": 145
+   },
+   {
+    "round": 3,
+    "sql": "SELECT e.\"user_id\", uc.\"number_of_compliments\"\nFROM \"Elite\" e\nJOIN \"Users_Compliments\" uc ON e.\"user_id\" = uc.\"user_id\"\nJOIN \"Compliments\" c ON uc.\"compliment_id\" = c.\"compliment_id\"\nWHERE c.\"compliment_type\" = 'photos'\n  AND e.\"user_id\" IN (\n    SELECT \"user_id\"\n    FROM \"Elite\"\n    WHERE \"year_id\" BETWEEN 2005 AND 2014\n    GROUP BY \"user_id\"\n    HAVING COUNT(DISTINCT \"year_id\") = 10\n  )",
+    "outcome": "returned 60 rows, expected 11315, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1420,
+    "out_tok": 145
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900032,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(\"Ward\".\"Population\")\nFROM \"Ward\"\nJOIN \"Neighborhood\" ON \"Ward\".\"ward_no\" = \"Neighborhood\".\"community_area_no\"\nWHERE \"Neighborhood\".\"neighborhood_name\" IN ('Avondale Gardens', 'Irving Park', 'Kilbourn Park', 'Merchant Park', 'Old Irving Park', 'The Villa')",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 715,
+    "out_tok": 80
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900030,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT d.\"district_name\"\nFROM \"chicago_crime\".\"Crime\" c\nJOIN \"chicago_crime\".\"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"case_number\" = 'JB106545'",
+    "outcome": "returned 1 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 679,
+    "out_tok": 58
+   },
+   {
+    "round": 2,
+    "sql": "SELECT d.\"district_name\"\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"case_number\" = 'JB106545'",
+    "outcome": "returned 1 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 782,
+    "out_tok": 48
+   },
+   {
+    "round": 3,
+    "sql": "SELECT d.\"district_name\"\nFROM \"Crime\" c\nJOIN \"District\" d ON c.\"district_no\" = d.\"district_no\"\nWHERE c.\"case_number\" = 'JB106545'\nORDER BY d.\"district_name\"\nLIMIT 3",
+    "outcome": "returned 1 rows, expected 3, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 853,
+    "out_tok": 60
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900075,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(DISTINCT d.\"directorid\") AS \"count\", d.\"directorid\"\nFROM \"directors\" d\nWHERE d.\"avg_revenue\" = 2\n  AND d.\"d_quality\" = 3\n  AND NOT EXISTS (\n    SELECT 1\n    FROM \"movies2directors\" md\n    WHERE md.\"directorid\" = d.\"directorid\"\n      AND md.\"genre\" = 'Comedy'\n  )\nGROUP BY d.\"directorid\"",
+    "outcome": "returned 77 rows, expected 93, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": true,
+    "in_tok": 401,
+    "out_tok": 107
+   },
+   {
+    "round": 2,
+    "sql": "SELECT COUNT(DISTINCT d.\"directorid\") AS \"count\", d.\"directorid\"\nFROM \"directors\" d\nWHERE d.\"avg_revenue\" = 2\n  AND d.\"d_quality\" = 3\n  AND NOT EXISTS (\n    SELECT 1\n    FROM \"movies2directors\" md\n    WHERE md.\"directorid\" = d.\"directorid\"\n      AND md.\"genre\" = 'Comedy'\n  )\nGROUP BY d.\"directorid\"\nORDER BY d.\"directorid\"",
+    "outcome": "returned 77 rows, expected 93, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 555,
+    "out_tok": 115
+   },
+   {
+    "round": 3,
+    "sql": "SELECT COUNT(DISTINCT d.\"directorid\") AS \"count\", d.\"directorid\"\nFROM \"directors\" d\nWHERE d.\"avg_revenue\" = 2\n  AND d.\"d_quality\" = 3\n  AND NOT EXISTS (\n    SELECT 1\n    FROM \"movies2directors\" md\n    WHERE md.\"directorid\" = d.\"directorid\"\n      AND md.\"genre\" = 'Comedy'\n  )\nGROUP BY d.\"directorid\"\nORDER BY d.\"directorid\"",
+    "outcome": "returned 77 rows, expected 93, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 695,
+    "out_tok": 115
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900022,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"Business\" WHERE \"active\" = 'true' AND \"city\" = 'Mesa'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1005,
+    "out_tok": 25
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900085,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT m.\"movieid\"\nFROM \"movies\" m\nJOIN \"u2base\" u ON m.\"movieid\" = u.\"movieid\"\nWHERE m.\"country\" = 'USA'\n  AND m.\"isEnglish\" = 'F'\nORDER BY u.\"rating\" ASC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 416,
+    "out_tok": 68
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900092,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT a.\"actorid\", d.\"directorid\"\nFROM \"movielens\".\"movies2actors\" ma\nJOIN \"movielens\".\"movies2directors\" md ON ma.\"movieid\" = md.\"movieid\"\nJOIN \"movielens\".\"actors\" a ON ma.\"actorid\" = a.\"actorid\"\nJOIN \"movielens\".\"directors\" d ON md.\"directorid\" = d.\"directorid\"\nWHERE md.\"genre\" = 'Action'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 388,
+    "out_tok": 104
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900006,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"business_id\", \"user_id\" FROM \"Reviews\" WHERE \"review_votes_cool\" = 'Uber'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 1011,
+    "out_tok": 25
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900081,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"genre\"\nFROM \"movies2directors\"\nGROUP BY \"genre\"\nORDER BY COUNT(DISTINCT \"movieid\") DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 1152,
+    "out_tok": 300
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900094,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT u.\"userid\", u.\"age\"\nFROM \"movielens\".\"u2base\" r\nJOIN \"movielens\".\"users\" u ON r.\"userid\" = u.\"userid\"\nWHERE r.\"movieid\" = 2409051\n  AND r.\"rating\" = '2'",
+    "outcome": "returned 3 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 401,
+    "out_tok": 69
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900034,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"ward_no\" FROM \"Ward\" ORDER BY \"Population\" DESC LIMIT 1",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 662,
+    "out_tok": 20
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900073,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"ORIGIN\"\nFROM \"Airlines\"\nWHERE \"FL_DATE\" = '2018/8/1'\n  AND \"DEP_DELAY\" > 0",
+    "outcome": "returned 294 rows, expected 294, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 522,
+    "out_tok": 215
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"ORIGIN\"\nFROM \"Airlines\"\nWHERE \"FL_DATE\" = '2018/08/01'\n  AND \"DEP_DELAY\" > 0",
+    "outcome": "returned 0 rows (expected 294)",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 599,
+    "out_tok": 452
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 653,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900042,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"title\", \"description\"\nFROM \"FBI_Code\"\nWHERE \"crime_against\" = 'Persons'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 664,
+    "out_tok": 136
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900054,
+  "db": "airline",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"TAIL_NUM\"\nFROM \"Airlines\" a\nJOIN \"Air Carriers\" ac\n  ON a.\"OP_CARRIER_AIRLINE_ID\" = ac.\"Code\"\nWHERE ac.\"Description\" = 'Asap Air Inc.: ASP'\nORDER BY a.\"DEP_DELAY\" DESC\nLIMIT 1",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 531,
+    "out_tok": 204
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900088,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "WITH uk_actors AS (\n  SELECT DISTINCT \"movies2actors\".\"actorid\"\n  FROM \"movies2actors\"\n  JOIN \"movies\" ON \"movies2actors\".\"movieid\" = \"movies\".\"movieid\"\n  WHERE \"movies\".\"country\" = 'UK'\n),\nuk_actor_rated AS (\n  SELECT DISTINCT \"movies2actors\".\"actorid\"\n  FROM \"movies2actors\"\n  JOIN \"movies\" ON \"movies2actors\".\"movieid\" = \"movies\".\"movieid\"\n  JOIN \"u2base\" ON \"u2base\".\"movieid\" = \"movies\".\"movieid\"\n  WHERE \"movies\".\"country\" = 'UK' AND CAST(\"u2base\".\"rating\" AS numeric) >= 3\n)\nSELECT\n  CASE WHEN total = 0 THEN 0\n       ELSE round(100.0 * rated / total, 2)\n  END AS percentage\nFROM (\n  SELECT (SELECT COUNT(*) FROM uk_actors) AS total,\n         (SELECT COUNT(*) FROM uk_actor_rated) AS rated\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": true,
+    "in_tok": 431,
+    "out_tok": 930
+   },
+   {
+    "round": 2,
+    "sql": "WITH uk_actors AS (\n  SELECT DISTINCT \"movies2actors\".\"actorid\"\n  FROM \"movies2actors\"\n  JOIN \"movies\" ON \"movies2actors\".\"movieid\" = \"movies\".\"movieid\"\n  WHERE \"movies\".\"country\" = 'UK'\n),\nrated_actors AS (\n  SELECT DISTINCT \"ma\".\"actorid\"\n  FROM \"movies2actors\" \"ma\"\n  JOIN \"u2base\" ON \"u2base\".\"movieid\" = \"ma\".\"movieid\"\n  WHERE CAST(\"u2base\".\"rating\" AS numeric) >= 3\n    AND \"ma\".\"actorid\" IN (SELECT \"actorid\" FROM uk_actors)\n)\nSELECT CASE WHEN total = 0 THEN 0\n            ELSE round(100.0 * rated / total, 2)\n       END AS percentage\nFROM (\n  SELECT (SELECT COUNT(*) FROM uk_actors) AS total,\n         (SELECT COUNT(*) FROM rated_actors) AS rated\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 692,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "WITH uk_actors AS (\n  SELECT DISTINCT ma.\"actorid\"\n  FROM \"movies2actors\" ma\n  JOIN \"movies\" m ON ma.\"movieid\" = m.\"movieid\"\n  WHERE m.\"country\" = 'UK'\n),\nuk_rated_actors AS (\n  SELECT DISTINCT ma.\"actorid\"\n  FROM \"movies2actors\" ma\n  JOIN \"movies\" m ON ma.\"movieid\" = m.\"movieid\"\n  JOIN \"u2base\" ub ON ub.\"movieid\" = m.\"movieid\"\n  WHERE m.\"country\" = 'UK'\n    AND (ub.\"rating\")::numeric >= 3\n)\nSELECT CASE WHEN total = 0 THEN 0\n            ELSE round(100.0 * rated / total, 2)\n       END AS percentage\nFROM (\n  SELECT (SELECT COUNT(*) FROM uk_actors) AS total,\n         (SELECT COUNT(*) FROM uk_rated_actors) AS rated\n) sub",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 919,
+    "out_tok": 931
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900000,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) FROM \"Business\" WHERE \"review_count\" = 'High'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 951,
+    "out_tok": 75
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900097,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"ma\".\"actorid\", \"md\".\"genre\"\nFROM \"movielens\".\"movies2directors\" AS \"md\"\nJOIN \"movielens\".\"movies2actors\" AS \"ma\" ON \"md\".\"movieid\" = \"ma\".\"movieid\"\nWHERE \"md\".\"directorid\" = 22397",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 402,
+    "out_tok": 75
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900079,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT \"m\".\"movieid\"\nFROM \"movies\" AS \"m\"\nJOIN \"movies2directors\" AS \"md\" ON \"m\".\"movieid\" = \"md\".\"movieid\"\nWHERE \"m\".\"isEnglish\" = 'F'\n  AND \"m\".\"country\" = 'UK'\n  AND \"md\".\"genre\" = 'Adventure'\nLIMIT 5",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "cached": false,
+    "in_tok": 405,
+    "out_tok": 84
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900015,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT \"Business\".\"city\"\nFROM \"Business\"\nJOIN \"Reviews\" ON \"Business\".\"business_id\" = \"Reviews\".\"business_id\"\nJOIN \"Elite\" ON \"Reviews\".\"user_id\" = \"Elite\".\"user_id\"\nWHERE \"Reviews\".\"review_stars\" = 5",
+    "outcome": "returned 51 rows, expected 38, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": true,
+    "in_tok": 2232,
+    "out_tok": 367
+   },
+   {
+    "round": 2,
+    "sql": "SELECT DISTINCT \"Business\".\"city\"\nFROM \"Business\"\nWHERE \"Business\".\"stars\" = 5",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "groq/compound-mini",
+    "cached": false,
+    "in_tok": 2434,
+    "out_tok": 994
+   }
+  ],
+  "n_rounds": 2,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900021,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT\n    b.\"business_id\",\n    d.\"day_of_week\"\nFROM\n    \"Business\" b\nJOIN\n    \"Business_Hours\" bh\n    ON b.\"business_id\" = bh.\"business_id\"\nJOIN\n    \"Days\" d\n    ON bh.\"day_id\" = d.\"day_id\"\nWHERE\n    b.\"active\" = 'true'\n    AND b.\"city\" = 'Black Canyon City'\n    AND bh.\"opening_time\" IS NOT NULL\n    AND bh.\"opening_time\" <> ''",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 975,
+    "out_tok": 612
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ },
+ {
+  "qid": 900044,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT COUNT(*) \nFROM \"Crime\" c\nJOIN \"IUCR\" i ON c.\"iucr_no\" = i.\"iucr_no\"\nWHERE i.\"index_code\" = 'I'\n  AND c.\"latitude\" = '41.64820151'\n  AND c.\"longitude\" = '-87.54430496'",
+    "outcome": "returned 1 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 678,
+    "out_tok": 225
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900007,
+  "db": "public_review_platform",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT SUM(\"likes\") AS total_likes\nFROM \"Tips\"\nJOIN \"Business\" ON \"Tips\".\"business_id\" = \"Business\".\"business_id\"\nWHERE \"Business\".\"city\" = 'Goodyear'\n  AND \"Tips\".\"tip_length\" = 'Short'",
+    "outcome": "returned 1 rows, expected 1, values differ",
+    "ok": false,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": true,
+    "in_tok": 958,
+    "out_tok": 211
+   },
+   {
+    "round": 2,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1056,
+    "out_tok": 1500
+   },
+   {
+    "round": 3,
+    "sql": "",
+    "outcome": "ERROR: can't execute an empty query",
+    "ok": false,
+    "truncated": true,
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "cached": false,
+    "in_tok": 1075,
+    "out_tok": 1500
+   }
+  ],
+  "n_rounds": 3,
+  "final_ok": false,
+  "incomplete": false
+ },
+ {
+  "qid": 900095,
+  "db": "movielens",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT DISTINCT m.\"movieid\"\nFROM \"movies2directors\" md\nJOIN \"movies\" m ON m.\"movieid\" = md.\"movieid\"\nJOIN \"u2base\" ub ON ub.\"movieid\" = m.\"movieid\"\nWHERE md.\"genre\" = 'horror' AND ub.\"rating\" = '1'",
+    "outcome": "returned 0 rows (gold unavailable)",
+    "ok": null,
+    "truncated": false,
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "cached": false,
+    "in_tok": 414,
+    "out_tok": 328
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": null,
+  "incomplete": false
+ },
+ {
+  "qid": 900036,
+  "db": "chicago_crime",
+  "difficulty": "train",
+  "rounds": [
+   {
+    "round": 1,
+    "sql": "SELECT count(*) FROM \"Crime\" WHERE \"date\" LIKE '1/1/2018%'",
+    "outcome": "correct",
+    "ok": true,
+    "truncated": false,
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "cached": false,
+    "in_tok": 703,
+    "out_tok": 22
+   }
+  ],
+  "n_rounds": 1,
+  "final_ok": true,
+  "incomplete": false
+ }
+]
