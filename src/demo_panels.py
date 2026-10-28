@@ -14,7 +14,8 @@ import argparse, io, json, os, sys, importlib.util
 from types import SimpleNamespace
 import numpy as np
 
-D = os.path.dirname(os.path.abspath(__file__))
+SRC = os.path.dirname(os.path.abspath(__file__))
+from paths import DATA as D
 TRACE = {"bal_test": "test_trace.json", "test2": "test2_trace.json"}
 RUNGS = [2, 4, 6, 8, 11, 13, 16]
 MAX_K0 = 0.30          # 护栏 (i), 与 phoebe_predictor.MAX_EXP_CORRECTION 一致
@@ -23,7 +24,7 @@ MAX_FAIL = 0.20        # 护栏 (iii)
 
 
 def _imp(n):
-    sp = importlib.util.spec_from_file_location(n, os.path.join(D, n + ".py"))
+    sp = importlib.util.spec_from_file_location(n, os.path.join(SRC, n + ".py"))
     m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m); return m
 
 

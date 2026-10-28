@@ -344,7 +344,7 @@ class LLMPool:
                 want.append(spec)
             else:
                 got = [k for k in FREE_TIER if k.split(":", 1)[0] == spec]
-                want += got or [f"{spec}:{FREE_TIER.get(spec, (''))[0]}"]
+                want += got or [f"{spec}:{FREE_TIER.get(spec, ('',))[0]}"]
         for spec in want:
             prov, _, mdl = spec.partition(":")
             if prov not in PROVIDERS:
@@ -426,7 +426,7 @@ class LLMPool:
         if pin is not None:
             idx = next((i for i, k in enumerate(self.keys) if k == pin), None)
             if idx is None:
-                raise RuntimeError(f"归属 provider {pin} 不在池里(缺 key?): {self.names}")
+                raise RuntimeError(f"归属 provider {pin} 不在池里(缺 key?): {self.names()}")
             c = self.clients[idx]
             hit = c.cache.get(ResponseCache.key(c.provider, c.model, system, prompt))
             if hit:
@@ -436,7 +436,7 @@ class LLMPool:
                 return r
             if self.cache_only or self.cool_until[idx] > time.time():
                 raise QuotaExhausted(
-                    f"{pin} 配额耗尽/冷却中, 不换人顶上 —— 这道题留到它恢复再采")
+                    f"{pin} 配额耗尽/冷却中, **不换人顶上** —— 这道题留到它恢复再采")
             try:
                 r = c.complete(system, prompt)
                 self.n_call[idx] += 1
@@ -445,7 +445,7 @@ class LLMPool:
             except QuotaExhausted:
                 self.cool_until[idx] = time.time() + self.TPD_COOLDOWN
                 sys.stderr.write(f"[pool] {pin} 撞日配额, 冷却 "
-                                 f"{self.TPD_COOLDOWN/60:.0f} 分钟 [{self.status}]\n")
+                                 f"{self.TPD_COOLDOWN/60:.0f} 分钟 [{self.status()}]\n")
                 sys.stderr.flush()
                 raise
         # 1) 无 pin: 先扫全部 client 的缓存 —— 哪个 provider 答过都算答过
@@ -465,7 +465,7 @@ class LLMPool:
         if not live:
             wait = min(self.cool_until) - now
             raise RuntimeError(f"QUOTA_EXHAUSTED: 全部 {len(self.clients)} 个 provider 都在冷却, "
-                               f"最早 {wait/60:.0f} 分钟后可用 [{self.status}]")
+                               f"最早 {wait/60:.0f} 分钟后可用 [{self.status()}]")
         last = None
         for i in live:
             c = self.clients[i]
@@ -482,7 +482,7 @@ class LLMPool:
                     self.cool_until[i] = time.time() + self.TPD_COOLDOWN
                     sys.stderr.write(f"[pool] {c.provider} 撞日配额, 冷却 "
                                      f"{self.TPD_COOLDOWN/60:.0f} 分钟, 换下一个 "
-                                     f"[{self.status}]\n")
+                                     f"[{self.status()}]\n")
                     sys.stderr.flush()
                     continue
                 raise

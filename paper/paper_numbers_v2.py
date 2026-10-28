@@ -12,6 +12,10 @@
         (prereg_unify.json)。check_prod_v2.py 证实本口径 = 工具实际输出(189/224)。
   达标  |实测墙钟 − 目标| ≤ 15%, 双向
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src"))
+from paths import DATA, RESULTS
+
 import json, glob, os, re, math, collections, statistics as st
 import numpy as np
 from phoebe_predictor import PhoebePredictor, effective_cores
@@ -19,11 +23,11 @@ from sql_model2 import SQLPredictor
 import eval_parts, eval_testv2, score_rc
 import importlib.util, io, sys
 from types import SimpleNamespace
-_sp = importlib.util.spec_from_file_location("phoebe_cli", os.path.join(os.path.dirname(os.path.abspath(__file__)), "phoebe_cli.py"))
+_sp = importlib.util.spec_from_file_location("phoebe_cli", os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src", "phoebe_cli.py"))
 cli = importlib.util.module_from_spec(_sp); _sp.loader.exec_module(cli)
 WLF = {"test": "bal_test", "test2": "test2"}
 
-D = os.path.dirname(os.path.abspath(__file__))
+D = DATA
 TOL = 0.15
 ANC = ((16, 2, 224), (8, 2, 8))
 OUT = collections.OrderedDict()
@@ -255,5 +259,5 @@ if __name__ == "__main__":
     put("model.params.nonsql", 6, "log ns = 二次曲面 in (log N, log C)")
     put("model.params.calib_per_component", 2, "每个分量 κ0·log N + κ1")
 
-    json.dump(OUT, open(f"{D}/paper_numbers_v2.json", "w"), ensure_ascii=False, indent=1)
+    json.dump(OUT, open(f"{RESULTS}/paper_numbers_v2.json", "w"), ensure_ascii=False, indent=1)
     print(f"\n写入 paper_numbers_v2.json ({len(OUT)} 项)")

@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-R = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "rev1_numbers.json")))["dilation"]
+R = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "rev1_numbers.json")))["dilation"]
 COMP = [("sql", "analytical SQL", "#2a78d6"),
         ("tp_txn", "write-back", "#1baf7a"),
         ("vec_value", "business-data search", "#eda100"),

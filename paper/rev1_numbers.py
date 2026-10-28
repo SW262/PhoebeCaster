@@ -5,12 +5,16 @@
   sla     另一种规则(探索性, 看过 84.4% 之后才算): 选"预测 ≤ T 的最少核数"; 实测 ≤ T 才算达标
   wall    db_time -> 墙钟换算本身的误差: 用实测 db_time 换算, 与实测墙钟比
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src"))
+from paths import DATA, RESULTS
+
 import json, os, glob, re, statistics as st, collections
 import eval_testv2, badpoints
 from advise import to_wall
 from phoebe_predictor import effective_cores
-D = os.path.dirname(os.path.abspath(__file__)); TOL = 0.15
-T = json.load(open(f"{D}/demo_failmap.json"))["targets"]; assert len(T) == 224
+D = DATA; TOL = 0.15
+T = json.load(open(f"{RESULTS}/demo_failmap.json"))["targets"]; assert len(T) == 224
 R = {}
 fe = [t for t in T if t["feasible"]]; inf = [t for t in T if not t["feasible"]]
 R["split"] = dict(feasible=len(fe), feasible_ok=sum(t["ok"] for t in fe),
@@ -96,4 +100,4 @@ exe = [r for r in rows if r.get("error") is None and r.get("ms") is not None]
 exc = [r for r in rows if r["excluded"]]
 R["screen"] = dict(executable=len(exe), median_ms=st.median(r["ms"] for r in exe),
                    excluded=[dict(qid=r["qid"], db=r["db"], round=r["round"], ms=r["ms"]) for r in exc])
-json.dump(R, open(f"{D}/rev1_numbers.json", "w"), indent=1); print(json.dumps(R, indent=1))
+json.dump(R, open(f"{RESULTS}/rev1_numbers.json", "w"), indent=1); print(json.dumps(R, indent=1))

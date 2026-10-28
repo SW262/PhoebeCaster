@@ -3,18 +3,19 @@
 import json,os,glob,re,collections,importlib.util
 import numpy as np
 D=os.path.abspath(os.path.dirname(__file__))
+from paths import DATA
 def imp(n):
     s=importlib.util.spec_from_file_location(n,os.path.join(D,n+".py")); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 pp=imp("phoebe_predictor")
 import badpoints
-meta=[w for w in json.load(open(f"{D}/pdb_meta.json")) if w not in badpoints.EXCLUDED_LIBS]
-lab=[x for x in json.load(open(f"{D}/train_label_noise.json")) if x.get("median",0)>0]
+meta=[w for w in json.load(open(f"{DATA}/pdb_meta.json")) if w not in badpoints.EXCLUDED_LIBS]
+lab=[x for x in json.load(open(f"{DATA}/train_label_noise.json")) if x.get("median",0)>0]
 _c=collections.defaultdict(list)
 for x in lab: _c[int(x["qid"])].append(x["median"])
 qc={q:float(np.mean(v)) for q,v in _c.items()}
 def grid(w):
     P={}
-    for p in glob.glob(f"{D}/{w}_grid/s*/point.json"):
+    for p in glob.glob(f"{DATA}/{w}_grid/s*/point.json"):
         m=re.match(r"s(\d+)_l4_t(\d)_a(\d+)_b0.2$",os.path.basename(os.path.dirname(p)))
         if not m: continue
         d=json.load(open(p)); bk=d.get("db_time_breakdown_s") or {}
@@ -47,7 +48,7 @@ def build(mode):
     """按该 mode 重建 11 个库的训练行"""
     out=[]
     for w in meta:
-        ids=[q["question_id"] for q in json.load(open(f"{D}/{w}_questions.json"))]
+        ids=[q["question_id"] for q in json.load(open(f"{DATA}/questions/{w}_questions.json"))]
         cost=np.array([qc[q] for q in ids if q in qc])
         pts=[]
         for (s,th,a),d in G[w].items():
@@ -55,7 +56,7 @@ def build(mode):
             pts.append(dict(C=eff(s,th,a,mode),ag=a,sql=bk.get("sql",0),
                             ns=bk.get("vec_mem",0)+bk.get("vec_value",0)+bk.get("tp_txn",0),
                             **{f"q{p_}":d.get(f"sql_exec_p{p_}_ms") for p_ in pp.QP}))
-        out.append(dict(cost=cost,steps=json.load(open(f"{D}/pdb_meta.json"))[w]["steps"],points=pts))
+        out.append(dict(cost=cost,steps=json.load(open(f"{DATA}/pdb_meta.json"))[w]["steps"],points=pts))
     return out
 print(f"训练库 HT 增益: "+"  ".join(f"ag{a}={TAB[a]:.3f}" for a in ks)+f"   总体中位 {ALLMED:.3f}")
 print(f"H3 线性拟合: gain = {LIN[0]:+.4f}·log(ag) {LIN[1]:+.4f}\n")
@@ -86,4 +87,4 @@ for mode in ("H0","H1","H2","H3"):
             e.append(abs(v-d["db_time_s"])/d["db_time_s"])
     e=np.array(e)
     print(f"{mode:<4s} {len(e):5d} {100*np.median(e):7.1f}% {100*np.percentile(e,90):6.1f}%")
-json.dump({"table":TAB,"all_median":ALLMED,"lin":list(LIN)},open("ht_gain_fit.json","w"))
+json.dump({"table":TAB,"all_median":ALLMED,"lin":list(LIN)},open(f"{DATA}/ht_gain_fit.json","w"))

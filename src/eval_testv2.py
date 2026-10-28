@@ -15,13 +15,14 @@ from phoebe_predictor import PhoebePredictor, effective_cores
 from sql_model2 import SQLPredictor
 import eval_parts, eval_old, score_rc
 TOL = 0.15; KS = score_rc.KS; AGS = [8, 16, 32, 64, 96, 128, 224]
-LAB = {"test": "test_label_noise.json", "test2": "test2_label_noise.json"}
+from paths import DATA
+LAB = {"test": f"{DATA}/test_label_noise.json", "test2": f"{DATA}/test2_label_noise.json"}
 
 
 def build(wl):
     cost = np.array([x["median"] for x in json.load(open(LAB[wl])) if x.get("median", 0) > 0])
     pts = {}; steps = None
-    for p in glob.glob(f"testv2/{wl}/s*/point.json"):
+    for p in glob.glob(f"{DATA}/testv2/{wl}/s*/point.json"):
         m = re.match(r"s(\d+)_l4_t(\d)_a(\d+)_b0$", os.path.basename(os.path.dirname(p)))
         if not m: continue
         d = json.load(open(p)); bk = d.get("db_time_breakdown_s") or {}

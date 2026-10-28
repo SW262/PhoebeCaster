@@ -25,7 +25,7 @@ for q in T:
             conn.rollback(); nerr+=1; continue
         ts=sorted(ts[1:])                      # 丢第一次(冷), 后 5 遍取中位
         out[key]=round(ts[len(ts)//2],3); nq+=1
-print(f"{wl}: {nq} 条 SQL 测完, {nerr} 条失败, 耗时 {time.time-t0:.1f}s")
+print(f"{wl}: {nq} 条 SQL 测完, {nerr} 条失败, 耗时 {time.time()-t0:.1f}s")
 # 每题汇总(多轮取各轮之和/中位均可, 这里保留逐轮, 另给每题中位)
 byq={}
 for k,v in out.items():

@@ -112,7 +112,7 @@ def guards():
             partial += sum(1 for ln in open(a) if "\tPARTIAL\t" in ln)
     # 数隔离目录里的 point.json, 不数 LIST.tsv 的行 —— 后者带表头, 会多算一个
     import glob as _g
-    quarantined = len(_g.glob(os.path.join(BASE, "rc3_bad", "", "point.json"), recursive=True))
+    quarantined = len(_g.glob(os.path.join(BASE, "rc3_bad", "**", "point.json"), recursive=True))
     return dict(
         clog_truncations=trunc, clog_last=last_trunc, partial_caught=partial,
         quarantined=quarantined,
@@ -148,7 +148,7 @@ _EN = [("本次=", "this run="), ("偏离基准", "vs baseline"), ("累计(最�
        ("!! 硬停A(单次偏离>40%)", "!! hard-stop A (single deviation >40%)"),
        ("!! 硬停B(累计漂移>20%)", "!! hard-stop B (cumulative drift >20%)"),
        ("滚动4/4", "rolling4/4"), ("滚动8/8", "rolling8/8"), ("滚动CV", "rolling CV"), ("预测", "predicted "),
-       (" 警告: 实测CV超预测2倍, 重复次数可能不够", " warning: measured CV >2x predicted, repeats may be insufficient"),
+       ("** 警告: 实测CV超预测2倍, 重复次数可能不够", "** warning: measured CV >2x predicted, repeats may be insufficient"),
        ("gate: 无 canary 记录, 放行", "gate: no canary records, pass")]
 
 

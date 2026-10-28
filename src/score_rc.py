@@ -17,7 +17,8 @@ from phoebe_predictor import PhoebePredictor, effective_cores, QP
 from ns_model2 import NSPredictor
 import eval_parts, eval_old
 
-D = os.path.dirname(os.path.abspath(__file__)); TOL = 0.15
+from paths import DATA as D
+TOL = 0.15
 RM = json.load(open(f"{D}/r_model.json"))
 KS = [0.8, 1, 1.3, 1.8, 2.5, 3.5, 5, 7]
 import phoebe_advisor

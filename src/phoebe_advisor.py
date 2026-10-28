@@ -341,9 +341,9 @@ class PhoebeAdvisor:
                 return dict(ok=False, capped_by_rho=True, useful_cores=cap,
                             reason=(f"{agents} 并发下本工具最多推荐 {cap} 核(ρ={self.MIN_RHO}), "
                                     f"达不到 {target_s:.0f}s。\n"
-                                    f"    ⚠ 这个上限是负载相关的, 不是物理定律: "
+                                    f"    ⚠ 这个上限是**负载相关**的, 不是物理定律(): "
                                     f"在 dev 负载上 ρ<1.2 时加核确实几乎无用(弹性 −0.11), "
-                                    f"但在 4 个陌生库的出族负载上加核一路有用(弹性 −0.54~−1.42) —— "
+                                    f"但在 4 个陌生库的出族负载上加核**一路有用**(弹性 −0.54~−1.42) —— "
                                     f"那里 ag=8 从 7.4 核加到 19.8 核仍把 db_time 从 1768s 降到 1067s(−40%)。\n"
                                     f"    想知道你的负载属于哪种: 在 {cap} 核和 2x{cap} 核各测一个点比一比。"
                                     f"要么提高并发, 要么放宽目标。"))
@@ -355,14 +355,14 @@ class PhoebeAdvisor:
             return dict(ok=False, reason=f"{max_cores} 核也达不到 {target_s:.0f}s(含 {s:.2f}x 余量)")
         pred = self.db_time(need, th, agents)
         err = self.expected_err(agents, self._eff(need, th, agents))
-        note = ((f"选预测值离目标最近的一档(可能略超目标; 训练库实测中位超 +7.9%, 最大 +51%)"
+        note = ((f"选**预测值离目标最近**的一档(可能略超目标; 训练库实测中位超 +7.9%, 最大 +51%)"
                  if nearest else f"按 {s:.2f}x 余量选核") +
                 f"(ρ={agents/self._eff(need, th, agents):.1f} 处预期中位误差 {100*err:.0f}%)")
         # : 上限截断过搜索空间时必须说出来 —— 否则用户拿到一个"看起来正常"的建议,
         #   却不知道更大的机器被悄悄排除了。实测这个截断在出族负载上会少拿 40% 的收益。
         if capped and need >= cap:
             note += (f"\n    ⚠ 搜索上界被 ρ 护栏截断在 {cap} 核(MIN_RHO={self.MIN_RHO}), "
-                     f"更大的机器没有被考虑。\n"
+                     f"更大的机器**没有被考虑**。\n"
                      f"      这个护栏是负载相关的: dev 负载上那里加核几乎无用(弹性 −0.11), "
                      f"但出族负载上仍有 −0.54~−1.42。若你的目标很紧, "
                      f"在 {cap} 核与 {2*cap} 核各测一点再决定。")

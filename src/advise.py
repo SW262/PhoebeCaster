@@ -16,7 +16,9 @@
 """
 import argparse, json, os, sys, io, importlib.util
 from types import SimpleNamespace
-D = os.path.dirname(os.path.abspath(__file__))
+SRC = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SRC)
+from paths import DATA as D
 
 TOL = 0.15          # 与 phoebe_advisor.TOL 一致
 GRID_MIN_CORES = 2  # 训练网格采过的最小物理核数; 低于即外推
@@ -68,7 +70,7 @@ def busy():
         p = os.path.join(D, f)
         if os.path.exists(p):
             try:
-                if os.path.exists(f"/proc/{int(open(p).read.split[0])}"): return f
+                if os.path.exists(f"/proc/{int(open(p).read().split()[0])}"): return f
             except Exception: pass
     return None
 
@@ -85,7 +87,7 @@ def run_measure(wl, todo, agents):
         return
     est = sum(6 if agents <= 8 else 3 if agents <= 16 else 2 for _ in todo)
     print(f"  开始实测 {len(todo)} 个点, 预计 {est} 分钟...\n")
-    subprocess.run([os.path.join(D,"fill_ladder.sh"), q], cwd=D)
+    subprocess.run([os.path.join(SRC,"fill_ladder.sh"), q], cwd=D)
     for n, th in todo:
         y = measured(wl, n, th, agents)
         print(f"  {n} 核 / 超线程{'开' if th==2 else '关'} / {agents} 并发 -> "
@@ -153,7 +155,7 @@ def nearest_cfg(adv, wl, target, agents, th, hi):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("target", type=float, help="客户要求的完成时间上限(秒)")
+    p.add_argument("target", type=float, help="客户要求的**完成时间**上限(秒)")
     p.add_argument("agents", type=int, help="并发 agent 数")
     p.add_argument("--workload", choices=["bal_test","test2"], help="用内置负载(自动带 offline+anchors, 并查实测真值)")
     p.add_argument("--lang", choices=["en","zh"], default=os.environ.get("ADVISE_LANG","en"),
@@ -186,7 +188,7 @@ def main():
         if not a.anchors: a.anchors = os.path.join(D, f"anchors_{a.workload}{_sfx}.json")
     if not os.path.exists(a.offline):
         sys.exit(f"找不到 {a.offline}。先跑 phoebe_cli.py measure-offline,或用 --workload")
-    sp = importlib.util.spec_from_file_location("phoebe_cli", os.path.join(D,"phoebe_cli.py"))
+    sp = importlib.util.spec_from_file_location("phoebe_cli", os.path.join(SRC,"phoebe_cli.py"))
     cli = importlib.util.module_from_spec(sp); sp.loader.exec_module(cli)
     # 2026-10-07: 以前这里把 stderr 整个换成 StringIO 丢弃, 结果三项守卫的告警
     #   全被吞掉 —— 而守卫告警正是往 stderr 打的(phoebe_predictor 的锚点自洽、
@@ -201,7 +203,7 @@ def main():
         sys.stderr = e
     _warns = [ln for ln in buf.getvalue().splitlines() if ln.lstrip().startswith("!!")]
     # 对外一律是完成时间: 内部预测 db_time, 输出前除以 (并发 x r)。
-    _ps = importlib.util.spec_from_file_location("pp", os.path.join(D, "phoebe_predictor.py"))
+    _ps = importlib.util.spec_from_file_location("pp", os.path.join(SRC, "phoebe_predictor.py"))
     _pp = importlib.util.module_from_spec(_ps); _ps.loader.exec_module(_pp)
     _dbt = adv.db_time
     adv.db_time = (lambda srv, th, agents, _f=_dbt, _m=_pp:
@@ -286,7 +288,7 @@ def main():
                                                   for o in r["options"]],
                                          kind=_kind, nearest=_near, cap=_cap if _cap < a.max_cores else None))
             else:
-                print(f"  {lab:<6s} {('n/a' if EN else '达不到'):>7s}   {r['reason'].splitlines[0][:60]}")
+                print(f"  {lab:<6s} {('n/a' if EN else '达不到'):>7s}   {r['reason'].splitlines()[0][:60]}")
                 JOUT["rows"].append(dict(ht=("on" if th==2 else "off"), ok=False,
                                          reason=r["reason"].splitlines()[0][:200], options=[],
                                          kind=_kind, nearest=_near, cap=_cap if _cap < a.max_cores else None))

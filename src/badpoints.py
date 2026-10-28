@@ -17,7 +17,8 @@ sql_errors 不能当判据: 它是 BIRD gold SQL 本身跑不过的条数, 每�
 """
 import json, glob, collections, os, re
 
-RC3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rc3")
+from paths import DATA
+RC3 = os.path.join(DATA, "rc3")
 
 # 整个剔除的训练负载(2026-10-28)。pdb_european_football_2: qid 1127 的第 1 轮 LLM SQL 已被
 # sql_screen.json 判为慢查询排除(结果也是错的), 但该题其余轮次都是截断, 轨迹为空, workload.py

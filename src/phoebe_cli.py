@@ -67,10 +67,10 @@ def cmd_measure_offline(a):
             continue
         out.append(float(np.median(ts[1:] or ts)))       # 丢第一次(冷启动)
         if (i + 1) % 200 == 0:
-            print(f"  {i+1}/{len(sqls)}  {time.time-t0:.0f}s", file=sys.stderr)
+            print(f"  {i+1}/{len(sqls)}  {time.time()-t0:.0f}s", file=sys.stderr)
     json.dump(dict(cost_ms=out, n_sql=len(sqls), failed=bad,
                    steps_hint=a.steps), open(a.out, "w"))
-    print(f"写出 {a.out}: {len(out)} 条成功 / {bad} 条失败, 用时 {time.time-t0:.0f}s", file=sys.stderr)
+    print(f"写出 {a.out}: {len(out)} 条成功 / {bad} 条失败, 用时 {time.time()-t0:.0f}s", file=sys.stderr)
     if not out:
         sys.exit("!! 全部失败, 无法继续")
     print(f"  离线总量 B = {np.mean(out)*a.steps/1000:.1f}s (按 {a.steps} 步)", file=sys.stderr)
@@ -103,6 +103,8 @@ def _en():
 def _load(a):
     import importlib.util, os
     d = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, d)
+    from paths import DATA as _DATA
     def imp(n):
         sp = importlib.util.spec_from_file_location(n, os.path.join(d, n + ".py"))
         m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m); return m
@@ -124,7 +126,7 @@ def _load(a):
     elif _V == "v1m3":      # 老网格训练集 + 模型3 —— 对照用
         WLS = pp.load_repo_workloads(os.path.join(d)); _Cls = imp("sql_model2").SQLPredictor
     else:
-        _tv = json.load(open(os.path.join(d, "train_set_v2.json")))
+        _tv = json.load(open(os.path.join(_DATA, "train_set_v2.json")))
         WLS = [dict(cost=np.array(w["cost"], float), steps=w["steps"], points=w["points"])
                for w in _tv["workloads"]]
         _Cls = imp("sql_model2").SQLPredictor
@@ -133,7 +135,7 @@ def _load(a):
     if _drop:
         import json as _j
         import badpoints as _bp
-        _nm = [w for w in _j.load(open(os.path.join(d, "pdb_meta.json"))) if w not in _bp.EXCLUDED_LIBS]
+        _nm = [w for w in _j.load(open(os.path.join(_DATA, "pdb_meta.json"))) if w not in _bp.EXCLUDED_LIBS]
         _norm = lambda z: z[4:] if z.startswith("pdb_") else z
         _want = _norm(_drop)
         WLS = [x for _i, x in enumerate(WLS) if _norm(_nm[_i]) != _want]
@@ -163,18 +165,18 @@ def _load(a):
             if len(A) == 1 and all(v for v in pctq[0].values()):
                 arows = pp.PhoebePredictor.anchor_as_rows_pct(
                     cost, steps, [(c, a, s, n, pctq[0]) for (c, a, s, n) in ar])
-                print(f"!! 单锚点已启用分位行: p50/p95/p99 = "
+                print(f"!! 单锚点已启用**分位行**(): p50/p95/p99 = "
                       f"{'/'.join(f'{pctq[0][pc]:.0f}ms' for pc in pp.QP)}。\n"
-                      f"   实测中位误差 11.7% -> 8.6%, 最差 45.6% -> 29.5%。", file=sys.stderr)
+                      f"   实测中位误差 11.7% -> **8.6%**, 最差 45.6% -> 29.5%。", file=sys.stderr)
             else:
                 arows = pp.PhoebePredictor.anchor_as_rows(cost, steps, ar)
                 if len(A) == 1:
                     print("!! 提示: 锚点缺 sql_exec_p50/p95/p99_ms, 走原单行路径。"
-                          "带上这三个分位可让单锚点从 11.7% 降到 8.6% —— "
+                          "带上这三个分位可让单锚点从 11.7% 降到 8.6%() —— "
                           "采集脚本本来就产出, 直接填进来即可。", file=sys.stderr)
         else:
             print("!! 提示: 锚点未带分量拆解(sql_s/ns_s 或 breakdown), 退回纯事后修正。\n"
-                  "   带上分量可让 1 锚点从 35.7% 降到 19.5% —— "
+                  "   带上分量可让 1 锚点从 35.7% 降到 19.5%() —— "
                   "采集脚本本来就产出 db_time_breakdown_s, 直接填进来即可。", file=sys.stderr)
         M = _Cls().fit(WLS, anchor_rows=arows)
         ba = M.ba_.copy()
@@ -182,17 +184,17 @@ def _load(a):
         ags = {x["agents"] for x in A}
         if aq is not None:
             if len(A) != 1:
-                print("!! 忽略 --anchor-quantile: 只在恰好 1 个锚点时生效"
+                print("!! 忽略 --anchor-quantile: 只在**恰好 1 个锚点**时生效"
                       "(2 个锚点已能定出指数, 用不着悲观先验)。", file=sys.stderr)
             else:
                 ia = pp.PhoebePredictor.FA.index("ag")
                 ex = pp.workload_ag_exponents(WLS)
                 old_e = ba[ia]; ba[ia] = float(np.quantile(ex, float(aq)))
                 print(f"!! 已启用单锚点悲观指数 q={aq}: ag 指数 {old_e:.3f} -> {ba[ia]:.3f}"
-                      f"(训练负载 {ex.min:.3f}~{ex.max:.3f})。\n"
-                      f"   实测 bal_test: 中位误差 16.1% -> 7.5%, p90 29.2% -> 26.7%, "
-                      f"少用 3.84 个核; 但达标率 95.1% -> 90.2%。\n"
-                      f"   注意这是降误差、减保守度的取舍 —— 若你更怕配置买小了, 不要开。",
+                      f"(训练负载 {ex.min():.3f}~{ex.max():.3f})。\n"
+                      f"   实测 bal_test: 中位误差 16.1% -> **7.5%**, p90 29.2% -> 26.7%, "
+                      f"少用 3.84 个核; 但达标率 95.1% -> 90.2%()。\n"
+                      f"   注意这是**降误差、减保守度**的取舍 —— 若你更怕配置买小了, 不要开。",
                       file=sys.stderr)
         # : 恰好 1 个锚点且带 db_blks_hit 时, 用它反推该负载的并发指数。
         #   单锚点的事后修正只能定常数(k0≡0), 指数一直只能用训练集的全局拟合值(0.759);
@@ -207,13 +209,13 @@ def _load(a):
                 if pe is not None:
                     ba[pp.PhoebePredictor.FA.index("ag")] = pe
                     print(f"!! 已用锚点系统指标反推并发指数: {note}\n"
-                          f"   实测 1 锚点中位误差 11.7%->5.2%(bal_test) / 9.9%->8.9%(test2)。",
+                          f"   实测 1 锚点中位误差 11.7%->**5.2%**(bal_test) / 9.9%->**8.9%**(test2)。",
                           file=sys.stderr)
                 else:
                     print(f"!! 未能从锚点反推并发指数({note}), 用训练集全局值。", file=sys.stderr)
             else:
                 print("!! 提示: 锚点未带 db_blks_hit —— 带上它可让单锚点中位误差从 11.7% 降到 5.2%"
-                      "。采集脚本本来就产出该字段, 直接填进来即可。", file=sys.stderr)
+                      "()。采集脚本本来就产出该字段, 直接填进来即可。", file=sys.stderr)
         # 2026-10-14: 必须与拟合用的类一致, 并拷全部拟合参数(含 v2 的 ba2_/bn2_)。
         #   原来写死 PhoebePredictor 且只拷 ba_/bn_ —— 切 v2 时改进项会被静默丢掉。
         #   注: 单锚点的指数微调只改 ba_, 对 v2 的 SQL 放大项(ba2_)不起作用; 协议是两锚点, 不受影响。
@@ -223,14 +225,14 @@ def _load(a):
             if arows is not None:
                 print("!! 提示: 只有一个并发档 —— 事后修正定不出并发指数(只能定常数), "
                       "但锚点已并进训练集重拟合。\n"
-                      "   出族实测(81 配置,): 单锚点中位 8.6%(带分位行)"
+                      "   出族实测(81 配置, /): 单锚点中位 **8.6%**(带分位行)"
                       " / 11.7%(不带), 最差 29.5% / 45.6%。\n"
-                      "   再加一个不同并发档的锚点 -> 中位 7.1%、±20% 命中 89.9%"
-                      "(已接近两参数修正的天花板 7.5%)。",
+                      "   再加一个**不同并发档**的锚点 -> 中位 7.1%、±20% 命中 89.9%"
+                      "(已接近两参数修正的天花板 7.5%, )。",
                       file=sys.stderr)
             else:
                 print("!! 警告: 锚点并发档相同且未带分量拆解 —— 只能定常数, "
-                      "实测中位误差 35.7%。\n"
+                      "实测中位误差 **35.7%**()。\n"
                       "   两条改进任选其一: 带上分量拆解(→19.5%), 或补一个不同并发档的锚点(→4.9%)。",
                       file=sys.stderr)
         # 负载强度检查(已修正  的错误阈值)。
@@ -253,26 +255,26 @@ def _load(a):
             if rho < 1.0:
                 print(f"!! 警告: 单锚点 ρ={rho:.2f} < 1 —— 这台机器对该并发几乎空载, "
                       f"测不到拥塞。实测最低并发×最大机器(ρ=0.40)中位 63.7%, "
-                      f"而最高并发×最大机器(ρ≈11)只有 15.8%。\n"
-                      f"   修法: 换成最高并发档 + 你能给的最大机器。", file=sys.stderr)
+                      f"而最高并发×最大机器(ρ≈11)只有 15.8%()。\n"
+                      f"   修法: **换成最高并发档 + 你能给的最大机器**。", file=sys.stderr)
         elif rho < 0.5:
             print((f"!! WARNING: the low-concurrency anchor ({lo[1]} agents, {lo[0]:.1f} effective "
                    f"cores) has rho={rho:.2f} < 0.5 -- this machine is nearly idle at that "
                    f"concurrency, amplification ~1, so it witnesses no congestion.\n"
                    f"   Measured error in this regime is 11.7%-24.1%, against 3.4%-6.2% at rho~0.8.\n"
-                   f"   Fix: raise this anchor's concurrency (do not lower the cores) so that "
+                   f"   Fix: **raise this anchor's concurrency** (do not lower the cores) so that "
                    f"rho falls in [0.5, 3].") if _en() else
                   (f"!! 警告: 低并发锚点 (并发 {lo[1]}, 有效核 {lo[0]:.1f}) 的 ρ={rho:.2f} < 0.5 —— "
                    f"这台机器对这个并发几乎是空载, 放大倍数≈1, 测不到拥塞。\n"
                    f"   实测这一档误差 11.7%~24.1%, 而 ρ≈0.8 时是 3.4%~6.2%。\n"
-                   f"   修法: 提高这个锚点的并发(核数不要降), 让 ρ 落进 [0.5, 3]。"),
+                   f"   修法: **提高这个锚点的并发**(核数不要降), 让 ρ 落进 [0.5, 3]。"),
                   file=sys.stderr)
         elif rho > 4.0:
             print((f"!! WARNING: the low-concurrency anchor has rho={rho:.2f} > 4 -- already in "
                    f"saturation, where measured error rises to 13%-21%. Fix: move this anchor to a "
-                   f"larger machine so that rho falls in [0.5, 3].") if _en() else
+                   f"**larger machine** so that rho falls in [0.5, 3].") if _en() else
                   (f"!! 警告: 低并发锚点 ρ={rho:.2f} > 4 —— 已进入饱和区, 实测误差升到 "
-                   f"13%~21%。修法: 把这个锚点挪到更大的机器上, 让 ρ 落进 [0.5, 3]。"),
+                   f"13%~21%。修法: 把这个锚点挪到**更大的机器**上, 让 ρ 落进 [0.5, 3]。"),
                   file=sys.stderr)
         # : 锚点带分量实测时走分量各自标定
         anc4 = [(pp.effective_cores(x["srv"], x.get("th", 2), x["agents"]), x["agents"],
@@ -284,13 +286,13 @@ def _load(a):
     else:
         M = _Cls().fit(WLS)
         m = _Cls(); m.__dict__.update({k: v for k, v in M.__dict__.items() if k.endswith("_")})
-        print("!! 提示: 无锚点 = 零实测。预测误差约 40%(15 个网格外配置的前瞻实测: 中位 39.8%),\n"
-              "   而且偏差方向不可预测 —— 两个陌生负载实测为 −42.1% 与 +18.9%。\n"
+        print("!! 提示: 无锚点 = 零实测。**预测误差约 40%**(15 个网格外配置的前瞻实测: 中位 39.8%),\n"
+              "   而且偏差方向**不可预测** —— 两个陌生负载实测为 −42.1% 与 +18.9%()。\n"
               "   后果: 推荐的机器实测只用掉目标时间的约 66%, 即多买约 1.5 倍。\n"
-              "   补 1 个锚点(最高并发 × 最大机器, 约 81 秒)即可把预测误差降到 10.0%,\n"
+              "   补 1 个锚点(最高并发 × 最大机器, **约 81 秒**)即可把预测误差降到 **10.0%**,\n"
               "     推荐配置贴到目标的 0.86x —— 前瞻实测里 6 次有 5 次直接命中'最小够用'的那台机器。\n"
               "   --zero-shot-quantile 0.9 曾是默认, 现已关闭: 它只在恰好被低估的负载上有用,\n"
-              "     在被高估的负载上会把达标率从 70.8% 压到 33.3%、预测误差推到 150.6%。",
+              "     在被高估的负载上会把达标率从 70.8% 压到 33.3%、预测误差推到 150.6%()。",
               file=sys.stderr)
     adv = pa.PhoebeAdvisor(m, cost, steps)
     adv.m = m
@@ -299,18 +301,18 @@ def _load(a):
         if a.anchors:
             # 默认值是 0.9, 所以只有用户显式传了才提示, 否则是噪音。
             if any(x.startswith("--zero-shot-quantile") for x in sys.argv):
-                print("!! 忽略 --zero-shot-quantile: 已有锚点, 悲观指数只用于零实测。",
+                print("!! 忽略 --zero-shot-quantile: 已有锚点, 悲观指数只用于**零实测**。",
                       file=sys.stderr)
         else:
             ex = pp.workload_ag_exponents(WLS)
             adv.set_zero_shot(ex, float(q), pp.PhoebePredictor.FA.index("ag"))
             print(f"!! 已启用零实测悲观指数 q={q}: 训练负载指数 "
-                  f"{ex.min:.3f}~{ex.max:.3f}, 取 {float(__import__('numpy').quantile(ex,float(q))):.3f} "
+                  f"{ex.min():.3f}~{ex.max():.3f}, 取 {float(__import__('numpy').quantile(ex,float(q))):.3f} "
                   f"(拟合值 {m.ba_[pp.PhoebePredictor.FA.index('ag')]:.3f})。\n"
-                  f"   ρ 自适应余量已自动关闭 —— 两者针对同一个误差来源, 叠加是重复计费。\n"
-                  f"   注意: q 不是'把握度'。'名义 q ≈ 达标率'这个对应关系不成立\n"
+                  f"   ρ 自适应余量已**自动关闭** —— 两者针对同一个误差来源, 叠加是重复计费()。\n"
+                  f"   注意: q **不是**'把握度'。'名义 q ≈ 达标率'这个对应关系**不成立**\n"
                   f"   (: |实际−名义| 中位 0.134, 单库侧 q=0.5 时达标率就已 84.7%)。\n"
-                  f"   q 只是单调的保守程度旋钮; 实际达标率见  的表, 不要按 q 解读成概率。",
+                  f"   q 只是**单调的保守程度旋钮**; 实际达标率见  的表, 不要按 q 解读成概率。",
                   file=sys.stderr)
     # 2026-10-07 逐查询地板 tau: 若锚点带逐题实测延迟(point.json 的 sql_ms_by_qid)
     #   与逐题离线代价(offline_byqid_*.json), 就从最便宜那撮查询解出固定开销,
@@ -407,11 +409,11 @@ def cmd_advise(a):
         print(f"  {r['note']}")
         if getattr(adv.m, "cal_warn_", None):
             print("  锚点未被采用(见上方警告), 实际精度退化到零实测水平"
-                  "(两个陌生负载实测 18.9% / 42.1%, 偏差方向相反),"
+                  "(两个陌生负载实测 18.9% / 42.1%, 偏差方向相反, ),"
                   "\n     建议按 2x 余量重新选型, 或复测锚点后重来。")
         elif not hasattr(adv.m, "cal_"):
             print("  未提供锚点: 实际精度为零实测水平 —— 15 个网格外配置的前瞻实测"
-                  "中位 39.8%, 推荐机器实测只用掉目标时间约 66%(多买约 1.5 倍)。\n"
+                  "中位 **39.8%**, 推荐机器实测只用掉目标时间约 66%(多买约 1.5 倍)。\n"
                   "     补 1 个锚点(81 秒)-> 误差 10.0%, 贴到 0.86x。")
 
 
@@ -429,16 +431,16 @@ def main():
                                      "带 sql_s/ns_s 可让 1 锚点从 35.7%% 降到 19.5%%")
     v.add_argument("--zero-shot-quantile", type=float, default=0.0, dest="zero_shot_quantile",
                    help="零实测时用训练负载并发指数的 q 分位(悲观)替代拟合值。"
-                        "默认 0 = 关闭。曾默认 0.9, 被 15 个网格外配置的前瞻实测推翻: "
+                        "**默认 0 = 关闭()**。曾默认 0.9, 被 15 个网格外配置的**前瞻实测**推翻: "
                         "预测误差 150.6%%(不开是 39.8%%), 推荐的机器实测只用掉目标时间的 36%%"
                         "(等于买 3 倍), 还拒答了一个实测可达的目标。"
-                        "它只在恰好被低估的负载上有用(bal_test); 在被高估的负载上(test2)"
-                        "把真实达标率从 70.8%% 压到 33.3%%。仅在无锚点时生效。")
+                        "它只在**恰好被低估**的负载上有用(bal_test); 在被高估的负载上(test2)"
+                        "把真实达标率从 70.8%% 压到 33.3%%。仅在**无锚点**时生效。")
     v.add_argument("--anchor-quantile", type=float, default=None, dest="anchor_quantile",
-                   help="只在恰好 1 个锚点时生效: 把 ag 指数换成训练负载指数分布的 q 分位, "
-                        "再用锚点标定常数。实测 q=0.9: bal_test 中位误差 16.1%%->7.5%%、"
+                   help="**只在恰好 1 个锚点时生效**(): 把 ag 指数换成训练负载指数分布的 q 分位, "
+                        "再用锚点标定常数。实测 q=0.9: bal_test 中位误差 16.1%%->**7.5%%**、"
                         "p90 29.2%%->26.7%%、少用 3.84 个核, 代价是达标率 95.1%%->90.2%%。"
-                        "默认关闭 —— 这是降误差、减保守度的取舍, 要不要换由你定。")
+                        "默认关闭 —— 这是**降误差、减保守度**的取舍, 要不要换由你定。")
     v.add_argument("--target-seconds", type=float, required=True)
     v.add_argument("--agents", type=int, default=64); v.add_argument("--th", type=int, default=2)
     # : 默认必须是 None, 否则 recommend 里的 `auto = safety is None` 恒为 False,
@@ -446,14 +448,14 @@ def main():
     #   实测后果: 1 锚点本可贴到 0.86x, 被固定余量压到 0.67x(多买约 19%)。
     #   传具体数值(如 --safety 1.2)可回到固定余量。
     v.add_argument("--safety", type=float, default=None,
-                   help="选核时的余量倍数。默认 1.05(2026-09-29 由用户定)。"
+                   help="选核时的余量倍数。**默认 1.05**(2026-09-29 由用户定)。"
                         "旧默认 None(rho 自适应)已废弃: 其系数 expected_err(rho)="
-                        "0.0805+0.0289|log(rho/2.40)| 是在含 bal_test 的 52 点上拟的(泄露); "
+                        "0.0805+0.0289|log(rho/2.40)| 是在**含 bal_test** 的 52 点上拟的(泄露); "
                         "只用 11 个训练库重拟得 R^2=0.142(线性 0.139, 常数 0), rho 的 U 型不复现。\n"
                         "余量越大, 预测就越是刻意低于客户目标: 训练库上 预测/目标 = "
                         "1.00->0.86x, 1.10->0.77x, 1.20->0.73x, 1.50->0.60x —— "
                         "客户说 8000, 余量 1.272 的工具只去够 6289。\n"
-                        "而余量买不到预测精度: |预测-实测| 从 1.00 的 12.5% 到 1.50 的 11.3%, 基本持平。\n"
+                        "而余量**买不到预测精度**: |预测-实测| 从 1.00 的 12.5% 到 1.50 的 11.3%, 基本持平。\n"
                         "1.05 的实测(112 个预注册目标, 2 锚点): 实测/目标 0.87x/0.86x "
                         "(整数核物理下限 0.92x/0.91x), |预测-实测| 中位 5.7%/4.8%, "
                         "比最优解多 0.37/0.40 核; 达标 35/38 与 35/35。")

@@ -5,7 +5,8 @@ from django.urls import path
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 
-BIRD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SRC, DATA, RESULTS, HARNESS = (os.path.join(ROOT, d) for d in ("src", "data", "results", "harness"))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import status as st
 
@@ -29,7 +30,7 @@ def api_headline(request):
     """验证口径的两个数。读 validation_headline.json —— 由 make_headline.py 实跑生成,
     里面带重算命令。不在页面里写死数字: advise.py 的 docstring 曾经写 87.9%,
     今天实跑是 89.3%, 数据加过点之后旧数就不对了。"""
-    p = os.path.join(BIRD, "validation_headline.json")
+    p = os.path.join(RESULTS, "validation_headline.json")
     if not os.path.exists(p):
         return JsonResponse({}, status=404)
     return JsonResponse(json.load(open(p)))
@@ -63,7 +64,7 @@ def api_advise(request):
     mc = max(1, min(mc, 16))
     cmd = [sys.executable, "advise.py", str(target), str(agents),
            "--workload", wl, "--max-cores", str(mc), "--json"]
-    r = subprocess.run(cmd, cwd=BIRD, capture_output=True, text=True, timeout=120)
+    r = subprocess.run(cmd, cwd=SRC, capture_output=True, text=True, timeout=120)
     if r.returncode != 0 or not r.stdout.strip():
         return JsonResponse({"error": (r.stderr or r.stdout)[-800:]}, status=500)
     return JsonResponse(json.loads(r.stdout))
@@ -82,7 +83,7 @@ def api_panels(request):
     if wl not in WORKLOADS or agents not in AGENTS:
         return HttpResponseBadRequest("bad workload or agents")
     r = subprocess.run([sys.executable, "demo_panels.py", "--workload", wl, "--agents", str(agents),
-                        "--max-cores", str(mc)], cwd=BIRD, capture_output=True, text=True, timeout=120)
+                        "--max-cores", str(mc)], cwd=SRC, capture_output=True, text=True, timeout=120)
     if r.returncode != 0 or not r.stdout.strip():
         return JsonResponse({"error": (r.stderr or r.stdout)[-800:]}, status=500)
     return JsonResponse(json.loads(r.stdout))
@@ -91,13 +92,13 @@ def api_panels(request):
 @require_GET
 def api_failmap(request):
     """224 个目标逐个对错。读 demo_failmap.json(python3 demo_failmap.py 生成, 合计 assert = 189/224)。"""
-    p = os.path.join(BIRD, "demo_failmap.json")
+    p = os.path.join(RESULTS, "demo_failmap.json")
     if not os.path.exists(p):
         return JsonResponse({}, status=404)
     return JsonResponse(json.load(open(p)))
 
 
-LIVE_STATUS = os.path.join(BIRD, "testv2_live", "status.json")
+LIVE_STATUS = os.path.join(DATA, "testv2_live", "status.json")
 
 
 @csrf_exempt                    # 只绑 127.0.0.1, 页面自己发的 POST
@@ -112,16 +113,16 @@ def api_measure(request):
         return HttpResponseBadRequest("srv, th, agents must be integers")
     if wl not in WORKLOADS or agents not in AGENTS or th not in (1, 2) or not (1 <= srv <= 16):
         return HttpResponseBadRequest("bad parameters")
-    pf = os.path.join(BIRD, "live_measure.pid")
+    pf = os.path.join(HARNESS, "live_measure.pid")
     try:
-        if os.path.exists(pf) and os.path.exists(f"/proc/{int(open(pf).read.split[0])}"):
+        if os.path.exists(pf) and os.path.exists(f"/proc/{int(open(pf).read().split()[0])}"):
             return JsonResponse({"error": "another live measurement is running"}, status=409)
     except (ValueError, IndexError):
         pass
     os.makedirs(os.path.dirname(LIVE_STATUS), exist_ok=True)
     json.dump({"state": "starting", "msg": "starting", "workload": wl, "srv": srv, "th": th, "agents": agents},
               open(LIVE_STATUS, "w"))
-    subprocess.Popen(["./live_measure.sh", wl, str(srv), str(th), str(agents)], cwd=BIRD,
+    subprocess.Popen(["./live_measure.sh", wl, str(srv), str(th), str(agents)], cwd=HARNESS,
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     return JsonResponse({"ok": True})
 

@@ -55,8 +55,8 @@ def _ht_gain(agents):
     if _HT_TAB is None:
         try:
             import os as _o
-            t = json.load(open(_o.path.join(_o.path.dirname(_o.path.abspath(__file__)),
-                                            "ht_gain_fit.json")))["table"]
+            t = json.load(open(_o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))),
+                                            "data", "ht_gain_fit.json")))["table"]
             _HT_TAB = sorted((float(k), float(v)) for k, v in t.items())
         except Exception:
             _HT_TAB = []
@@ -260,13 +260,13 @@ class PhoebePredictor:
                 _en_ = os.environ.get("ADVISE_LANG", "en") != "zh"
                 self.cal_warn_ = ((f"anchor exponent correction {cal[0]:+.3f} exceeds the "
                                    f"+/-{self.MAX_EXP_CORRECTION} threshold -- the two anchors are "
-                                   f"inconsistent with each other, so the calibration is discarded "
-                                   f"entirely. Re-measure the anchors (check the low-concurrency one "
+                                   f"inconsistent with each other, so the calibration is **discarded "
+                                   f"entirely**. Re-measure the anchors (check the low-concurrency one "
                                    f"first: if db_time grows with cores, a parallel plan is inflating it).")
                                   if _en_ else
                                   (f"锚点指数修正 {cal[0]:+.3f} 超过阈值 "
                                    f"±{self.MAX_EXP_CORRECTION} —— 两个锚点彼此不自洽, "
-                                   f"已完全不校正。建议复测锚点(尤其检查低并发那个: "
+                                   f"已**完全不校正**。建议复测锚点(尤其检查低并发那个: "
                                    f"若'核越多 db_time 越大', 多半是并行计划把 db_time 抬高了)。"))
                 print("!! " + self.cal_warn_, file=sys.stderr)
                 return self          # 完全不校正
@@ -372,7 +372,7 @@ def load_repo_workloads(root="."):
     meta = json.load(open(f"{root}/pdb_meta.json"))
     out = []
     for w, m in meta.items():
-        ids = [q["question_id"] for q in json.load(open(f"{root}/{w}_questions.json"))]
+        ids = [q["question_id"] for q in json.load(open(f"{root}/questions/{w}_questions.json"))]
         cost = np.array([qcost[q] for q in ids if q in qcost])
         pts = []
         for p in glob.glob(f"{root}/{w}_grid/s*/point.json"):

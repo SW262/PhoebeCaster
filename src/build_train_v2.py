@@ -7,7 +7,7 @@
 import json, os, datetime
 import numpy as np
 import eval_parts
-D = os.path.dirname(os.path.abspath(__file__))
+from paths import DATA as D
 W = eval_parts.build()
 out = {"generated": datetime.datetime.now().strftime("%F %T"),
        "source": "rc3+rc4 (b0, x5), 2026-10-10~14", "cmd": "python3 build_train_v2.py",

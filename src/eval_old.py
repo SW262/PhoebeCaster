@@ -11,7 +11,8 @@ from phoebe_predictor import PhoebePredictor, effective_cores, QP
 from ns_model2 import NSPredictor
 import eval_parts
 
-D = os.path.dirname(os.path.abspath(__file__)); TOL = 0.15
+from paths import DATA as D
+TOL = 0.15
 
 
 def build_old():
@@ -22,7 +23,7 @@ def build_old():
     meta = json.load(open(f"{D}/pdb_meta.json"))
     W = {}
     for lib, m in meta.items():
-        ids = [q["question_id"] for q in json.load(open(f"{D}/{lib}_questions.json"))]
+        ids = [q["question_id"] for q in json.load(open(f"{D}/questions/{lib}_questions.json"))]
         cost = np.array([qc[q] for q in ids if q in qc])
         if not len(cost): continue
         pts = []
@@ -45,7 +46,7 @@ def build_old():
 if __name__ == "__main__":
     for tag, W in (("老网格 b0.2 2026-09-23~10-01", build_old()),
                    ("rc3+rc4 b0 x5 2026-10-10~14", eval_parts.build())):
-        print(f"\n{'='*78}\n{tag}   {len(W)} 库 {sum(len(w['points']) for w in W.values)} 格点\n{'='*78}")
+        print(f"\n{'='*78}\n{tag}   {len(W)} 库 {sum(len(w['points']) for w in W.values())} 格点\n{'='*78}")
         for cls, nm in ((PhoebePredictor, "现模型"), (NSPredictor, "改进 ns")):
             E, R, _ = eval_parts.run(cls, W)
             print(f"  【{nm}】 {'目标量':<12}{'误差中位':>9}{'p90':>8}{'≤15%':>7}{'推荐±15%':>13}")

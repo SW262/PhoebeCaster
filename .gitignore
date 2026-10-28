@@ -1,4 +1,5 @@
 __pycache__/
 *.pyc
 webui/webui.pid
+harness/live_measure.pid
 fig_dilation*.p*

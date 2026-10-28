@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS agent_memories (
     kind       text,                    -- attempt / success / error
     content    text,
     embedding  vector(768),
-    created_at timestamptz DEFAULT now
+    created_at timestamptz DEFAULT now()
 );
 -- 必须有 chnsw 索引: 没有索引时 memory_search 走顺序扫描, 首测量到 55.84ms p50,
 -- 占单步时间 82%, 把整个负载形状带偏, 而且随写入单调变慢。
@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS agent_memories_chnsw_idx ON agent_memories
 --   agent_state  每 agent 一行, 每步 UPDATE —— 无争用基线
 --   memory_stats 记忆的访问计数, UPDATE 刚检索到的那几行 —— 热行, 真实记忆系统
 --                检索后都要 bump 访问次数/时效性, 这是 recency 排序的基础
--- 业务写入   规格 §5.1.1: 一定比例的认知步骤在同一事务内写业务 schema,
+-- 业务写入   规格 §5.1.1: 一定比例的认知步骤在**同一事务内**写业务 schema,
 --            "modeling an agent that acts on business data (update an order, post a
 --            record) and memorizes the action atomically"。
 --            用 financial 库(PKDD'99 真实银行数据), 结构与 pgbench(TPC-B)一一对应:
@@ -60,10 +60,10 @@ CREATE TABLE IF NOT EXISTS agent_state (
     steps      bigint      DEFAULT 0,
     last_db    text,
     last_qid   int,
-    updated_at timestamptz DEFAULT now
+    updated_at timestamptz DEFAULT now()
 );
 
--- TPC-B 的计数放独立表, BIRD 的表保持原版(不加任何列)——
+-- TPC-B 的计数放**独立表**, BIRD 的表保持原版(不加任何列)——
 -- 给 BIRD 的表加列就不能再声称"在标准 BIRD 上测的"。
 -- 争用金字塔靠行数差异实现, 与 pgbench 对应:
 --   biz_account  4,500 行 <- pgbench_accounts (低争用)
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS biz_district (district_id bigint PRIMARY KEY,
 -- 一条新行, 带自增主键和时间戳, 行宽与 trans 同量级。
 CREATE TABLE IF NOT EXISTS biz_write_log (id bigserial PRIMARY KEY,
                                           account_id bigint, amount bigint,
-                                          wrote_at timestamptz DEFAULT now);
+                                          wrote_at timestamptz DEFAULT now());
 -- 行数(4500 / 77)必须与 dev 一致 —— TP 的争用结构靠行数差异实现,
 -- 换题集时若行数变了, tp_txn 就不再是"固定动作", 对比也就不成立。
 -- dev 从 financial 表取真实 id; 测试库没有那个 schema, 直接生成同样多的行。
@@ -87,7 +87,7 @@ BEGIN
     INSERT INTO biz_account  (account_id)  SELECT account_id  FROM financial.account  ON CONFLICT DO NOTHING;
     INSERT INTO biz_district (district_id) SELECT district_id FROM financial.district ON CONFLICT DO NOTHING;
     -- 争用旋钮(2026-10-09, 预注册 prereg_district.json): 默认 __DISTRICT_ROWS__=77 时
-    -- generate_series(78,77) 为空集, 行为与改动前完全一致。
+    -- generate_series(78,77) 为空集, 行为与改动前**完全一致**。
     INSERT INTO biz_district (district_id) SELECT generate_series(78,__DISTRICT_ROWS__) ON CONFLICT DO NOTHING;
   ELSE
     -- 测试库没有 financial schema; 行数仍锁死 4500/77, 保证争用结构一致
@@ -280,7 +280,7 @@ def worker(agent_id, args, questions, barrier, stop, resdir, ticket=None):
             # 5a. 自己的状态行 —— 无争用基线
             _pending_dist = None
             _x("UPDATE public.agent_state SET steps = steps + 1, last_db = %s, "
-                        "last_qid = %s, updated_at = now WHERE agent_id = %s",
+                        "last_qid = %s, updated_at = now() WHERE agent_id = %s",
                         (db, qid, agent_id))
             _bk[0] = "mem"
             # 5b. 刚检索到的记忆 bump 访问次数 + last_access —— 热行, 多 agent 争用
@@ -292,7 +292,7 @@ def worker(agent_id, args, questions, barrier, stop, resdir, ticket=None):
             #     实测: 这一条使 TP p99 +206%, 死元组 60x —— TP 侧最大贡献项。
             if hit_ids and args.tp_updates:
                 _x("UPDATE public.agent_memories SET access_count = access_count + 1, "
-                            "last_access = now WHERE memory_id = ANY(%s)", (hit_ids,))
+                            "last_access = now() WHERE memory_id = ANY(%s)", (hit_ids,))
             _bk[0] = "biz"
             # 5c. 业务写入(规格 §5.1.1): TPC-B 式的一笔账, 在同一事务内
             #     形态依据: TPC Benchmark B v2.0 标准事务, 以及 PostgreSQL 文档里
@@ -335,7 +335,7 @@ def worker(agent_id, args, questions, barrier, stop, resdir, ticket=None):
                         # 没有 financial.trans 的库写进 biz_write_log, 形态一致:
                         # 每笔业务写产生一条新行。不能让整个事务失败。
                         _x("INSERT INTO public.biz_write_log "
-                                    "(account_id, amount, wrote_at) VALUES (%s,%s,now)",
+                                    "(account_id, amount, wrote_at) VALUES (%s,%s,now())",
                                     (acct, amt))
                     if args.value_sync == "atomic":
                         # 关键: 向量插入和业务写入在同一个事务里 -> staleness = 0
@@ -373,7 +373,7 @@ def worker(agent_id, args, questions, barrier, stop, resdir, ticket=None):
                         # 测试库没有 financial schema。写进 biz_write_log, 保持
                         # "每笔业务写产生一条新行"的形态, 行宽和索引开销可比。
                         _x("INSERT INTO public.biz_write_log "
-                                    "(account_id, amount, wrote_at) VALUES (%s,%s,now)",
+                                    "(account_id, amount, wrote_at) VALUES (%s,%s,now())",
                                     (acct, amt))
                 n_biz += 1
             _bk[0] = "mem"
@@ -524,7 +524,7 @@ def prepare(args):
     # 实测不筛的后果: 5 条离群查询(最慢 20.8s, 而 p50 只有 1.6ms)占住 5 个 agent,
     # 整点墙钟由它们决定 -> 端到端时间 2->18 核只快 1.06 倍, 而分项各快 1.63~8.20 倍。
     _slow = set()
-    _sf = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_screen.json")
+    _sf = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "sql_screen.json")
     if os.path.exists(_sf):
         try:
             _sc = json.load(open(_sf))
@@ -562,7 +562,7 @@ def prepare(args):
             if sqls: trace[x["qid"]] = sqls
         TRACE_INFO["n_questions"] = len(trace)
         print(f"  载入多轮轨迹 {len(trace)} 题, 平均 "
-              f"{sum(len(v) for v in trace.values)/max(len(trace),1):.2f} 轮", flush=True)
+              f"{sum(len(v) for v in trace.values())/max(len(trace),1):.2f} 轮", flush=True)
 
     if args.replay_only:
         # 只保留缓存里有响应的题。原来未命中会抛异常搞死 worker ——
@@ -674,7 +674,7 @@ def main():
                    help="value linking 索引怎么跟上业务写入")
     p.add_argument("--embedding-update-rate", type=float, default=0.0,
                    help="改写一条记忆 embedding 的比例(A 类)。默认 0: 情景记忆不改写。"
-                        "无实证, 仅作敏感度维度")
+                        "无实证依据, 仅作敏感度维度")
     p.add_argument("--ef-search", type=int, default=64)
     p.add_argument("--stmt-timeout-ms", type=int, default=30000)
     p.add_argument("--dynamic-work", type=int, default=1,

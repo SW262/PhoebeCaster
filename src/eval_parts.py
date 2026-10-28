@@ -12,7 +12,8 @@ import badpoints
 from phoebe_predictor import PhoebePredictor, effective_cores, QP
 from ns_model2 import NSPredictor
 
-D = os.path.dirname(os.path.abspath(__file__)); NOM = badpoints.nominal_steps(); TOL = 0.15
+from paths import DATA as D
+NOM = badpoints.nominal_steps(); TOL = 0.15
 
 
 def build():
@@ -38,7 +39,7 @@ def build():
     qc = {q: float(np.mean(v)) for q, v in c0.items()}
     W = {}
     for lib, grid in g.items():
-        ids = [q["question_id"] for q in json.load(open(f"{D}/{lib}_questions.json"))]
+        ids = [q["question_id"] for q in json.load(open(f"{D}/questions/{lib}_questions.json"))]
         cost = np.array([qc[q] for q in ids if q in qc])
         if not len(cost): continue
         W[lib] = dict(cost=cost, steps=NOM[lib], points=[

@@ -8,7 +8,7 @@
 # 不用 pgrep -f / pkill -f。
 set -uo pipefail
 cd "$(dirname "$0")"
-P="$(pwd)"; OUT=testv2_live; mkdir -p "$OUT"; LOG="$OUT/run.log"; ST="$OUT/status.json"
+P="$(pwd)"; OUT=../data/testv2_live; mkdir -p "$OUT"; LOG="$OUT/run.log"; ST="$OUT/status.json"
 wlw=$1; s=$2; th=$3; ag=$4
 case "$wlw" in bal_test) wl=test ;; test2) wl=test2 ;; *) echo "bad workload"; exit 2 ;; esac
 status(){ python3 - "$ST" "$@" <<'PY'

@@ -2,12 +2,16 @@
 """网页"找错"面板的数据: 224 个机械生成目标逐个的对错, 判定逻辑逐行照抄 check_prod_v2.py
 (生产路径 phoebe_cli._load, 与 advise.py / 网页同一条)。合计必须等于 check_prod_v2 的 189/224,
 不等就 assert 失败, 不落盘。   python3 demo_failmap.py  -> demo_failmap.json"""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src"))
+from paths import DATA, RESULTS
+
 import io, sys, os, json, importlib.util
 from types import SimpleNamespace
 import score_rc, eval_testv2
 from phoebe_predictor import effective_cores
-D = os.path.dirname(os.path.abspath(__file__))
-sp = importlib.util.spec_from_file_location("cli", f"{D}/phoebe_cli.py")
+D = DATA
+sp = importlib.util.spec_from_file_location("cli", _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src", "phoebe_cli.py"))
 cli = importlib.util.module_from_spec(sp); sp.loader.exec_module(cli)
 TOL = 0.15; RUNGS = (2, 4, 6, 8, 11, 13, 16)
 out = []
@@ -39,6 +43,6 @@ for wl, nm in (("test", "bal_test"), ("test2", "test2")):
 n_ok = sum(r["ok"] for r in out)
 assert (n_ok, len(out)) == (184, 224), f"{n_ok}/{len(out)} != 184/224(2026-10-28 剔除 european_football_2 后; 之前 189)"
 json.dump(dict(cmd="python3 demo_failmap.py", tol=TOL, ok=n_ok, n=len(out), targets=out),
-          open(f"{D}/demo_failmap.json", "w"), ensure_ascii=False)
+          open(f"{RESULTS}/demo_failmap.json", "w"), ensure_ascii=False)
 import collections
 print(n_ok, len(out), collections.Counter(r["kind"] for r in out))
