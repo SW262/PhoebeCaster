@@ -37,7 +37,7 @@ for wl, nm in (("test", "bal_test"), ("test2", "test2")):
                                 pred_dev=d, ok=ok, kind=kind,
                                 rungs=[dict(srv=s_, pred=preds[s_], measured=L[s_]) for s_ in sorted(L)]))
 n_ok = sum(r["ok"] for r in out)
-assert (n_ok, len(out)) == (189, 224), f"{n_ok}/{len(out)} != check_prod_v2 的 189/224"
+assert (n_ok, len(out)) == (184, 224), f"{n_ok}/{len(out)} != 184/224(2026-10-28 剔除 european_football_2 后; 之前 189)"
 json.dump(dict(cmd="python3 demo_failmap.py", tol=TOL, ok=n_ok, n=len(out), targets=out),
           open(f"{D}/demo_failmap.json", "w"), ensure_ascii=False)
 import collections

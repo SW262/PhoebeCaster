@@ -1,36 +1,36 @@
 {
  "split": {
   "feasible": 133,
-  "feasible_ok": 114,
+  "feasible_ok": 113,
   "infeasible": 91,
-  "infeasible_ok": 75
+  "infeasible_ok": 71
  },
  "errors": {
-  "under_provisioned": 16,
-  "missed_fit": 14,
-  "over_provisioned": 5
+  "under_provisioned": 24,
+  "missed_fit": 13,
+  "over_provisioned": 3
  },
  "sla": {
   "n": 224,
-  "right_none": 64,
-  "violated": 20,
-  "met": 129,
-  "missed": 11,
-  "ok": 193,
+  "right_none": 65,
+  "violated": 30,
+  "met": 120,
+  "missed": 9,
+  "ok": 185,
   "extra_cores_when_met": {
-   "0": 103,
-   "3": 13,
-   "2": 13
+   "0": 115,
+   "3": 3,
+   "2": 2
   }
  },
  "wall": {
   "n": 196,
-  "median": 0.050345569010491475,
-  "p90": 0.0981422160181149,
-  "max": 0.28835690409835313
+  "median": 0.03175130631093337,
+  "p90": 0.10674095722014365,
+  "max": 0.304545889482037
  },
  "probe": {
-  "n": 13,
+  "n": 12,
   "seconds": {
    "superhero": 0.3,
    "student_club": 0.4,
@@ -41,7 +41,6 @@
    "formula_1": 8.7,
    "financial": 8.7,
    "test2": 12.8,
-   "european_football_2": 16.3,
    "bal_test": 17.0,
    "codebase_community": 21.1,
    "card_games": 35.3
@@ -50,10 +49,10 @@
    12.8,
    17.0
   ],
-  "median": 8.67217350192368,
+  "median": 7.622276115696877,
   "min": 0.31326739210635424,
   "max": 35.30694296490401,
-  "under20": 11
+  "under20": 10
  },
  "cost": {
   "seconds": {
@@ -164,28 +163,62 @@
  "where": {
   "16": {
    "n": 78,
-   "ok": 68,
-   "rate": 0.8717948717948718
+   "ok": 70,
+   "rate": 0.8974358974358975
   },
   "bal_test": {
    "n": 112,
-   "ok": 85,
-   "rate": 0.7589285714285714
+   "ok": 81,
+   "rate": 0.7232142857142857
   },
   "6-13": {
-   "n": 72,
-   "ok": 69,
-   "rate": 0.9583333333333334
+   "n": 70,
+   "ok": 66,
+   "rate": 0.9428571428571428
   },
   "2-4": {
-   "n": 74,
-   "ok": 52,
-   "rate": 0.7027027027027027
+   "n": 76,
+   "ok": 48,
+   "rate": 0.631578947368421
   },
   "test2": {
    "n": 112,
-   "ok": 104,
-   "rate": 0.9285714285714286
+   "ok": 103,
+   "rate": 0.9196428571428571
   }
+ },
+ "bias": {
+  "2-4": -0.08479558263219522,
+  "6-13": -0.009866752615748542,
+  "16": 0.08349993059979444
+ },
+ "exponent": {
+  "n": 10,
+  "min": 0.555871914677757,
+  "max": 0.8986061058519845
+ },
+ "screen": {
+  "executable": 2267,
+  "median_ms": 1.257,
+  "excluded": [
+   {
+    "qid": 247,
+    "db": "toxicology",
+    "round": 3,
+    "ms": 7724.677
+   },
+   {
+    "qid": 903,
+    "db": "formula_1",
+    "round": 1,
+    "ms": 18040.883
+   },
+   {
+    "qid": 595,
+    "db": "codebase_community",
+    "round": 3,
+    "ms": 2530.864
+   }
+  ]
  }
 }

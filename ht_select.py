@@ -6,7 +6,8 @@ D=os.path.abspath(os.path.dirname(__file__))
 def imp(n):
     s=importlib.util.spec_from_file_location(n,os.path.join(D,n+".py")); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 pp=imp("phoebe_predictor")
-meta=list(json.load(open(f"{D}/pdb_meta.json")).keys())
+import badpoints
+meta=[w for w in json.load(open(f"{D}/pdb_meta.json")) if w not in badpoints.EXCLUDED_LIBS]
 lab=[x for x in json.load(open(f"{D}/train_label_noise.json")) if x.get("median",0)>0]
 _c=collections.defaultdict(list)
 for x in lab: _c[int(x["qid"])].append(x["median"])

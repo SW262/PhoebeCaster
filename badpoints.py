@@ -19,6 +19,13 @@ import json, glob, collections, os, re
 
 RC3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rc3")
 
+# 整个剔除的训练负载(2026-10-28)。pdb_european_football_2: qid 1127 的第 1 轮 LLM SQL 已被
+# sql_screen.json 判为慢查询排除(结果也是错的), 但该题其余轮次都是截断, 轨迹为空, workload.py
+# 回放时退回缓存里的第 1 轮, 绕过了筛查 —— 全部运行都混进这条约 21 s 的查询(TODO #20)。
+# nominal_steps 不给它投票, 所有按 NOM 过滤的加载(eval_parts / paper_numbers_v2 / build_train_v2)
+# 随之跳过; 老网格(fit_rmodel / ht_select)与离线标签(rev1_numbers 探测)各自查这张表。
+EXCLUDED_LIBS = {"pdb_european_football_2": "qid 1127 screened-out SQL leaked in via cache fallback"}
+
 
 def nominal_steps(root=RC3):
     """{lib: 众数 steps}。只用 steps>0 的点投票。"""
@@ -28,7 +35,7 @@ def nominal_steps(root=RC3):
             s = json.load(open(p)).get("steps", 0)
         except Exception:
             continue
-        if s > 0:
+        if s > 0 and p.split(os.sep)[-3] not in EXCLUDED_LIBS:
             v[p.split(os.sep)[-3]][s] += 1
     return {k: c.most_common(1)[0][0] for k, c in v.items()}
 

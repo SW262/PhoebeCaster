@@ -1,14 +1,14 @@
 {
  "train.workloads": {
-  "value": 11,
+  "value": 10,
   "note": "rc3+rc4 有好点的训练库"
  },
  "train.runs": {
-  "value": 1823,
+  "value": 1759,
   "note": "rc3+rc4 完整运行(含重复)"
  },
  "train.configs": {
-  "value": 308,
+  "value": 280,
   "note": "rc3+rc4 不同(库,核,并发)配置"
  },
  "test.workloads": {
@@ -44,15 +44,15 @@
   "note": ""
  },
  "train.steps.median": {
-  "value": 108300.0,
+  "value": 108652.5,
   "note": ""
  },
  "fwd.v2.2anchor.wall_median_pct.test": {
-  "value": 8.560168541229007,
+  "value": 8.703628452541135,
   "note": ""
  },
  "fwd.v2.2anchor.wall_median_pct.test2": {
-  "value": 7.3037445414962985,
+  "value": 5.5711087193132,
   "note": ""
  },
  "fwd.v2.2anchor.n": {
@@ -60,23 +60,23 @@
   "note": ""
  },
  "fwd.v2.2anchor.wall_median_pct": {
-  "value": 7.718028952529887,
+  "value": 6.656382805595945,
   "note": "墙钟完成时间误差中位"
  },
  "fwd.v2.2anchor.wall_within15_pct": {
-  "value": 82.29166666666666,
+  "value": 85.9375,
   "note": "墙钟误差 ≤15% 的占比"
  },
  "fwd.v2.2anchor.db_median_pct": {
-  "value": 6.232302255001337,
+  "value": 6.292925252797671,
   "note": "db_time 误差中位"
  },
  "fwd.v2.zeroshot.wall_median_pct.test": {
-  "value": 49.12324788209956,
+  "value": 54.20882828162473,
   "note": ""
  },
  "fwd.v2.zeroshot.wall_median_pct.test2": {
-  "value": 37.59213242125441,
+  "value": 25.14452861296126,
   "note": ""
  },
  "fwd.v2.zeroshot.n": {
@@ -84,23 +84,23 @@
   "note": ""
  },
  "fwd.v2.zeroshot.wall_median_pct": {
-  "value": 44.1894663726008,
+  "value": 41.80578265829735,
   "note": "墙钟完成时间误差中位"
  },
  "fwd.v2.zeroshot.wall_within15_pct": {
-  "value": 0.0,
+  "value": 14.0625,
   "note": "墙钟误差 ≤15% 的占比"
  },
  "fwd.v2.zeroshot.db_median_pct": {
-  "value": 41.27382534863196,
+  "value": 42.10331934014558,
   "note": "db_time 误差中位"
  },
  "fwd.v1model.2anchor.wall_median_pct.test": {
-  "value": 9.557229903736552,
+  "value": 9.134609227770529,
   "note": ""
  },
  "fwd.v1model.2anchor.wall_median_pct.test2": {
-  "value": 7.8633051584393705,
+  "value": 8.058263006098453,
   "note": ""
  },
  "fwd.v1model.2anchor.n": {
@@ -108,23 +108,23 @@
   "note": ""
  },
  "fwd.v1model.2anchor.wall_median_pct": {
-  "value": 8.711823784827027,
+  "value": 8.374415825134045,
   "note": "墙钟完成时间误差中位"
  },
  "fwd.v1model.2anchor.wall_within15_pct": {
-  "value": 80.20833333333334,
+  "value": 77.08333333333334,
   "note": "墙钟误差 ≤15% 的占比"
  },
  "fwd.v1model.2anchor.db_median_pct": {
-  "value": 8.097807275774132,
+  "value": 8.532612237922732,
   "note": "db_time 误差中位"
  },
  "fwd.v1model.zeroshot.wall_median_pct.test": {
-  "value": 50.37417985156867,
+  "value": 54.715141662382884,
   "note": ""
  },
  "fwd.v1model.zeroshot.wall_median_pct.test2": {
-  "value": 39.15107103349531,
+  "value": 26.252416913772414,
   "note": ""
  },
  "fwd.v1model.zeroshot.n": {
@@ -132,19 +132,19 @@
   "note": ""
  },
  "fwd.v1model.zeroshot.wall_median_pct": {
-  "value": 47.70625455280252,
+  "value": 44.428130216232844,
   "note": "墙钟完成时间误差中位"
  },
  "fwd.v1model.zeroshot.wall_within15_pct": {
-  "value": 7.291666666666667,
+  "value": 17.1875,
   "note": "墙钟误差 ≤15% 的占比"
  },
  "fwd.v1model.zeroshot.db_median_pct": {
-  "value": 45.65096317946358,
+  "value": 44.73877731234522,
   "note": "db_time 误差中位"
  },
  "inv.v2.ok": {
-  "value": 189,
+  "value": 184,
   "note": ""
  },
  "inv.v2.n": {
@@ -152,15 +152,15 @@
   "note": "目标数"
  },
  "inv.v2.strict_pct": {
-  "value": 84.375,
+  "value": 82.14285714285714,
   "note": "有解时推荐档实测落±15%; 无解时须自己说无解"
  },
  "inv.v2.strict_bal_test_pct": {
-  "value": 75.89285714285714,
+  "value": 72.32142857142857,
   "note": ""
  },
  "inv.v2.strict_test2_pct": {
-  "value": 92.85714285714286,
+  "value": 91.96428571428571,
   "note": ""
  },
  "inv.v2.truly_infeasible": {
@@ -168,7 +168,7 @@
   "note": "网格里本来就没有配置落进 ±15%"
  },
  "inv.v1model.ok": {
-  "value": 170,
+  "value": 154,
   "note": ""
  },
  "inv.v1model.n": {
@@ -176,15 +176,15 @@
   "note": "目标数"
  },
  "inv.v1model.strict_pct": {
-  "value": 75.89285714285714,
+  "value": 68.75,
   "note": "有解时推荐档实测落±15%; 无解时须自己说无解"
  },
  "inv.v1model.strict_bal_test_pct": {
-  "value": 75.0,
+  "value": 65.17857142857143,
   "note": ""
  },
  "inv.v1model.strict_test2_pct": {
-  "value": 76.78571428571429,
+  "value": 72.32142857142857,
   "note": ""
  },
  "inv.v1model.truly_infeasible": {
@@ -200,47 +200,47 @@
   "note": ""
  },
  "qerr.median": {
-  "value": 1.5767625004251624,
+  "value": 1.5710181395221046,
   "note": ""
  },
  "qerr.p90": {
-  "value": 3.712605881927083,
+  "value": 3.6196677028168907,
   "note": ""
  },
  "qerr.config_median.min": {
-  "value": 1.1244062901258518,
+  "value": 1.1333732459096808,
   "note": ""
  },
  "qerr.config_median.max": {
-  "value": 4.25696759602377,
+  "value": 3.9966096918320018,
   "note": ""
  },
  "qerr.median.ag8": {
-  "value": 1.503009963243584,
+  "value": 1.506211657056947,
   "note": "n=2392"
  },
  "qerr.median.ag16": {
-  "value": 1.53703225286091,
+  "value": 1.5367176101315065,
   "note": "n=2576"
  },
  "qerr.median.ag32": {
-  "value": 1.5132786122384285,
+  "value": 1.5082165969371708,
   "note": "n=2576"
  },
  "qerr.median.ag64": {
-  "value": 1.601739218617547,
+  "value": 1.5874581549345348,
   "note": "n=2576"
  },
  "qerr.median.ag96": {
-  "value": 1.6315210587533973,
+  "value": 1.6272749106871778,
   "note": "n=2576"
  },
  "qerr.median.ag128": {
-  "value": 1.5823480077672385,
+  "value": 1.5814421507887086,
   "note": "n=2576"
  },
  "qerr.median.ag224": {
-  "value": 1.6619277960564895,
+  "value": 1.6707045483883685,
   "note": "n=2392"
  },
  "dil.test:test": {
@@ -300,16 +300,6 @@
    "sql": 8.766282663669571,
    "tp_txn": 18.912544158263216,
    "spread": 5.020313067174725
-  },
-  "note": ""
- },
- "dil.train:pdb_european_football_2": {
-  "value": {
-   "vec_mem": 4.441078492608787,
-   "vec_value": 2.7792345384717256,
-   "sql": 0.8416460272076635,
-   "tp_txn": 10.774501760503195,
-   "spread": 12.801702155299012
   },
   "note": ""
  },
@@ -378,11 +368,11 @@
   "note": "各负载内 最快/最慢 分量膨胀之比"
  },
  "dil.spread.max": {
-  "value": 12.801702155299012,
+  "value": 5.684220831271235,
   "note": ""
  },
  "dil.spread.median": {
-  "value": 4.714702098126272,
+  "value": 4.570773929581865,
   "note": ""
  },
  "dil.spread.min_excl_efb2": {
@@ -398,15 +388,15 @@
   "note": ""
  },
  "anchor.workloads": {
-  "value": 13,
+  "value": 12,
   "note": ""
  },
  "anchor.minutes.median": {
-  "value": 3.553392824074074,
+  "value": 3.444745671296296,
   "note": ""
  },
  "anchor.minutes.max": {
-  "value": 11.878011111111112,
+  "value": 9.55465,
   "note": ""
  },
  "anchor.minutes.test_max": {
@@ -422,11 +412,11 @@
   "note": ""
  },
  "costshare.n": {
-  "value": 13,
+  "value": 12,
   "note": "负载数"
  },
  "costshare.r_logcost": {
-  "value": 0.8473295982953384,
+  "value": 0.8399485160038945,
   "note": "log(平均离线代价) 与 SQL 占比的 Pearson r"
  },
  "model.params.sql": {

@@ -132,7 +132,8 @@ def _load(a):
     _drop = os.environ.get("DROP_WL")
     if _drop:
         import json as _j
-        _nm = list(_j.load(open(os.path.join(d, "pdb_meta.json"))))
+        import badpoints as _bp
+        _nm = [w for w in _j.load(open(os.path.join(d, "pdb_meta.json"))) if w not in _bp.EXCLUDED_LIBS]
         _norm = lambda z: z[4:] if z.startswith("pdb_") else z
         _want = _norm(_drop)
         WLS = [x for _i, x in enumerate(WLS) if _norm(_nm[_i]) != _want]

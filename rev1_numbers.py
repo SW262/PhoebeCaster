@@ -6,7 +6,7 @@
   wall    db_time -> 墙钟换算本身的误差: 用实测 db_time 换算, 与实测墙钟比
 """
 import json, os, glob, re, statistics as st, collections
-import eval_testv2
+import eval_testv2, badpoints
 from advise import to_wall
 from phoebe_predictor import effective_cores
 D = os.path.dirname(os.path.abspath(__file__)); TOL = 0.15
@@ -45,7 +45,7 @@ R["wall"] = dict(n=len(E), median=st.median(E), p90=sorted(E)[int(0.9 * len(E))]
 pr = {w: 6 * sum(json.load(open(f"{D}/offline_{w}_v2.json"))["cost_ms"]) / 1000 for w in ("bal_test", "test2")}
 acc = collections.defaultdict(float)
 for x in json.load(open(f"{D}/train_label_noise.json")):
-    if x.get("median", 0) > 0: acc[x["db"]] += x["median"]
+    if x.get("median", 0) > 0 and "pdb_" + x["db"] not in badpoints.EXCLUDED_LIBS: acc[x["db"]] += x["median"]
 pr.update({w: 6 * v / 1000 for w, v in acc.items()})
 v = sorted(pr.values())
 R["probe"] = dict(n=len(v), seconds={w: round(x, 1) for w, x in sorted(pr.items(), key=lambda t: t[1])},
@@ -76,4 +76,24 @@ for t in T:
     by[seg(t["srv"])][0] += 1; by[seg(t["srv"])][1] += t["ok"]
     by[t["workload"]][0] += 1; by[t["workload"]][1] += t["ok"]
 R["where"] = {k: dict(n=n, ok=o, rate=o / n) for k, (n, o) in by.items()}
+# 预测偏差(有符号, 预测/实测 − 1 的中位), 按核数段; 每个 (负载, HT, 并发) 的各核档只计一次
+_seen, _b = set(), collections.defaultdict(list)
+for t in T:
+    k = (t["workload"], t["ht"], t["agents"])
+    if k in _seen: continue
+    _seen.add(k)
+    for r in t["rungs"]: _b[seg(r["srv"])].append(r["pred"] / r["measured"] - 1)
+R["bias"] = {k: st.median(v) for k, v in _b.items()}
+# 并发指数范围(训练负载, 同 PAPER_NUMBERS_v2.md 的命令)
+import eval_parts
+from phoebe_predictor import workload_ag_exponents
+ex = [float(x) for x in workload_ag_exponents(list(eval_parts.build().values()))]
+R["exponent"] = dict(n=len(ex), min=min(ex), max=max(ex))
+# 慢查询筛查(sql_screen.json, 只覆盖训练库): 剔除负载之外, 能执行的轮次里单独 >1 s 被排除的; 都与 BIRD 标准答案不符
+sc = json.load(open(f"{D}/sql_screen.json"))
+rows = [r for r in sc["rows"] if "pdb_" + r["db"] not in badpoints.EXCLUDED_LIBS]
+exe = [r for r in rows if r.get("error") is None and r.get("ms") is not None]
+exc = [r for r in rows if r["excluded"]]
+R["screen"] = dict(executable=len(exe), median_ms=st.median(r["ms"] for r in exe),
+                   excluded=[dict(qid=r["qid"], db=r["db"], round=r["round"], ms=r["ms"]) for r in exc])
 json.dump(R, open(f"{D}/rev1_numbers.json", "w"), indent=1); print(json.dumps(R, indent=1))

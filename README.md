@@ -34,7 +34,7 @@ measurements. The "measure live" button needs the measurement setup below.
 
 | Path | Contents |
 |---|---|
-| `rc3/`, `rc4/` | training runs on 11 BIRD databases: one `point.json` per run (db_time split into four components, completion time, per-query times) |
+| `rc3/`, `rc4/` | training runs on 10 BIRD databases: one `point.json` per run (db_time split into four components, completion time, per-query times) |
 | `testv2/` | the two held-out workloads (`test` = bal_test, `test2`), 196 configurations |
 | `testv2_live/` | configurations measured live outside the grid |
 | `offline_*.json`, `*_label_noise.json` | serial-probe results (per-query offline cost) |
@@ -43,6 +43,14 @@ measurements. The "measure live" button needs the measurement setup below.
 | `eval_*.py`, `score_rc.py`, `badpoints.py` | data loading and scoring |
 | `workload.py`, `collect_bird.sh`, `live_measure.sh`, `llm.py` | measurement harness |
 | `webui/` | the demo interface |
+
+## Data notes
+
+- `sql_screen.json`: LLM-written query rounds that run longer than 1 s on their own
+  are excluded from replay; every excluded round also returns a wrong result.
+- `european_football_2` is excluded from training (`badpoints.EXCLUDED_LIBS`): one of
+  its screened-out query rounds was replayed anyway through a fallback path in
+  `workload.py`, so all of its runs contain a ~21 s query that should not be there.
 
 ## Measurement setup (not included)
 
