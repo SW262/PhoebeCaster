@@ -100,4 +100,8 @@ exe = [r for r in rows if r.get("error") is None and r.get("ms") is not None]
 exc = [r for r in rows if r["excluded"]]
 R["screen"] = dict(executable=len(exe), median_ms=st.median(r["ms"] for r in exe),
                    excluded=[dict(qid=r["qid"], db=r["db"], round=r["round"], ms=r["ms"]) for r in exc])
+# 留出负载的筛查(test_/test2_sql_screen.json, 2026-10-29 起回放才真正生效): 900086 答案与标准答案一致(74,299)
+hx = [r for f in ("test_sql_screen.json", "test2_sql_screen.json") for r in json.load(open(f"{D}/{f}"))["rows"]]
+R["screen_heldout"] = dict(executable=sum(r.get("error") is None and r.get("ms") is not None for r in hx),
+                           excluded=[dict(qid=r["qid"], db=r["db"], round=r["round"], ms=r["ms"]) for r in hx if r["excluded"]])
 json.dump(R, open(f"{RESULTS}/rev1_numbers.json", "w"), indent=1); print(json.dumps(R, indent=1))

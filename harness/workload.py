@@ -480,6 +480,7 @@ def _trans_ok(cur):
 QFILE_ENV = os.environ.get("BIRD_QUESTIONS", "")
 VECS_ENV  = os.environ.get("BIRD_VECS", "")
 TRACE_INFO = {"file": "", "path": "", "n_questions": 0}
+SCREEN_INFO = {"files": [], "rounds": 0, "dropped_qids": []}
 
 
 def prepare(args):
@@ -523,19 +524,24 @@ def prepare(args):
     # BIRD 官方评测的 30 s, 判对错与回放负载同一口径。
     # 实测不筛的后果: 5 条离群查询(最慢 20.8s, 而 p50 只有 1.6ms)占住 5 个 agent,
     # 整点墙钟由它们决定 -> 端到端时间 2->18 核只快 1.06 倍, 而分项各快 1.63~8.20 倍。
+    # 2026-10-29: 原来只读 sql_screen.json(训练库), test_sql_screen.json 等从没生效,
+    #   bal_test 的 900086(单独 1.1 s)混进了 testv2 全部运行。现在读目录下全部
+    #   *sql_screen.json, 键带库名 —— bal_test 与 ndb_authors 的 qid 900000–900063 重号。
     _slow = set()
-    _sf = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "sql_screen.json")
-    if os.path.exists(_sf):
+    _dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+    _sfs = sorted(f for f in os.listdir(_dir) if f.endswith("sql_screen.json"))
+    for _f in _sfs:
         try:
-            _sc = json.load(open(_sf))
-            _slow = {(r["qid"], r.get("round", 1)) for r in _sc["rows"] if r.get("excluded")}
-            print(f"  慢查询筛除: {len(_slow)} 轮(阈值 "
-                  f"{_sc['meta']['threshold_ms']:.0f}ms)", flush=True)
+            _sc = json.load(open(os.path.join(_dir, _f)))
+            _slow |= {(r["db"], r["qid"], r.get("round", 1)) for r in _sc["rows"] if r.get("excluded")}
         except Exception as e:
-            print(f"  !! sql_screen.json 读取失败, 未排除慢查询: {e}", flush=True)
+            sys.exit(f"!! {_f} 读取失败: {e}")
+    if _sfs:
+        print(f"  慢查询筛除: {len(_slow)} 轮(来自 {', '.join(_sfs)})", flush=True)
     else:
-        print("  !! 没有 sql_screen.json —— 未排除慢查询, 资源轴可能被离群查询压平",
+        print("  !! 没有 *sql_screen.json —— 未排除慢查询, 资源轴可能被离群查询压平",
               flush=True)
+    SCREEN_INFO.update(files=_sfs, rounds=len(_slow))
     # 轨迹文件可被 --trace-file 固定。为什么必须能固定: LLM 采集要跑约 16 天,
     # 网格只跑约 1 天, 两者必然并行 —— 若每个点自己去读 retry_trace.json,
     # 采集每走完一轮就换一次题集, 不同点悄悄用了不同工作量, 主 target 不可比。
@@ -556,7 +562,7 @@ def prepare(args):
                     # 引号括号配平, 前两道拦不住。实测快照里 14 轮是这种货色 ——
                     # 与 truncated 同理, 属测量假象而非 agent 行为, 必须排除。
                     and looks_like_sql(r["sql"])
-                    and (x["qid"], r.get("round", 1)) not in _slow]
+                    and (x["db"], x["qid"], r.get("round", 1)) not in _slow]
             provs = {r.get("provider") for r in x.get("rounds", []) if r.get("provider")}
             if provs: trace_prov[x["qid"]] = sorted(provs)
             if sqls: trace[x["qid"]] = sqls
@@ -599,6 +605,12 @@ def prepare(args):
                 from prompts import extract_sql
                 q["_llm_sql"] = extract_sql(hit[0])
                 # 有轨迹就用完整的多轮 SQL 序列, 没有就退回单轮
+                # 2026-10-29: 退回的单轮就是缓存里的第 1 轮; 若它已被筛掉(其余轮次又都
+                #   截断), 整题丢弃 —— european_football_2 的 1127 就是从这里绕过筛查的。
+                if (not trace.get(q["question_id"])
+                        and (q["db_id"], q["question_id"], 1) in _slow):
+                    SCREEN_INFO["dropped_qids"].append(q["question_id"])
+                    continue
                 q["_sql_rounds"] = trace.get(q["question_id"]) or [q["_llm_sql"]]
                 keep.append(q)
         dropped = len(d) - len(keep)
@@ -794,6 +806,8 @@ def main():
                                       - sum(_lat_s.get(k, 0.0) for k in _SUB), 4),
            "trace_file": TRACE_INFO["file"],
            "trace_n_questions": TRACE_INFO["n_questions"],
+           "screen_files": SCREEN_INFO["files"], "screen_rounds": SCREEN_INFO["rounds"],
+           "screen_dropped_qids": SCREEN_INFO["dropped_qids"],
            "trace_questions": sum(1 for q in qs if len(q.get("_sql_rounds") or [])>1),
            "avg_rounds_per_question": round(
                sum(len(q.get("_sql_rounds") or [1]) for q in qs)/max(len(qs),1), 3),

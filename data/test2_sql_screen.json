@@ -1,0 +1,1449 @@
+{
+ "meta": {
+  "threshold_ms": 1000.0,
+  "timeout_ms": 30000,
+  "screened": 179,
+  "executable": 167,
+  "p50_ms": 0.92,
+  "p95_ms": 42.422,
+  "p99_ms": 164.367,
+  "max_ms": 699.378,
+  "excluded_rounds": 0,
+  "excluded_qids": [],
+  "screened_at": "2026-09-26 21:37:30"
+ },
+ "rows": [
+  {
+   "qid": 922004,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.767,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921029,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 42.126,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921029,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 36.603,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921029,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 35.489,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921019,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 1.474,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921019,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 0.858,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921028,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 35.738,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921028,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 37.386,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921028,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 42.422,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920022,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.803,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921002,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.531,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921013,
+   "db": "college_completion",
+   "round": 1,
+   "ms": null,
+   "error": "function sum(text) does not exist",
+   "excluded": false
+  },
+  {
+   "qid": 921013,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 5.975,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921013,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 4.856,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922020,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.452,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922020,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.892,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921033,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 52.792,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922012,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.572,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920011,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.018,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920000,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.242,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920039,
+   "db": "synthea",
+   "round": 1,
+   "ms": 5.596,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920039,
+   "db": "synthea",
+   "round": 2,
+   "ms": 4.826,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920039,
+   "db": "synthea",
+   "round": 3,
+   "ms": 5.229,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922007,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.124,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922015,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.193,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921032,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 37.851,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920003,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.598,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920017,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.826,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920017,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.514,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920017,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.659,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921004,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.744,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921004,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 0.92,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921005,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.396,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922009,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.137,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920018,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.668,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920018,
+   "db": "synthea",
+   "round": 2,
+   "ms": 1.11,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920018,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.837,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921012,
+   "db": "college_completion",
+   "round": 1,
+   "ms": null,
+   "error": "invalid input syntax for type bigint: \"NULL\"",
+   "excluded": false
+  },
+  {
+   "qid": 921012,
+   "db": "college_completion",
+   "round": 2,
+   "ms": null,
+   "error": "invalid input syntax for type bigint: \"NULL\"",
+   "excluded": false
+  },
+  {
+   "qid": 921012,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 36.88,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922002,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.119,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920033,
+   "db": "synthea",
+   "round": 1,
+   "ms": 3.316,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920033,
+   "db": "synthea",
+   "round": 2,
+   "ms": 699.378,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920033,
+   "db": "synthea",
+   "round": 3,
+   "ms": 2.702,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920002,
+   "db": "synthea",
+   "round": 1,
+   "ms": null,
+   "error": "operator does not exist: text - text",
+   "excluded": false
+  },
+  {
+   "qid": 920002,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.382,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920002,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.252,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921027,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 43.839,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920026,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.974,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921020,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 11.716,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922016,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.167,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922016,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.13,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922016,
+   "db": "social_media",
+   "round": 3,
+   "ms": 0.159,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922022,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.504,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922022,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.316,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920030,
+   "db": "synthea",
+   "round": 1,
+   "ms": 2.326,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922000,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.088,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921018,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 11.345,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921018,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 10.86,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921018,
+   "db": "college_completion",
+   "round": 3,
+   "ms": null,
+   "error": "column \"state_sector_grads.state\" must appear in the GROUP BY clause or be used in an aggregate function",
+   "excluded": false
+  },
+  {
+   "qid": 921026,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 37.148,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921026,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 35.867,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921026,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 34.884,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921011,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.379,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922017,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.215,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920027,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.91,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920012,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.732,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920035,
+   "db": "synthea",
+   "round": 1,
+   "ms": 2.314,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920035,
+   "db": "synthea",
+   "round": 2,
+   "ms": 1.978,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920035,
+   "db": "synthea",
+   "round": 3,
+   "ms": 1.817,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920021,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.112,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920029,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.721,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920029,
+   "db": "synthea",
+   "round": 2,
+   "ms": 1.349,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920029,
+   "db": "synthea",
+   "round": 3,
+   "ms": 1.361,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921016,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 40.689,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921016,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 41.472,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921016,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 67.364,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920019,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.346,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921023,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 31.962,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921023,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 30.905,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921023,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 30.649,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921031,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 37.917,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921031,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 49.827,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921031,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 47.864,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920014,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.739,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920014,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.633,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920014,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.55,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920008,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.272,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922006,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.092,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921034,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 1.121,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921034,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 1.964,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921034,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 2.003,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922011,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.147,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920001,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.236,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920007,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.25,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920007,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.4,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920007,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.387,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920034,
+   "db": "synthea",
+   "round": 1,
+   "ms": 4.669,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921001,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.091,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920038,
+   "db": "synthea",
+   "round": 1,
+   "ms": 5.156,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921025,
+   "db": "college_completion",
+   "round": 1,
+   "ms": null,
+   "error": "invalid input syntax for type bigint: \"NULL\"",
+   "excluded": false
+  },
+  {
+   "qid": 921025,
+   "db": "college_completion",
+   "round": 2,
+   "ms": null,
+   "error": "invalid input syntax for type bigint: \"NULL\"",
+   "excluded": false
+  },
+  {
+   "qid": 921025,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 164.367,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920024,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.78,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922001,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.172,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921009,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.705,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921009,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 1.204,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921009,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 1.012,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922023,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.14,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921007,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.375,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920013,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.716,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921015,
+   "db": "college_completion",
+   "round": 1,
+   "ms": null,
+   "error": "invalid input syntax for type bigint: \"NULL\"",
+   "excluded": false
+  },
+  {
+   "qid": 921015,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 39.465,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921015,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 39.47,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922010,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.412,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922014,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.155,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922013,
+   "db": "social_media",
+   "round": 1,
+   "ms": null,
+   "error": "division by zero",
+   "excluded": false
+  },
+  {
+   "qid": 922013,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.176,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922013,
+   "db": "social_media",
+   "round": 3,
+   "ms": 0.17,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921022,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.343,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921022,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 0.327,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920031,
+   "db": "synthea",
+   "round": 1,
+   "ms": 2.273,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921000,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.43,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921000,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 0.379,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921000,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 0.368,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921024,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 35.407,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921024,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 34.445,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921024,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 34.295,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921008,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 3.755,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921030,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 47.809,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921010,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 5.446,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920005,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.369,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920005,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.319,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920028,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.798,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920028,
+   "db": "synthea",
+   "round": 2,
+   "ms": 3.811,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920028,
+   "db": "synthea",
+   "round": 3,
+   "ms": 3.785,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920020,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.982,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921003,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.547,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922021,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.315,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922021,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.309,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922021,
+   "db": "social_media",
+   "round": 3,
+   "ms": 0.369,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922018,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.193,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922018,
+   "db": "social_media",
+   "round": 2,
+   "ms": 0.18,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922018,
+   "db": "social_media",
+   "round": 3,
+   "ms": 0.25,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920004,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.247,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920004,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.265,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922003,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.091,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920016,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.953,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920016,
+   "db": "synthea",
+   "round": 2,
+   "ms": null,
+   "error": "for SELECT DISTINCT, ORDER BY expressions must appear in select list",
+   "excluded": false
+  },
+  {
+   "qid": 920016,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.824,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920032,
+   "db": "synthea",
+   "round": 1,
+   "ms": 2.302,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920015,
+   "db": "synthea",
+   "round": 1,
+   "ms": 1.265,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920010,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.228,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920010,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.221,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920010,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.204,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921014,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 4.92,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921014,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 4.36,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921014,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 4.146,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921035,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 2.979,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921017,
+   "db": "college_completion",
+   "round": 1,
+   "ms": null,
+   "error": "column s.state_abbr does not exist",
+   "excluded": false
+  },
+  {
+   "qid": 921017,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 0.401,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921017,
+   "db": "college_completion",
+   "round": 3,
+   "ms": null,
+   "error": "column s.state_abbr does not exist",
+   "excluded": false
+  },
+  {
+   "qid": 921006,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.274,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922008,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.131,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920023,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.98,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920023,
+   "db": "synthea",
+   "round": 2,
+   "ms": 0.722,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920023,
+   "db": "synthea",
+   "round": 3,
+   "ms": 0.707,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922005,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.085,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920009,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.481,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920025,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.755,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920036,
+   "db": "synthea",
+   "round": 1,
+   "ms": 8.327,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920036,
+   "db": "synthea",
+   "round": 2,
+   "ms": 4.575,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920036,
+   "db": "synthea",
+   "round": 3,
+   "ms": 4.137,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 922019,
+   "db": "social_media",
+   "round": 1,
+   "ms": 0.32,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920006,
+   "db": "synthea",
+   "round": 1,
+   "ms": 0.394,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 920037,
+   "db": "synthea",
+   "round": 1,
+   "ms": 4.38,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921021,
+   "db": "college_completion",
+   "round": 1,
+   "ms": 0.449,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921021,
+   "db": "college_completion",
+   "round": 2,
+   "ms": 0.352,
+   "error": null,
+   "excluded": false
+  },
+  {
+   "qid": 921021,
+   "db": "college_completion",
+   "round": 3,
+   "ms": 0.3,
+   "error": null,
+   "excluded": false
+  }
+ ]
+}

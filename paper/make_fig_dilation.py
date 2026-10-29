@@ -42,7 +42,7 @@ for ax, (wl, name) in zip(axs, (("bal_test", "bal_test"), ("test2", "test2"))):
     ax.set_xlabel("concurrent agents", color=INK2, labelpad=1)
     ax.tick_params(colors=INK2, length=2, width=0.5, pad=1.5)
 axs[0].set_yticks([1, 2, 4, 8, 16]); axs[0].set_yticklabels(["1×", "2×", "4×", "8×", "16×"])
-axs[0].set_ylim(0.85, 22)
+axs[0].set_ylim(0.7, 22)
 axs[0].set_ylabel("time per step\n(relative to 8 agents)", color=INK2, labelpad=1)
 h, l = axs[0].get_legend_handles_labels()
 fig.legend(h, l, loc="upper center", ncol=2, frameon=False, fontsize=6.6, handlelength=1.6,

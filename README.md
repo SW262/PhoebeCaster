@@ -59,16 +59,23 @@ python3 src/advise.py 125 64 --workload test2      # 125 s at 64 agents
 | `data/anchors_*_v2.json` | the two anchor runs of each held-out workload |
 | `data/train_set_v2.json`, `data/r_model.json`, `data/ht_gain_fit.json` | fitted inputs of the prior model |
 | `data/questions/`, `data/*_trace.json` | BIRD questions per database and the replayed LLM query rounds |
-| `data/sql_screen.json` | LLM-written query rounds excluded from replay (see below) |
+| `data/*sql_screen.json` | LLM-written query rounds excluded from replay (see below) |
 
 Notes:
 
 - Query rounds that run longer than 1 s on their own are excluded from replay
-  (`data/sql_screen.json`); every excluded round also returns a wrong result.
+  (`data/*sql_screen.json`): three in the training workloads, all with wrong
+  results, and one in the held-out workloads (bal_test question 900086), with a
+  correct result.
+- bal_test was re-measured on 2026-10-29. The earlier runs replayed question
+  900086 because the replay read only the training screen; `harness/workload.py`
+  now reads every screen file and drops a question whose only usable round was
+  screened out. Six test2 configurations re-measured alongside agree with the
+  earlier runs within 4.0% in completion time.
 - `european_football_2` is excluded from training (`src/badpoints.py`,
   `EXCLUDED_LIBS`): one of its screened-out query rounds was replayed anyway
   through a fallback path in `harness/workload.py`, so all of its runs contain a
-  ~21 s query that should not be there.
+  ~21 s query that should not be there (the fallback is fixed since).
 
 ## Measurement setup (not included)
 

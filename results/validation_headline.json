@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-15 17:39:20",
+ "generated": "2026-10-29 15:15:00",
  "tol": 0.15,
  "met_rate": {
   "good": 189,
@@ -8,8 +8,8 @@
   "cmd": "python3 paper_numbers_v2.py"
  },
  "wall_err_median_pct": {
-  "bal_test": 8.56,
-  "test2": 7.3,
+  "bal_test": 9.03,
+  "test2": 5.57,
   "cmd": "python3 paper_numbers_v2.py"
  },
  "note": "v2 口径。达标 = 严格口径(正确报告无解算对), ±15% 双向。误差 = |预测/实测 - 1| 的墙钟中位, 逐配置。"
