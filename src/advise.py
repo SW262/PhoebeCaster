@@ -38,6 +38,35 @@ MEAS_V2 = {"bal_test": "testv2/test", "test2": "testv2/test2"}
 # 网页"现场实测"按钮采的点(live_measure.sh)。单独目录, 只用来显示, 不进任何论文数字。
 MEAS_LIVE = {"bal_test": "testv2_live/test", "test2": "testv2_live/test2"}
 
+# 2026-11-06 第四条守卫: 探测阶段就能读出的"平均单条查询代价"超出训练范围时,
+#   先验只能外推(bal_test 20.4 ms > 训练最高 15.5 ms, 少核时低估变慢), 告警并并列给出
+#   Amdahl 定律(USL 去掉一致性项) + 学到的 h(N) 只拟两次锚点的推荐。只是并列展示, 不切换主推荐,
+#   也不进论文的 224 个目标评分(规则是看过留出结果后定的, 不报切换后的准确率)。
+#   Amdahl 拟合同 demo_usl_baseline.py h: T = (u + v(n-1))/n, n = min(N, 有效核)。
+def _train_cost_max():
+    import statistics
+    try:
+        W = json.load(open(os.path.join(D, "train_set_v2.json")))["workloads"]
+        return max(statistics.fmean(w["cost"]) for w in W)
+    except Exception:
+        return None
+
+def amdahl_alt(anchors, eff, rungs, target, agents):
+    """两次锚点拟合 Amdahl+h(N), 在 rungs 上按"最接近目标"挑。eff(srv, th, agents) = 有效核。"""
+    A = [x for x in anchors if "wall_s" in x]
+    if len(A) < 2: return None
+    n_ = lambda s, th, ag: min(ag, eff(s, th, ag))
+    (n1, t1), (n2, t2) = [(n_(x["srv"], x.get("th", 2), x["agents"]), x["wall_s"]) for x in A[:2]]
+    if abs(n1 - n2) < 1e-9: return None
+    v = (t1 * n1 - t2 * n2) / (n1 - n2); u = t1 * n1 - v * (n1 - 1)
+    out = []
+    for th in (2, 1):
+        pr = {s: (u + v * (n_(s, th, agents) - 1)) / n_(s, th, agents) for s in rungs}
+        b = min(rungs, key=lambda s: abs(pr[s] / target - 1))
+        out.append(dict(ht="on" if th == 2 else "off", srv=b, pred=pr[b], dev=pr[b] / target - 1,
+                        fits=abs(pr[b] / target - 1) <= TOL))
+    return out
+
 def measured_live(wl, srv, th, agents):
     """现场实测的完成时间(秒); 没测过返回 None。闸同 testv2: steps = passes x questions。"""
     p = os.path.join(D, MEAS_LIVE.get(wl, ""), f"s{srv}_l4_t{th}_a{agents}_b0", "point.json")
@@ -99,6 +128,7 @@ def run_measure(wl, todo, agents):
 #   挑法同评分: 预测离目标的 |pred/T-1| 最小的一档; <= TOL 算达标, 否则如实说无解。
 #   --any-core 退回旧行为(1..max 任意整数核, 那些档多数没实测, 不在 224 的评分里)。
 RUNGS = [2, 4, 6, 8, 11, 13, 16]
+_GRID_RUNGS = tuple(RUNGS)     # main 里有同名局部变量, 守卫用这个
 def rung_pick(adv, wl, target, agents, th, max_cores):
     # 候选 = 网格 7 档 + 网页上现场实测过的核数(2026-10-22 用户定: "测过的就能推荐")。
     # 论文 224 个目标的评分只读 testv2/, 没有现场点, 所以那边仍逐位 = 7 档口径。
@@ -209,6 +239,22 @@ def main():
     adv.db_time = (lambda srv, th, agents, _f=_dbt, _m=_pp:
                    to_wall(_f(srv, th, agents), agents, _m.effective_cores(srv, th, agents)))
 
+    # 第四条守卫: 探测的平均单条代价 vs 训练范围
+    try:
+        _cost = json.load(open(a.offline))["cost_ms"]; _pm = sum(_cost) / len(_cost)
+    except Exception:
+        _pm = None
+    _tm = _train_cost_max()
+    if _pm is not None and _tm is not None and _pm > _tm and a.anchors and os.path.exists(a.anchors):
+        _rg = [x for x in _GRID_RUNGS if x <= a.max_cores]
+        _alt = amdahl_alt(json.load(open(a.anchors)), _pp.effective_cores, _rg, float(a.target), a.agents)
+        if _alt:
+            for x in _alt: x["measured"] = measured(a.workload, x["srv"], 2 if x["ht"] == "on" else 1, a.agents)
+            JOUT["alt"] = dict(probe_mean_ms=_pm, train_max_ms=_tm, rows=_alt)
+            _warns.append(("!! Probe mean query cost %.1f ms exceeds the training range (max %.1f ms): "
+                           "the prior extrapolates; Amdahl's law + h(N) on the two anchor runs is shown alongside." if a.lang == "en" else
+                           "!! 探测的平均单条代价 %.1f ms 超出训练范围(最高 %.1f ms): 先验在外推; 并列给出只用两次锚点的 Amdahl+h(N) 推荐。")
+                          % (_pm, _tm))
     JOUT.update(target=a.target, agents=a.agents, max_cores=a.max_cores,
                 workload=os.path.basename(a.offline), warnings=[w.strip() for w in _warns])
     if a.anchors and os.path.exists(a.anchors):
@@ -311,6 +357,12 @@ def main():
                                  meas_dev=(y/a.target-1) if y else None,
                                  met=(None if y is None else abs(y/a.target-1) <= TOL),
                                  extrapolated=bool(n > GRID_MAX_CORES), live=bool(r.get("live"))))
+    if JOUT.get("alt"):
+        print(("  Amdahl's law + h(N), two anchor runs only:" if EN else "  Amdahl+h(N)(只用两次锚点):"))
+        for x in JOUT["alt"]["rows"]:
+            _m = (f"  measured {x['measured']:,.0f}s" if EN else f"  实测 {x['measured']:,.0f}s") if x["measured"] else ""
+            print(f"  {x['ht']:<6s} {x['srv']:>7d} {x['pred']:10,.0f}s {100*x['dev']:+9.1f}%"
+                  + ("" if x["fits"] else ("  (outside band)" if EN else "  (不在带内)")) + _m)
     if not ok:
         print("  -> relax the target, raise concurrency, or allow more cores (--max-cores)" if EN else
               "  -> 放宽目标、提高并发, 或给更多核(--max-cores)")

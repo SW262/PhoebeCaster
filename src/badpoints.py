@@ -26,6 +26,8 @@ RC3 = os.path.join(DATA, "rc3")
 # nominal_steps 不给它投票, 所有按 NOM 过滤的加载(eval_parts / paper_numbers_v2 / build_train_v2)
 # 随之跳过; 老网格(fit_rmodel / ht_select)与离线标签(rev1_numbers 探测)各自查这张表。
 EXCLUDED_LIBS = {"pdb_european_football_2": "qid 1127 screened-out SQL leaked in via cache fallback"}
+# 老网格 {lib}_grid(b0.2)里的 efb2 也剔除(fit_rmodel / ht_select 用)。
+OLD_GRID_EXCLUDED = dict(EXCLUDED_LIBS)
 
 
 def nominal_steps(root=RC3):

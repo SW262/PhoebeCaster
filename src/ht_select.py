@@ -8,7 +8,7 @@ def imp(n):
     s=importlib.util.spec_from_file_location(n,os.path.join(D,n+".py")); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 pp=imp("phoebe_predictor")
 import badpoints
-meta=[w for w in json.load(open(f"{DATA}/pdb_meta.json")) if w not in badpoints.EXCLUDED_LIBS]
+meta=[w for w in json.load(open(f"{DATA}/pdb_meta.json")) if w not in badpoints.OLD_GRID_EXCLUDED]
 lab=[x for x in json.load(open(f"{DATA}/train_label_noise.json")) if x.get("median",0)>0]
 _c=collections.defaultdict(list)
 for x in lab: _c[int(x["qid"])].append(x["median"])

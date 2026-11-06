@@ -1,0 +1,3845 @@
+{
+ "cmd": "python3 demo_usl_baseline.py",
+ "params": {
+  "bal_test": {
+   "u": 950.387,
+   "v": -12.076999999999998,
+   "sigma": -0.012707454963083458
+  },
+  "test2": {
+   "u": 624.073,
+   "v": -16.567,
+   "sigma": -0.02654657387837641
+  }
+ },
+ "n": 224,
+ "fwd_median": 15.942333246773599,
+ "fwd_within15": 47.395833333333336,
+ "n_fwd": 192,
+ "closest": 57.142857142857146,
+ "deadline": 83.03571428571429,
+ "ours_closest": 84.375,
+ "by": {
+  "bal_test/on": 39.285714285714285,
+  "bal_test/off": 78.57142857142857,
+  "test2/on": 55.357142857142854,
+  "test2/off": 55.357142857142854
+ },
+ "feasible": 57.03703703703704,
+ "infeasible": 57.30337078651685,
+ "only_ours": 83,
+ "only_usl": 22,
+ "ht_mode": "none",
+ "targets": [
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 1,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 1.3,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 8,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 16,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 32,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 64,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 96,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 128,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "on",
+   "agents": 224,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 1,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 1.3,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 8,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 1.3,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 16,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 32,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 64,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 3.5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 96,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 3.5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 128,
+   "k": 7,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 3.5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "bal_test",
+   "ht": "off",
+   "agents": 224,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 1,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 1.3,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 1.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 8,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 1.3,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 3.5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 16,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 32,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 64,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 96,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 128,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 1,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 3.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 5,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "on",
+   "agents": 224,
+   "k": 7,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 1,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 1.3,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 1.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 2.5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 8,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 1.3,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 1.8,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 16,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 1.3,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": false,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 32,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 64,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 96,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 3.5,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": false
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 128,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 0.8,
+   "feasible": false,
+   "ok": true,
+   "dl_ok": true,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 1,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": false,
+   "best": 16,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 1.3,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 13,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 1.8,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 11,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 2.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 8,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 3.5,
+   "feasible": true,
+   "ok": true,
+   "dl_ok": true,
+   "best": 6,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 5,
+   "feasible": true,
+   "ok": false,
+   "dl_ok": true,
+   "best": 4,
+   "ok_ours": true
+  },
+  {
+   "workload": "test2",
+   "ht": "off",
+   "agents": 224,
+   "k": 7,
+   "feasible": false,
+   "ok": false,
+   "dl_ok": true,
+   "best": 2,
+   "ok_ours": true
+  }
+ ],
+ "fwd_points": [
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.041619832610365615
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.10872456543692666
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.01626870397006186
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.11393915185122683
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.07782934189977042
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.13169726881090793
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.05100188400177075
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.09950910098153298
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.020509407782085987
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.11880445732487677
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.03129626660003648
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.07813316283167904
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.1720668818089277
+  },
+  {
+   "workload": "bal_test",
+   "srv": 11,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.08007858269930779
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.04939255104955187
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.16463944576388967
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.04303510220569462
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.12071677701422978
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.06147367636075096
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.12782918594472914
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.05485939580974297
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.08957517467145526
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.09952922947240395
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.08840762231128663
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.018605098191466052
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.05776683410486205
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.1579594937250579
+  },
+  {
+   "workload": "bal_test",
+   "srv": 13,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.06963646625278042
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.12407309563284574
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.23112475811223598
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.10682371300648374
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.2016969978746015
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.15914019868476292
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.31794547070785795
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.13290408685928656
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.0075022527714327936
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.14601133275307743
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.09532770073198737
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.015400684019742372
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.3031871982275951
+  },
+  {
+   "workload": "bal_test",
+   "srv": 16,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.003110290915877001
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.17583590854066555
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.016393407107637037
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.22328692115143922
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.05671728524643327
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.13177028552681103
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.08955303603858855
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.14871565091560823
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.35495246236844835
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.26655904021683674
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.42481208716118757
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.2682367061609452
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.30174025959612205
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.30645996702905
+  },
+  {
+   "workload": "bal_test",
+   "srv": 2,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.3328077726168661
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.1306255720187004
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.011659134646571756
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.14871426273674038
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.0308200950808728
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.0827794018013237
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.04092861404763304
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.11811874987768833
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.26677567762319154
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.2080569196369575
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.30994182214197674
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.2034322243636324
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.23385864606447337
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.22060630013779536
+  },
+  {
+   "workload": "bal_test",
+   "srv": 4,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.2477901231197619
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.06609026050875144
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.022776932317023713
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.09821472640941331
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.028110476290316933
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.02587031645146487
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.00752937817952315
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.05355105094440571
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.20431006719764433
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.1410633147686593
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.23627872605236244
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.13784224683706126
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.15310027803906
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.14017745733311804
+  },
+  {
+   "workload": "bal_test",
+   "srv": 6,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.18702069145800482
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.04013262217096725
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.04756415220528709
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.05851459197245901
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.0220473294720388
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.015481183325358083
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.08700493483487293
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.04365308956260128
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.17980945321356923
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.10489403405610664
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.19534149142958124
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.11973142419665206
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.1390578627207475
+  },
+  {
+   "workload": "bal_test",
+   "srv": 8,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.15395933511744198
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.041070224087536245
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.17030680709578516
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.0706248073168223
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.031918600599344926
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.015522955453747711
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.09751166407465006
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.056430146779222534
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.2166944030831215
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.06942521548836589
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.2614802482215832
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.07576539831689799
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.20945553749709744
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.21782064310777893
+  },
+  {
+   "workload": "test2",
+   "srv": 11,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.2064792565357112
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.02946063015486866
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.27339967127182263
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.012914516761715067
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.14168393986303884
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.02357997791242572
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.18073655444219305
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.0018375034453190775
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.1629221471738358
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.2238908659549228
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.17335007173601147
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.008847144372064908
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.12601542062508608
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.09865075246497135
+  },
+  {
+   "workload": "test2",
+   "srv": 13,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.15970646625070906
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.14776894310714161
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.3982207865456596
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.15155786886431
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.2783755533694048
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.17543120103980048
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.2031939682118704
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.1909488849825941
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.019015379471748695
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.4127786255722613
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.19802521439065224
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.06697670721043014
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.149868742645062
+  },
+  {
+   "workload": "test2",
+   "srv": 16,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.047439331223115055
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.5955173627343353
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.22634341313738937
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.5927565033637636
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.3589765385923156
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.49301790620745223
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.2517328344308638
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.5838782342083033
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.9423534376918357
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.457436089359742
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.969008277855925
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.64815327267104
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.7481482760406775
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.5964565584152794
+  },
+  {
+   "workload": "test2",
+   "srv": 2,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.8791596295540172
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.42032067577325183
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.22462155131977313
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.43689271812114105
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.28622613961070953
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.36165188943151105
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.19667813955814095
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.42756447219294924
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.6614368195124207
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.46766082708150214
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.7300153010204693
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.520484122025858
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.5852266454704025
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.44797717005485627
+  },
+  {
+   "workload": "test2",
+   "srv": 4,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.6140573715210647
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.3159394496394303
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.1079000912950383
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.25135368836729666
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.1835771611012702
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.23114962922523996
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.0799661586473035
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.2649175944882256
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.49543829401590367
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.3112338590498338
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.522778171669086
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.38300242749457003
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.4382616644610615
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 8,
+   "err": 0.24052936538496783
+  },
+  {
+   "workload": "test2",
+   "srv": 6,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.44297810623753575
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 128,
+   "err": 0.1976579736380608
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 16,
+   "err": 0.0025730071033938096
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 224,
+   "err": 0.21835795127565683
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 32,
+   "err": 0.11391139640113646
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 64,
+   "err": 0.1979290443048718
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 8,
+   "err": 0.07636263160956314
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "off",
+   "agents": 96,
+   "err": 0.22255586995438015
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 128,
+   "err": 0.4023625524398322
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 16,
+   "err": 0.17403600872490665
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 224,
+   "err": 0.378739200277862
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 32,
+   "err": 0.27803042498390207
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 64,
+   "err": 0.39647325256700583
+  },
+  {
+   "workload": "test2",
+   "srv": 8,
+   "ht": "on",
+   "agents": 96,
+   "err": 0.39724128827877503
+  }
+ ]
+}

@@ -28,9 +28,17 @@ python3 paper/demo_failmap.py        # 224 scored targets         -> results/dem
 python3 paper/paper_numbers_v2.py    # Table 2, dataset, abstract -> results/paper_numbers_v2.json
 python3 paper/rev1_numbers.py        # Sections 2-4               -> results/rev1_numbers.json
 python3 paper/make_fig_dilation.py   # Figure 2                   -> ./fig_dilation.pdf
+python3 paper/demo_review_numbers.py # accuracy by hyper-threading, full-grid run time, h(N)
+python3 paper/demo_extrap_err.py     # low-core extrapolation paragraph (Section 4)
+python3 paper/demo_usl_baseline.py none  # Amdahl's law baseline       -> results/demo_usl_baseline_none.json
+python3 paper/demo_usl_baseline.py h     # ... with the learned h(N)  -> results/demo_usl_baseline_h.json
+python3 paper/demo_amdahl_breakdown.py   # PhoebeCaster vs Amdahl + h(N), by core range and workload
+python3 paper/demo_no_exclude.py         # accuracy with question 900086 kept -> results/demo_no_exclude.json
 ```
 
-Run `demo_failmap.py` before `rev1_numbers.py`, which reads its output.
+Run `demo_failmap.py` first: `rev1_numbers.py`, `demo_review_numbers.py`,
+`demo_extrap_err.py`, `demo_usl_baseline.py` and `demo_amdahl_breakdown.py` read
+its output; `demo_amdahl_breakdown.py` also needs both `demo_usl_baseline.py` runs.
 
 ## Run the demo
 
@@ -48,6 +56,11 @@ The command-line tool gives the same answers:
 python3 src/advise.py 125 64 --workload test2      # 125 s at 64 agents
 ```
 
+When the probe's mean query cost lies above the training range (bal_test:
+20.4 ms against at most 15.5 ms), the tool warns and also shows the answer of
+Amdahl's law with the learned hyper-threading gain h(N), fitted to the two
+anchor runs alone.
+
 ## Data
 
 | Path | Contents |
@@ -55,6 +68,7 @@ python3 src/advise.py 125 64 --workload test2      # 125 s at 64 agents
 | `data/rc3/`, `data/rc4/` | training runs on 10 BIRD databases: one `point.json` per run (db_time split into four components, completion time, per-query times) |
 | `data/testv2/` | the two held-out workloads (`test` = bal_test, `test2`), 196 configurations |
 | `data/testv2_live/` | configurations measured live outside the grid |
+| `data/testv2_pre900086/`, `data/*_pre900086.json` | bal_test grid, anchors and probe from before question 900086 was excluded (used only by `demo_no_exclude.py`) |
 | `data/offline_*.json`, `data/*_label_noise.json` | serial-probe results (per-query offline cost) |
 | `data/anchors_*_v2.json` | the two anchor runs of each held-out workload |
 | `data/train_set_v2.json`, `data/r_model.json`, `data/ht_gain_fit.json` | fitted inputs of the prior model |

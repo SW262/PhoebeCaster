@@ -420,6 +420,13 @@ function renderRec(d){
     h += /floor enabled|地板已启用/.test(t) ? `<p class="hint" style="margin:-.4rem 0 .8rem">ℹ ${esc(t)}</p>`
                                            : `<div class="warnbox">⚠ ${esc(t)}</div>`;
   });
+  /* 第四条守卫(2026-11-06): 探测平均代价超训练范围时, 并列显示 Amdahl+h(N)(只拟两次锚点); 只展示, 不改主推荐 */
+  if(d.alt){
+    h += `<div class="warnbox" style="margin-top:-.3rem"><strong>Alongside: Amdahl's law + h(N), two anchor runs only</strong><br>`
+      + d.alt.rows.map(x => `HT ${x.ht}: ` + (x.fits ? `<strong>${cores(x.srv)}</strong>, ${fmt(x.pred)} s predicted` : `none fits (nearest ${cores(x.srv)}, ${fmt(x.pred)} s)`)
+          + (x.measured!=null ? `, ${fmt(x.measured)} s measured` : "")).join("<br>")
+      + `</div>`;
+  }
   if(!d.feasible){
     /* 两档都无解: 最上面直说达不到, 并给出离目标最近的那个配置 (核数 + 时间) */
     const cand = (d.rows||[]).filter(r=>r.nearest).map(r=>({ht:r.ht, ...r.nearest}));
