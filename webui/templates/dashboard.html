@@ -42,6 +42,7 @@
   --shadow:0 2px 8px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;}
 .nav{background:var(--nav);color:#fff;display:flex;justify-content:space-between;align-items:center;
@@ -136,11 +137,81 @@ td.why{text-align:left;color:var(--ink2);font-size:.78rem;padding-top:0;white-sp
 .tscroll{overflow-x:auto;max-width:100%}
 #rec th,#rec td{padding:.38rem .32rem} #rec thead th{white-space:normal;line-height:1.2}
 /* 布局: 左窄输入, 右宽主区 (推荐占满宽, 下面扫描图 + CI 并排) */
-.layout{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:16px;align-items:start}
-.layout>aside{position:sticky;top:14px}
+.layout{display:flex;flex-direction:column;gap:16px}
+.layout>aside>.card{margin-bottom:0}
+/* 输入条: 宽屏一行排开 */
+.tbar{display:grid;grid-template-columns:minmax(150px,190px) minmax(130px,170px) minmax(110px,140px) minmax(110px,140px) minmax(110px,140px) minmax(0,1fr);gap:.4rem 1rem;align-items:end}
+.tbar .seg,.tbar input,.tbar select{margin-bottom:0}
+.tbar .cases{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0}
+.tbar .lab{white-space:nowrap}
+@media (max-width:1200px){ .tbar{grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr))} .tbar .cases-wrap{grid-column:1/-1} }
+/* 主区: 与论文 Fig. 3 同布局 —— 第一行 推荐 | 扫描, 第二行 分量 | 找错 */
+main{display:flex;flex-direction:column;gap:16px}
+main .card{margin-bottom:0!important}
+.figrow{display:grid;gap:16px;align-items:stretch}
+.figrow.r1{grid-template-columns:minmax(0,196fr) minmax(0,795fr)}
+.figrow.r2{grid-template-columns:minmax(0,276fr) minmax(0,298fr) minmax(0,407fr)}
+.figrow>.card{min-width:0;display:flex;flex-direction:column}
+.figrow>.card>.body{flex:1}
+#rec{display:flex;flex-direction:column}
+#rec>.tiles{flex:1}
+body.fig #rec .tile{justify-content:center}
+/* 宽屏两行布局里 B、E 占地大: 放大其字号, 填满而不留空 */
+@media (min-width:1101px){
+  body.fig #rec .goal{font-size:1.2rem;margin-bottom:1.3rem}
+  body.fig #rec .tiles{gap:22px}
+  body.fig #rec .tile{padding:1.4rem 1.6rem;gap:.9rem}
+  body.fig #rec .t-ht{font-size:.9rem}
+  body.fig #rec .chip{font-size:.95rem;padding:.2rem .8rem}
+  body.fig #rec .t-big{font-size:4.2rem}
+  body.fig #rec .t-big small{font-size:1.4rem}
+  body.fig #rec .t-kv{font-size:1.2rem;gap:.55rem 1rem;padding-top:.9rem}
+  body.fig #rec .livebtn{font-size:1.05rem;padding:.55rem 1.1rem!important}
+  body.fig .hunt h3{font-size:1.05rem;color:var(--ink);margin-bottom:.6rem}
+  body.fig .hm{border-spacing:3px}
+  body.fig .hm th{font-size:.82rem}
+  body.fig .hm button{height:2.55rem;font-size:1rem;width:3.4rem}
+  body.fig .hm{width:auto;margin:0 auto}   /* 方阵居中, 不靠右 */
+  body.fig #huntsel{font-size:.78rem}
+  body.fig #huntsel .seg button{font-size:.78rem;padding:.22rem .6rem}
+}
+body.fig .card>h2{flex-wrap:wrap}
+/* Case 2 一类: 提示框占了位置 -> 缩小推荐区字号, 让 B 与 Case 1 同高 */
+@media (min-width:1101px){
+  body.fig #rec.dense .goal{font-size:1rem;margin-bottom:.6rem}
+  body.fig #rec.dense .warnbox{font-size:.72rem;padding:.3rem .55rem;margin-bottom:.4rem;line-height:1.4}
+  body.fig #rec.dense .critbox{font-size:.84rem;padding:.45rem .8rem;margin-bottom:.6rem;line-height:1.45}
+  body.fig #rec.dense .tiles{gap:14px}
+  body.fig #rec.dense .tile{padding:.75rem 1.1rem;gap:.45rem}
+  body.fig #rec.dense .t-ht{font-size:.74rem}
+  body.fig #rec.dense .chip{font-size:.78rem;padding:.12rem .6rem}
+  body.fig #rec.dense .t-big{font-size:3.3rem}
+  body.fig #rec.dense .t-big small{font-size:1.15rem}
+  body.fig #rec.dense .t-kv{font-size:1.05rem;gap:.35rem .9rem;padding-top:.6rem}
+  body.fig #rec.dense .livebtn{font-size:.88rem;padding:.35rem .8rem!important}
+}
+@media (max-width:1100px){ .figrow.r1,.figrow.r2{grid-template-columns:minmax(0,1fr)} }
+@media (min-width:1101px) and (max-width:1400px){ .figrow.r2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .figrow.r2>#huntcard{grid-column:1/-1} }
+.card>h2 .figb{display:inline-grid;place-items:center;width:1.45em;height:1.45em;border-radius:50%;background:var(--ink);color:var(--card);font-weight:700;font-size:.9em;flex:none}
+.card>h2 .ttl{display:inline-flex;align-items:center;gap:.5em}
+.card>h2 .figb.in{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);font-weight:400}   /* 输入框: 空心圆, 不占论文的 A–D */
+/* 图视图(默认): 与论文 Fig. 3 一样, 只留四块主体; 导航栏 Details 打开其余说明 */
+body.fig .xtra, body.fig #rec-sub, body.fig #rec p.t-why, body.fig #rec .recfoot, body.fig #rec details,
+body.fig #sweepcard details, body.fig #compcard details, body.fig #comphint, body.fig #huntsub, body.fig #huntlg,
+body.fig #huntcard .body>p.hint, body.fig aside p.hint, body.fig #pipecard{display:none!important}
+/* 图视图: 每块按论文截图时的原宽排版, 再整体缩放(同 compose.html 的 fit) —— 位置与大小与 Fig. 3 一致 */
+body.fig #huntcard>h2{display:none}
+body.fig .card>h2{justify-content:flex-start;gap:.1em}
+body.fig .card>h2 .ttl{white-space:nowrap;margin-right:.35em}
+
+
+
+
+body:not(.fig) .hunt h3 .figb{display:none}
+.tgl[aria-pressed="true"]{background:rgba(255,255,255,.18)}
 .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;align-items:start}
 .duo>.card{margin-bottom:0}
-@media (max-width:860px){ .layout{grid-template-columns:minmax(0,1fr)} .layout>aside{position:static} }
+
 /* 推荐结果 */
 #rec{padding:1.1rem 1.25rem}
 .goal{font-size:.95rem;color:var(--ink2);margin:0 0 1rem;line-height:1.5}
@@ -190,8 +261,13 @@ td.why{text-align:left;color:var(--ink2);font-size:.78rem;padding-top:0;white-sp
 .bar>span.ns{background:repeating-linear-gradient(135deg,var(--c-ns) 0 3px,transparent 3px 6px)}
 .comp .sep{grid-column:1/-1;border-top:1px solid var(--line);margin:.15rem 0}
 /* ── 找错 ── */
-.hunt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
-@media (max-width:900px){ .hunt{grid-template-columns:minmax(0,1fr)} }
+.hunt{display:block}
+#huntcard>.body{position:relative}
+#huntsel{position:absolute;top:.55rem;right:1rem;display:flex;gap:.35rem;font-size:.66rem}
+#huntsel .seg{margin-bottom:0;min-width:0}
+#huntsel .seg button{padding:.1rem .4rem;font-size:.6rem;white-space:nowrap;line-height:1.2}
+.hunt h3 .figb{display:inline-grid;place-items:center;width:1.45em;height:1.45em;border-radius:50%;background:var(--ink);color:var(--card);font-weight:700;margin-right:.45em;font-size:.95em}
+.hunt h3{display:flex;align-items:center;min-height:1.5rem}
 .hunt h3{margin:0 0 .35rem;font-size:.78rem;color:var(--ink2);font-weight:600}
 .hm{border-collapse:separate;border-spacing:2px;font-size:.72rem;width:100%}
 .hm th{background:none;color:var(--muted);font-weight:500;padding:.1rem .2rem;text-align:center;border:0;font-size:.68rem}
@@ -201,78 +277,72 @@ td.why{text-align:left;color:var(--ink2);font-size:.78rem;padding-top:0;white-sp
 .hm button.ok{background:color-mix(in srgb,var(--good) 14%,var(--card));color:var(--good)}
 .hm button.bad{background:color-mix(in srgb,var(--crit) 18%,var(--card));color:var(--crit)}
 .hm button.sel{outline:2px solid var(--ink);outline-offset:1px}
-.huntdet{margin-top:1rem;border-top:1px solid var(--line);padding-top:.8rem}
+.huntdet{margin:0}
+.hd-top{display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem}
+.hd-back{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:.3rem .8rem;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.hd-back:hover{border-color:var(--blue);color:var(--blue)}
+.hd-cell{font-size:.8rem;color:var(--muted)}
+.huntdet .goal{font-size:.84rem;line-height:1.5}
+.huntdet table{font-size:.84rem}
+.huntdet th,.huntdet td{padding:.26rem .5rem}
+.huntdet .hint{margin-top:.35rem}
 .huntdet td.in{color:var(--good);font-weight:700} .huntdet tr.pick td{background:var(--head);font-weight:600}
 label.chk{display:inline-flex;gap:.35rem;align-items:center;font-weight:400;font-size:.74rem;color:var(--ink2);cursor:pointer}
 label.chk input{width:auto}
 #sweep .ser.zero{stroke-width:1.5;stroke-dasharray:2 4;opacity:.9}
 </style>
 </head>
-<body>
+<body class="fig">
 
 <div class="nav">
   <div class="brand">PhoebeCaster <small>Configuration-to-performance forecasting for AI-agent applications · PostgreSQL 17 + PhoebeDB transactional vector index</small></div>
   <div class="right">
+    <button class="tgl" id="detbtn" type="button" aria-pressed="false" title="Show the explanations, data tables and measurement steps">Details</button>
     <button class="tgl" id="themebtn" type="button">Theme</button>
   </div>
 </div>
 
 <div class="wrap"><div class="layout">
 
-<!-- ───────── 左: 客户目标 ───────── -->
-<aside>
-<div class="card">
-  <h2>Customer target</h2>
+<main>
+<div class="figrow r1">
+<div class="card" id="custcard">
+  <h2><span class="ttl"><span class="figb in" title="Input">✎</span>Customer target</span></h2>
   <div class="body">
     <p class="lab">Workload</p>
     <div class="seg" id="wl">
       <button type="button" data-v="test2" aria-pressed="true">test2</button>
       <button type="button" data-v="bal_test" aria-pressed="false">bal_test</button>
     </div>
-
     <p class="lab">Completion-time limit <span class="note">(seconds, wall clock)</span></p>
     <input type="number" id="target" value="60" min="1" step="any">
-
     <div class="row" style="margin-top:.9rem">
-      <div>
-        <p class="lab">Concurrent agents</p>
-        <select id="agents"></select>
-      </div>
-      <div>
-        <p class="lab">Max physical cores</p>
-        <select id="maxcores"></select>
-      </div>
+      <div><p class="lab">Concurrent agents</p><select id="agents"></select></div>
+      <div><p class="lab">Max physical cores</p><select id="maxcores"></select></div>
     </div>
-
     <button class="btn" id="go" type="button">Recommend</button>
     <p class="lab" style="margin-top:.9rem">Try a case from the paper</p>
     <div class="cases" id="cases">
       <button type="button" data-wl="test2" data-t="125" data-ag="64"><b>Case 1 · a recommendation</b>test2, 125 s at 64 agents → 3 cores (between the grid's counts, measured live)</button>
       <button type="button" data-wl="bal_test" data-t="60" data-ag="8"><b>Case 2 · none fits</b>bal_test, 60 s at 8 agents → even 16 cores is too slow</button>
     </div>
-    <p class="hint">The answer is picked among the core counts measured in the training grid (2, 4, 6, 8, 11, 13, 16) and any count measured live (such as 3); the 224 graded targets use the grid counts only. Only concurrency levels measured in the training grid are offered. Cores are capped at 16:
+    <p class="hint xtra">The answer is picked among the core counts measured in the training grid (2, 4, 6, 8, 11, 13, 16) and any count measured live (such as 3); the 224 graded targets use the grid counts only. Only concurrency levels measured in the training grid are offered. Cores are capped at 16:
       the grid tops out at 16, and since the server is pinned from core 0 while the load generator owns cores 16–19,
       anything higher would contend with the load generator — <strong>this machine cannot even measure</strong> a clean point there.</p>
   </div>
 </div>
-</aside>
-
-<!-- ───────── 右: 推荐 (占满宽) + 扫描图与 CI 并排 ───────── -->
-<main>
 <div class="card" style="margin-bottom:16px">
-  <h2>Recommendation <span class="sub" id="rec-sub">—</span></h2>
+  <h2><span class="ttl"><span class="figb">A</span>Recommendation</span> <span class="sub" id="rec-sub">—</span></h2>
   <div class="body" id="rec">
     <p class="hint">Fill in the target on the left and press “Recommend”.</p>
   </div>
 </div>
 
-<div class="card" id="pipecard" hidden style="margin-bottom:16px">
-  <h2>How this answer was measured <span class="sub">steps ①–⑤ of the architecture figure · the shaded steps are all the user runs</span></h2>
-  <div class="body"><div class="steps" id="steps"></div><div class="guards" id="guards"></div></div>
-</div>
 
+</div>
+<div class="figrow r2">
 <div class="card" id="sweepcard" hidden style="margin-bottom:16px">
-  <h2>Core sweep <label class="chk"><input type="checkbox" id="zerotgl"> also show the prior before the two anchor runs</label></h2>
+  <h2><span class="ttl"><span class="figb">B</span>Core sweep <label class="chk"><input type="checkbox" id="zerotgl" checked> also show the prior before the two anchor runs</label></span></h2>
   <div class="body">
     <div id="sweep"></div>
     <div class="legend" id="sweeplg"></div>
@@ -281,7 +351,7 @@ label.chk input{width:auto}
 </div>
 
 <div class="card" id="compcard" hidden style="margin-bottom:16px">
-  <h2>Where the database time goes <span class="sub" id="compsub"></span></h2>
+  <h2><span class="ttl"><span class="figb">C</span>Where the database time goes</span> <span class="sub" id="compsub"></span></h2>
   <div class="body">
     <div class="seg" id="compht" style="max-width:260px">
       <button type="button" data-v="on" aria-pressed="true">HT on</button>
@@ -303,12 +373,21 @@ label.chk input{width:auto}
 <div class="card" id="huntcard" hidden>
   <h2>Hunt for failures <span class="sub" id="huntsub"></span></h2>
   <div class="body">
+    <span id="huntsel">
+      <div class="seg" id="huntwl"><button type="button" data-v="test2" aria-pressed="true">test2</button><button type="button" data-v="bal_test" aria-pressed="false">bal_test</button></div>
+      <div class="seg" id="huntht"><button type="button" data-v="on" aria-pressed="true">HT on</button><button type="button" data-v="off" aria-pressed="false">HT off</button></div>
+    </span>
     <div class="hunt" id="hunt"></div>
     <div class="legend" id="huntlg"></div>
     <p class="hint">Each cell is one mechanically generated target: a completion time (column, a multiple of the measured 16-core / 224-agent run)
       at a concurrency (row). The recommender picks among the measured core counts, so every verdict is checked against a real run. Click a cell to see why.</p>
     <div class="huntdet" id="huntdet" hidden></div>
   </div>
+</div>
+</div>
+<div class="card" id="pipecard" hidden>
+  <h2>How this answer was measured <span class="sub">steps ①–⑤ of the architecture figure · the shaded steps are all the user runs</span></h2>
+  <div class="body"><div class="steps" id="steps"></div><div class="guards" id="guards"></div></div>
 </div>
 </main>
 
@@ -318,14 +397,17 @@ label.chk input{width:auto}
 const $ = s => document.querySelector(s);
 const fmt = (x, d=0) => x==null ? "—" : Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = x => x==null ? "—" : (x>=0?"+":"") + (100*x).toFixed(1) + "%";
-const esc = s => String(s).replace([&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* ── 主题 ── */
-(function{
+(function(){
   let t = null;
   try { t = localStorage.getItem("phoebe-theme"); } catch(e){}
   if (t) document.documentElement.setAttribute("data-theme", t);
-  $("#themebtn").onclick =  => {
+  { const set = on => { document.body.classList.toggle("fig", !on); $("#detbtn").setAttribute("aria-pressed", on); try{ localStorage.setItem("phoebe-details", on?"1":"0"); }catch(e){} };
+  let on0 = false; try{ on0 = localStorage.getItem("phoebe-details")==="1"; }catch(e){}
+  set(on0); $("#detbtn").onclick = () => set(document.body.classList.contains("fig")); }
+$("#themebtn").onclick = () => {
     const cur = document.documentElement.getAttribute("data-theme");
     const dark = cur ? cur === "dark"
                      : matchMedia("(prefers-color-scheme: dark)").matches;
@@ -333,7 +415,7 @@ const esc = s => String(s).replace([&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"
     document.documentElement.setAttribute("data-theme", next);
     try { localStorage.setItem("phoebe-theme", next); } catch(e){}
   };
-});
+})();
 
 /* ── 选项 ── */
 [8,16,32,64,96,128,160,192,224].forEach(v=>{
@@ -348,20 +430,21 @@ $("#wl").onclick = e => {
   const b = e.target.closest("button"); if(!b) return;
   [...$("#wl").children].forEach(x=>x.setAttribute("aria-pressed", x===b));
 };
-const wl =  => $("#wl").querySelector('[aria-pressed="true"]').dataset.v;
+const wl = () => $("#wl").querySelector('[aria-pressed="true"]').dataset.v;
 
 /* ── 推荐 ── */
-async function advise{
+async function advise(){
   const btn=$("#go"); btn.disabled=true; btn.textContent="Computing…";
+  [...$("#huntwl").children].forEach(x=>x.setAttribute("aria-pressed", x.dataset.v===wl())); huntBack(); if(FAIL) renderHunt();
   const q = new URLSearchParams({target:$("#target").value, agents:$("#agents").value,
-                                workload:wl, max_cores:$("#maxcores").value});
+                                workload:wl(), max_cores:$("#maxcores").value});
   try{
     const r = await fetch("/api/advise?"+q);
-    const d = await r.json;
+    const d = await r.json();
     if(!r.ok){ $("#rec").innerHTML = `<div class="warnbox">⚠ ${esc(d.error||r.statusText)}</div>`;
                $("#sweepcard").hidden = true; return; }
     renderRec(d);
-    loadPanels(wl, $("#agents").value, $("#maxcores").value);
+    loadPanels(wl(), $("#agents").value, $("#maxcores").value);
   }catch(e){
     $("#rec").innerHTML = `<div class="warnbox">⚠ Request failed: ${esc(e.message)}</div>`;
   }finally{ btn.disabled=false; btn.textContent="Recommend"; }
@@ -371,7 +454,7 @@ $("#cases").onclick = e => {
   const b = e.target.closest("button"); if(!b) return;
   [...$("#wl").children].forEach(x=>x.setAttribute("aria-pressed", x.dataset.v===b.dataset.wl));
   $("#target").value = b.dataset.t; $("#agents").value = b.dataset.ag; $("#maxcores").value = 16;
-  advise;
+  advise();
 };
 
 const cores = n => `${n} core${n===1?"":"s"}`;
@@ -393,19 +476,19 @@ let LIVE_T = null;
 document.addEventListener("click", async e => {
   const b = e.target.closest(".livebtn"); if(!b) return;
   b.disabled = true; b.textContent = "Starting…";
-  const body = new URLSearchParams({workload:wl, srv:b.dataset.srv, th:b.dataset.th, agents:$("#agents").value});
+  const body = new URLSearchParams({workload:wl(), srv:b.dataset.srv, th:b.dataset.th, agents:$("#agents").value});
   const r = await fetch("/api/measure", {method:"POST", body});
-  if(!r.ok){ const j = await r.json.catch(=>({})); b.textContent = j.error || "Could not start"; return; }
+  if(!r.ok){ const j = await r.json().catch(()=>({})); b.textContent = j.error || "Could not start"; return; }
   pollLive(b);
 });
 function pollLive(b){
   clearInterval(LIVE_T);
-  LIVE_T = setInterval(async =>{
-    const s = await (await fetch("/api/measure_status")).json;
-    const el = s.started_ts ? Math.round(Date.now/1000 - (+s.started_ts)) : 0;
+  LIVE_T = setInterval(async ()=>{
+    const s = await (await fetch("/api/measure_status")).json();
+    const el = s.started_ts ? Math.round(Date.now()/1000 - (+s.started_ts)) : 0;
     if(s.state==="running" || s.state==="starting"){ b.textContent = `Measuring… ${Math.floor(el/60)}:${String(el%60).padStart(2,"0")}`; return; }
     clearInterval(LIVE_T);
-    if(s.state==="done") advise; else b.textContent = "Failed: " + (s.msg||"");
+    if(s.state==="done") advise(); else b.textContent = "Failed: " + (s.msg||"");
   }, 3000);
 }
 
@@ -416,8 +499,8 @@ function renderRec(d){
            <span class="band">· met if measured ${fmt(T*(1-tol))}–${fmt(T*(1+tol))} s (±${(100*tol).toFixed(0)}%, either direction)</span></p>`;
   /* 说明性提示(τ 地板已启用)不是警告: 去掉 "!!", 用灰色小字; 其余仍按警告显示 */
   (d.warnings||[]).forEach(w => {
-    const t = w.replace(^!!\s*/, "");
-    h += /floor enabled|地板已启用/.test(t) ? `<p class="hint" style="margin:-.4rem 0 .8rem">ℹ ${esc(t)}</p>`
+    const t = w.replace(/^!!\s*/, "");
+    h += /floor enabled|地板已启用/.test(t) ? `<p class="hint xtra" style="margin:-.4rem 0 .8rem">ℹ ${esc(t)}</p>`
                                            : `<div class="warnbox">⚠ ${esc(t)}</div>`;
   });
   /* 第四条守卫(2026-11-06): 探测平均代价超训练范围时, 并列显示 Amdahl+h(N)(只拟两次锚点); 只展示, 不改主推荐 */
@@ -437,10 +520,10 @@ function renderRec(d){
       + (c ? `<br>Closest: <strong>${cores(c.srv)}, HT ${c.ht}</strong> → ${fmt(c.pred)} s predicted`
            + (c.measured!=null ? `, <strong>${fmt(c.measured)} s measured</strong>` : " (not measured)")
            + `. A target of about <strong>${fmt(c.measured ?? c.pred)} s</strong> is reachable.` : "")
-      + (=>{ const ok = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_met);
+      + (()=>{ const ok = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_met);
                if(ok.length) return `<br>But measured live, <strong>${ok.map(r=>`${cores(r.unverified.srv)}, HT ${r.ht} → ${fmt(r.unverified.live_measured)} s`).join("; ")}</strong> lands within the band.`;
                const un = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_measured==null);
-               return un.length ? `<br>${un.map(r=>`${cores(r.unverified.srv)} (HT ${r.ht})`).join(" and ")}, not in the grid, ${un.length>1?"are":"is"} predicted to fit — measure ${un.length>1?"them":"it"} below.` : ""; })
+               return un.length ? `<br>${un.map(r=>`${cores(r.unverified.srv)} (HT ${r.ht})`).join(" and ")}, not in the grid, ${un.length>1?"are":"is"} predicted to fit — measure ${un.length>1?"them":"it"} below.` : ""; })()
       + `</div>`;
   }
   const kv = (lab, v, dev) => `<dt>${lab}</dt><dd>${v==null?"—":fmt(v)+" s"}</dd><dd class="dev">${v==null?"":pct(dev)}</dd>`;
@@ -483,9 +566,10 @@ function renderRec(d){
   const an = (d.anchors||[]).map(a=>`${a.srv} cores / HT ${(a.th??2)===2?"on":"off"} / ${a.agents} agents`).join("  +  ");
   h += `<div class="recfoot"><p class="hint" style="margin:0"><strong>Anchors</strong> ${esc(an||"none")} ·
         <span id="headline">Loading validation figures…</span></p>
-        <details><summary>Equivalent CLI output</summary><div class="mono">${esc((d.text||"").trim)}</div></details></div>`;
+        <details><summary>Equivalent CLI output</summary><div class="mono">${esc((d.text||"").trim())}</div></details></div>`;
   $("#rec").innerHTML = h;
-  paintHead;
+  $("#rec").classList.toggle("dense", /class="(warnbox|critbox)/.test(h));   /* 有提示框时缩小字号, 框不变高 */
+  paintHead();
   renderSweep(d);
 }
 
@@ -496,7 +580,7 @@ function renderRec(d){
 const SER = {on:{c:"var(--ser1)",n:"HT on"}, off:{c:"var(--ser2)",n:"HT off"}};
 
 let LASTSWEEP = null, _rz = null;
-addEventListener("resize", =>{ clearTimeout(_rz); _rz = setTimeout(=>{ if(LASTSWEEP) renderSweep(LASTSWEEP); }, 150); });
+addEventListener("resize", ()=>{ clearTimeout(_rz); _rz = setTimeout(()=>{ if(LASTSWEEP) renderSweep(LASTSWEEP); }, 150); });
 function renderSweep(d){
   LASTSWEEP = d;
   const sw = d.sweep||[];
@@ -574,8 +658,8 @@ predicted ${fmt(p.pred)} s${p.measured!=null?`\nmeasured ${fmt(p.measured)} s`:"
      <span style="color:var(--muted)">● predicted &nbsp; ○ measured &nbsp; ◎ recommended &nbsp; ╌ target</span>`
     + ((d.rows||[]).some(r=>!r.ok&&r.nearest) ? `<span style="color:var(--crit)">◌ nearest (unreachable)</span>` : "")
     + (zeroPts("on").length ? `<span style="color:var(--muted)">┈ prior before anchors</span>` : "")
-    + zeroErr
-    + (offrung ? `<span style="color:var(--muted)">◎ off the grid's rungs: that core count was measured live on this machine</span>` : "");
+    + zeroErr()
+    + (offrung ? `<span class="xtra" style="color:var(--muted)">◎ off the grid's rungs: that core count was measured live on this machine</span>` : "");
 
   let t = `<table><thead><tr><th>Cores</th><th>on · pred</th><th>on · meas</th><th>off · pred</th><th>off · meas</th></tr></thead><tbody>`;
   for(const c of d.rungs){
@@ -588,29 +672,29 @@ predicted ${fmt(p.pred)} s${p.measured!=null?`\nmeasured ${fmt(p.measured)} s`:"
 
 /* ══════════ 解释面板: /api/panels(demo_panels.py, 与 advise.py 同一条生产路径) ══════════ */
 let PANELS = null;
-const zeroOn =  => $("#zerotgl").checked && PANELS && LASTSWEEP && PANELS.agents == LASTSWEEP.agents;
+const zeroOn = () => $("#zerotgl").checked && PANELS && LASTSWEEP && PANELS.agents == LASTSWEEP.agents;
 function zeroPts(k){
-  if(!zeroOn) return [];
+  if(!zeroOn()) return [];
   return PANELS.sweep.filter(p=>p.ht===k && LASTSWEEP.rungs.includes(p.srv)).sort((a,b)=>a.srv-b.srv);
 }
 /* 本并发下、有实测的核档上: 两锚点 vs 零实测 的中位 |误差| —— 现算, 不写死 */
 const med = a => { const b=[...a].sort((x,y)=>x-y), n=b.length; return n? (n%2? b[(n-1)/2] : (b[n/2-1]+b[n/2])/2) : null; };
-function zeroErr{
-  if(!zeroOn) return "";
+function zeroErr(){
+  if(!zeroOn()) return "";
   const m = PANELS.sweep.filter(p=>p.measured!=null);
   if(!m.length) return "";
   const e1 = med(m.map(p=>Math.abs(p.pred/p.measured-1))), e0 = med(m.map(p=>Math.abs(p.pred_zero/p.measured-1)));
-  return `<span>median error at ${PANELS.agents} agents (${m.length} measured configs): <strong>${(100*e1).toFixed(1)}%</strong> with the two anchors,
+  return `<span class="xtra">median error at ${PANELS.agents} agents (${m.length} measured configs): <strong>${(100*e1).toFixed(1)}%</strong> with the two anchors,
           <strong>${(100*e0).toFixed(1)}%</strong> without</span>`;
 }
-$("#zerotgl").onchange =  => { if(LASTSWEEP) renderSweep(LASTSWEEP); };
+$("#zerotgl").onchange = () => { if(LASTSWEEP) renderSweep(LASTSWEEP); };
 
 async function loadPanels(w, agents, mc){
   try{
     const r = await fetch("/api/panels?"+new URLSearchParams({workload:w, agents, max_cores:mc}));
     if(!r.ok) return;
-    PANELS = await r.json;
-    renderPipe(PANELS); renderComp; if(LASTSWEEP) renderSweep(LASTSWEEP);
+    PANELS = await r.json();
+    renderPipe(PANELS); renderComp(); if(LASTSWEEP) renderSweep(LASTSWEEP);
   }catch(e){}
 }
 
@@ -646,9 +730,9 @@ function renderPipe(P){
 
 /* 分量拆解: 100% 堆叠, 每个核档两根(上: 模型 SQL/非SQL; 下: 实测四分量) */
 $("#compht").onclick = e => { const b=e.target.closest("button"); if(!b) return;
-  [...$("#compht").children].forEach(x=>x.setAttribute("aria-pressed", x===b)); renderComp; };
+  [...$("#compht").children].forEach(x=>x.setAttribute("aria-pressed", x===b)); renderComp(); };
 const COMPS = [["sql","--c-sql","Analytical SQL"],["tp_txn","--c-txn","Write-back"],["vec_mem","--c-mem","Memory search"],["vec_value","--c-val","Business search"]];
-function renderComp{
+function renderComp(){
   if(!PANELS) return;
   const ht = $("#compht").querySelector('[aria-pressed="true"]').dataset.v;
   const rows = PANELS.sweep.filter(p=>p.ht===ht).sort((a,b)=>a.srv-b.srv);
@@ -659,11 +743,12 @@ function renderComp{
   rows.forEach((r,i)=>{
     const ps = r.pred_sql_db/(r.pred_sql_db+r.pred_ns_db), b = r.meas_breakdown, tot = b ? COMPS.reduce((s,c)=>s+(b[c[0]]||0),0) : 0;
     const seg = (v,c,lab) => v>0 ? `<span style="width:${(100*v).toFixed(2)}%;background:var(${c})" title="${lab} ${(100*v).toFixed(1)}%"></span>` : "";
-    h += (i? `<div class="sep"></div>`:"")
-      + `<div class="k">${r.srv} cores<small>model / measured</small></div><div class="bars">
+    const x = [2,8,16].includes(r.srv) ? "" : " xtra";
+    h += (i? `<div class="sep${x}"></div>`:"")
+      + `<div class="k${x}">${r.srv} cores<small>model / measured</small></div><div class="bars${x}">
           <div class="bar">${seg(ps,"--c-sql","Model: SQL")}<span class="ns" style="width:${(100*(1-ps)).toFixed(2)}%" title="Model: non-SQL ${(100*(1-ps)).toFixed(1)}%"></span></div>
           <div class="bar">${b? COMPS.map(c=>seg((b[c[0]]||0)/tot, c[1], "Measured: "+c[2])).join("") : `<span style="width:100%;background:var(--line)" title="not measured"></span>`}</div></div>
-        <div class="tot">${b? fmt(r.meas_db??tot)+" s" : "—"}</div>`;
+        <div class="tot${x}">${b? fmt(r.meas_db??tot)+" s" : "—"}</div>`;
     t += `<tr><td>${r.srv}</td><td>${(100*ps).toFixed(1)}%</td>${COMPS.map(c=>`<td>${b?(100*(b[c[0]]||0)/tot).toFixed(1)+"%":"—"}</td>`).join("")}<td>${b?fmt(r.meas_db??tot)+" s":"—"}</td></tr>`;
     if(b) sh.push({srv:r.srv, sql:b.sql/tot, txn:b.tp_txn/tot, ps});
   });
@@ -684,17 +769,18 @@ const KIND = {right:"right", under:"under-provision: the chosen count measures o
 const kindOf = t => { if(t.ok) return "right"; if(!t.said_fit) return "missed";
   const m = t.rungs.find(r=>r.srv===t.srv).measured; return m > t.target ? "under" : "over"; };
 let FAIL = null, FSEL = null;
-fetch("/api/failmap").then(r=>r.ok?r.json:null).then(d=>{ if(d){ FAIL=d; renderHunt; } }).catch(=>{});
-function renderHunt{
+fetch("/api/failmap").then(r=>r.ok?r.json():null).then(d=>{ if(d){ FAIL=d; renderHunt(); } }).catch(()=>{});
+function renderHunt(){
   const F = FAIL; $("#huntcard").hidden = false;
   $("#huntsub").innerHTML = `${F.ok} / ${F.n} right (${(100*F.ok/F.n).toFixed(1)}%) · reproduce: <code>${esc(F.cmd)}</code>`;
   const cnt = {}; F.targets.forEach(t=>cnt[kindOf(t)]=(cnt[kindOf(t)]||0)+1);
   let h = "";
-  for(const w of ["bal_test","test2"]) for(const ht of ["on","off"]){
+  const pick = id => $(id).querySelector('[aria-pressed="true"]').dataset.v;
+  for(const w of [pick("#huntwl")]) for(const ht of [pick("#huntht")]){
     const T = F.targets.filter(t=>t.workload===w && t.ht===ht);
     const ags = [...new Set(T.map(t=>t.agents))].sort((a,b)=>a-b), ks = [...new Set(T.map(t=>t.k))].sort((a,b)=>a-b);
     const base = T.find(t=>t.k===ks[0]).target/ks[0];
-    h += `<div><h3>${w} · HT ${ht}</h3><div class="tscroll"><table class="hm"><thead><tr><th>agents \\ s</th>${ks.map(k=>`<th>${fmt(base*k)}</th>`).join("")}</tr></thead><tbody>`;
+    h += `<div><h3><span class="figb">D</span>${w} • HT ${ht}</h3><div class="tscroll"><table class="hm"><thead><tr><th>agents \\ s</th>${ks.map(k=>`<th>${fmt(base*k)}</th>`).join("")}</tr></thead><tbody>`;
     for(const ag of ags){
       h += `<tr><th>${ag}</th>`;
       for(const k of ks){
@@ -707,12 +793,18 @@ function renderHunt{
   }
   $("#hunt").innerHTML = h;
   $("#huntlg").innerHTML = Object.entries(KIND).filter(([k])=>k!=="right").map(([k,v])=>`<span><b style="color:var(--crit)">✗</b> ${esc(v)}: ${cnt[k]||0}</span>`).join("");
-  $("#hunt").querySelectorAll("button").forEach(b=>b.onclick==>{ FSEL=+b.dataset.i; renderHunt; huntDetail(FAIL.targets[FSEL]); });
+  $("#hunt").querySelectorAll("button").forEach(b=>b.onclick=()=>{ FSEL=+b.dataset.i; renderHunt(); huntDetail(FAIL.targets[FSEL]); });
 }
+["#huntwl","#huntht"].forEach(id=>$(id).onclick=e=>{ const b=e.target.closest("button"); if(!b) return;
+  [...$(id).children].forEach(x=>x.setAttribute("aria-pressed", x===b)); huntBack(); if(FAIL) renderHunt(); });
+function huntBack(){ $("#huntdet").hidden = true; $("#hunt").hidden = false; $("#huntsel").hidden = false; }
 function huntDetail(t){
   const el = $("#huntdet"); el.hidden = false; const tol = FAIL.tol;
+  $("#hunt").hidden = true; $("#huntsel").hidden = true;   /* 详情就地替换热力图, 模块不变高 */
   const v = t.ok ? `<span class="met">✓ Right</span>` : `<span class="miss">✗ Wrong — ${esc(KIND[kindOf(t)])}</span>`;
-  let h = `<p class="goal" style="margin:0 0 .6rem">${v} · ${t.workload}, HT ${t.ht}, ${t.agents} agents, target <b>${fmt(t.target,1)} s</b>
+  let h = `<div class="hd-top"><button type="button" class="hd-back" id="huntbackbtn">← Back</button>
+     <span class="hd-cell">${t.workload} · HT ${t.ht} · ${t.agents} agents · ${fmt(t.target,1)} s</span></div>
+     <p class="goal" style="margin:0 0 .6rem">${v} · ${t.workload}, HT ${t.ht}, ${t.agents} agents, target <b>${fmt(t.target,1)} s</b>
      <span class="band">· right band ${fmt(t.target*(1-tol),1)}–${fmt(t.target*(1+tol),1)} s</span><br>
      Tool: ${t.said_fit ? `<b>${t.srv} cores</b> (prediction ${pct(t.pred_dev)} off the target)` : `<b>none fits</b> (closest prediction ${(100*t.pred_dev).toFixed(1)}% off, at ${t.srv} cores)`}
      · truth: ${t.feasible ? "a measured core count lands in the band" : "no measured core count lands in the band"}</p>`;
@@ -723,12 +815,13 @@ function huntDetail(t){
           <td>${fmt(r.measured,1)} s</td><td class="${min?"in":""}">${pct(r.measured/t.target-1)}</td></tr>`;
   }
   el.innerHTML = h + `</tbody></table></div><p class="hint">Green = within ±${(100*tol).toFixed(0)}%. ◀ = the core count the tool chose (closest prediction).</p>`;
+  $("#huntbackbtn").onclick = huntBack;
 }
 
 /* ── 验证口径的两个数: 读实跑落盘的 validation_headline.json, 不写死 ── */
 let HEAD=null;
-fetch("/api/headline").then(r=>r.ok?r.json:null).then(d=>{HEAD=d; paintHead;}).catch(=>{});
-function paintHead{
+fetch("/api/headline").then(r=>r.ok?r.json():null).then(d=>{HEAD=d; paintHead();}).catch(()=>{});
+function paintHead(){
   const el=$("#headline"); if(!el) return;
   if(!HEAD){ el.textContent="Validation figures not generated — run python3 make_headline.py"; return; }
   const m=HEAD.met_rate, e=HEAD.wall_err_median_pct||{};
@@ -737,7 +830,7 @@ function paintHead{
     + `<br><span style="color:var(--muted)">computed ${HEAD.generated} · reproduce with <code>${esc(m.cmd)}</code></span>`;
 }
 
-advise;                       /* demo: 打开就给一条默认推荐, 不用先点 */
+advise();                       /* demo: 打开就给一条默认推荐, 不用先点 */
 </script>
 </body>
 </html>
