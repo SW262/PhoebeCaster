@@ -17,7 +17,7 @@ import numpy as np
 SRC = os.path.dirname(os.path.abspath(__file__))
 from paths import DATA as D
 TRACE = {"bal_test": "test_trace.json", "test2": "test2_trace.json"}
-RUNGS = [2, 4, 6, 8, 11, 13, 16]
+RUNGS = list(range(2, 17))   # 2026-11-11: 2..16 全部核数(网格外实测 testv2og), 原 [2,4,6,8,11,13,16]
 MAX_K0 = 0.30          # 护栏 (i), 与 phoebe_predictor.MAX_EXP_CORRECTION 一致
 MIN_RHO = 0.5          # 护栏 (ii)
 MAX_FAIL = 0.20        # 护栏 (iii)
@@ -101,6 +101,8 @@ def main():
                        pred_db=db, pred_sql_db=BK * s_, pred_ns_db=BK * n_,
                        measured=adv_mod.measured(a.workload, srv, th, a.agents), meas_breakdown=None)
             pt = os.path.join(D, adv_mod.MEAS_V2[a.workload], f"s{srv}_l4_t{th}_a{a.agents}_b0", "point.json")
+            if not os.path.exists(pt):
+                pt = os.path.join(D, adv_mod.MEAS_OG[a.workload], f"s{srv}_l4_t{th}_a{a.agents}_b0", "point.json")
             if os.path.exists(pt):
                 d = json.load(open(pt))
                 if d.get("steps") == d.get("passes", 0) * d.get("questions", 0):

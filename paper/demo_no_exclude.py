@@ -17,7 +17,13 @@ _g = glob.glob
 eval_testv2.glob.glob = lambda p: _g(p.replace("testv2/test/", "testv2_pre900086/test/"))   # 只换 bal_test 的网格目录
 sp = importlib.util.spec_from_file_location("cli", _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src", "phoebe_cli.py"))
 cli = importlib.util.module_from_spec(sp); sp.loader.exec_module(cli)
-TOL = 0.15; RUNGS = (2, 4, 6, 8, 11, 13, 16)
+TOL = 0.15; RUNGS = tuple(range(2, 17))
+# 2026-11-11: 2..16 全部核数。网格外: bal_test 用含 900086 的补采 testv2og_keep/test(testv2ogk_run.sh), test2 用 testv2og/test2。
+OGD = {"test": "testv2og_keep/test", "test2": "testv2og/test2"}
+def og(wl, s, th, ag):
+    d = json.load(open(f"{D}/{OGD[wl]}/s{s}_l4_t{th}_a{ag}_b0/point.json")); assert d["steps"] == d["passes"] * d["questions"]
+    if wl == "test": assert "900086" in d["sql_ms_by_qid"] and d["questions"] == 85
+    return d["completion_seconds"]
 R = {}
 for wl, nm, suf in (("test", "bal_test", "_pre900086"), ("test2", "test2", "")):
     e = sys.stderr; sys.stderr = io.StringIO()
@@ -28,11 +34,15 @@ for wl, nm, suf in (("test", "bal_test", "_pre900086"), ("test2", "test2", "")):
     assert len(P) == 98, (nm, len(P))
     pw = lambda s, th, ag: score_rc.to_wall(adv.db_time(s, th, ag), ag, effective_cores(s, th, ag)) / score_rc.BIAS_K
     fwd = [abs(pw(*k) / p["wall"] - 1) for k, p in P.items() if k not in ((16, 2, 224), (8, 2, 8))]
+    for (s0, th0, ag0) in [k for k in P if k[0] == 16]:
+        for s in RUNGS:
+            if (s, th0, ag0) not in P: fwd.append(abs(pw(s, th0, ag0) / og(wl, s, th0, ag0) - 1))
     base = P[(16, 2, 224)]["wall"]; ok = []
     for th in (2, 1):
         for ag in eval_testv2.AGS:
             L = {s: P[(s, th, ag)]["wall"] for s in RUNGS if (s, th, ag) in P}
             if len(L) < 4: continue
+            L.update({s: og(wl, s, th, ag) for s in RUNGS if s not in L})
             for k in score_rc.KS:
                 T = base * k
                 truly = any(abs(v / T - 1) <= TOL for v in L.values())
@@ -44,6 +54,6 @@ allf = R["bal_test"]["fwd"] + R["test2"]["fwd"]; n = sum(r["n"] for r in R.value
 out = dict(cmd="python3 demo_no_exclude.py", n=n, ok=k, closest=100 * k / n,
            per={w: dict(base=r["base"], ok=r["ok"], n=r["n"], pct=100 * r["ok"] / r["n"]) for w, r in R.items()},
            fwd_median=100 * st.median(allf), fwd_within15=100 * sum(e <= TOL for e in allf) / len(allf), n_fwd=len(allf))
-assert n == 224 and len(allf) == 192
+assert n == 224 and len(allf) == 416
 json.dump(out, open(f"{RESULTS}/demo_no_exclude.json", "w"), indent=1)
 print(json.dumps(out, indent=1))

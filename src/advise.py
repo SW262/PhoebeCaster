@@ -35,6 +35,8 @@ MEAS_DIRS = {"bal_test":["bal_test","testset_grid","prospective_grid","ladder_te
 #   都取新定义测试集 testv2(b0, 与训练同定义)。PHOEBE_MODEL=v1 退回老口径(老网格 + b0.2 实测)。
 V2 = os.environ.get("PHOEBE_MODEL", "v2") == "v2"
 MEAS_V2 = {"bal_test": "testv2/test", "test2": "testv2/test2"}
+# 2026-11-11: 网格外 8 档(3/5/7/9/10/12/14/15)全部实测(testv2og_run.sh 等, 方法同 testv2r), 共 224 点。
+MEAS_OG = {"bal_test": "testv2og/test", "test2": "testv2og/test2"}
 # 网页"现场实测"按钮采的点(live_measure.sh)。单独目录, 只用来显示, 不进任何论文数字。
 MEAS_LIVE = {"bal_test": "testv2_live/test", "test2": "testv2_live/test2"}
 
@@ -79,12 +81,13 @@ def measured_live(wl, srv, th, agents):
 def measured(wl, srv, th, agents):
     """该配置的实测完成时间(秒, 墙钟); 没采过返回 None。"""
     if V2:
-        p = os.path.join(D, MEAS_V2.get(wl, ""), f"s{srv}_l4_t{th}_a{agents}_b0", "point.json")
-        if os.path.exists(p):
-            try:
-                d = json.load(open(p))
-                if d["steps"] == d["passes"] * d["questions"]: return d["completion_seconds"]
-            except Exception: pass
+        for _dir in (MEAS_V2.get(wl, ""), MEAS_OG.get(wl, "")):
+            p = os.path.join(D, _dir, f"s{srv}_l4_t{th}_a{agents}_b0", "point.json")
+            if os.path.exists(p):
+                try:
+                    d = json.load(open(p))
+                    if d["steps"] == d["passes"] * d["questions"]: return d["completion_seconds"]
+                except Exception: pass
         return None
     for r in MEAS_DIRS.get(wl, []):
         p = os.path.join(D, r, f"s{srv}_l4_t{th}_a{agents}_b0.2", "point.json")
@@ -132,9 +135,11 @@ _GRID_RUNGS = tuple(RUNGS)     # main 里有同名局部变量, 守卫用这个
 def rung_pick(adv, wl, target, agents, th, max_cores):
     # 候选 = 网格 7 档 + 网页上现场实测过的核数(2026-10-22 用户定: "测过的就能推荐")。
     # 论文 224 个目标的评分只读 testv2/, 没有现场点, 所以那边仍逐位 = 7 档口径。
+    # 2026-11-11: 候选改为 GRID_MIN_CORES..max_cores 全部整数, 挑法不变。
+    #   224 个目标上 = testv2og_eval.py (b) 口径 186/224 = 83.0%; 只看网格 (a) 仍 189/224 = 84.4%。
     live = [n for n in range(GRID_MIN_CORES, max_cores + 1)
-            if n not in RUNGS and measured_live(wl, n, th, agents) is not None]
-    rs = sorted([r for r in RUNGS if r <= max_cores] + live) or [RUNGS[0]]
+            if n not in RUNGS and measured(wl, n, th, agents) is None and measured_live(wl, n, th, agents) is not None]
+    rs = list(range(GRID_MIN_CORES, max_cores + 1)) or [RUNGS[0]]
     preds = {r: adv.db_time(r, th, agents) for r in rs}
     best = min(rs, key=lambda r: abs(preds[r] / target - 1))
     y = measured(wl, best, th, agents)
@@ -246,7 +251,7 @@ def main():
         _pm = None
     _tm = _train_cost_max()
     if _pm is not None and _tm is not None and _pm > _tm and a.anchors and os.path.exists(a.anchors):
-        _rg = [x for x in _GRID_RUNGS if x <= a.max_cores]
+        _rg = list(range(GRID_MIN_CORES, a.max_cores + 1))   # 11-11: 与主扫描同为全部整数
         _alt = amdahl_alt(json.load(open(a.anchors)), _pp.effective_cores, _rg, float(a.target), a.agents)
         if _alt:
             for x in _alt: x["measured"] = measured(a.workload, x["srv"], 2 if x["ht"] == "on" else 1, a.agents)
@@ -356,7 +361,9 @@ def main():
                                  pred_dev=pr/a.target-1, measured=y,
                                  meas_dev=(y/a.target-1) if y else None,
                                  met=(None if y is None else abs(y/a.target-1) <= TOL),
-                                 extrapolated=bool(n > GRID_MAX_CORES), live=bool(r.get("live"))))
+                                 extrapolated=bool(n > GRID_MAX_CORES), live=bool(r.get("live")),
+                                 # 11-11: 网页"现场再测一次"的结果(testv2_live), 与事先测好的并列显示
+                                 live_measured=measured_live(a.workload, n, th, a.agents)))
     if JOUT.get("alt"):
         print(("  Amdahl's law + h(N), two anchor runs only:" if EN else "  Amdahl+h(N)(只用两次锚点):"))
         for x in JOUT["alt"]["rows"]:
@@ -371,7 +378,7 @@ def main():
         # 核数扫描: 每个训练网格采过的核档各预测一次。推荐只给一个数, 扫描让人
         # 看见目标线落在哪两档之间 —— demo 里"为什么是 3 核不是 4 核"一眼就清楚。
         # 档位就是网格实采的 2/4/6/8/11/13/16, 不插值、不外推。
-        RUNGS = [2, 4, 6, 8, 11, 13, 16]
+        RUNGS = list(range(GRID_MIN_CORES, 17))   # 11-11: 2..16 全部核数都有实测
         sweep = []
         for th2, lab2 in ((2, "on"), (1, "off")):
             for srv2 in RUNGS:

@@ -234,6 +234,8 @@ body:not(.fig) .hunt h3 .figb{display:none}
 .t-kv dt{color:var(--ink2)} .t-kv dd{margin:0;text-align:right;font-weight:600}
 .t-kv dd.dev{font-weight:400;color:var(--ink2);min-width:4.2em}
 .t-why{font-size:.82rem;color:var(--ink2);line-height:1.5;margin:0}
+.t-lim{font-size:.82rem;color:var(--ink2);line-height:1.45;margin:0}
+body.fig #rec .t-lim{font-size:1rem}
 .recfoot{margin-top:1rem;padding-top:.7rem;border-top:1px solid var(--line)}
 @media (max-width:520px){ .wrap{padding:12px 16px} .t-big{font-size:2.2rem} }
 /* ── 测量流水线 ── */
@@ -323,11 +325,11 @@ label.chk input{width:auto}
     <button class="btn" id="go" type="button">Recommend</button>
     <p class="lab" style="margin-top:.9rem">Try a case from the paper</p>
     <div class="cases" id="cases">
-      <button type="button" data-wl="test2" data-t="125" data-ag="64"><b>Case 1 · a recommendation</b>test2, 125 s at 64 agents → 3 cores (between the grid's counts, measured live)</button>
+      <button type="button" data-wl="test2" data-t="125" data-ag="64"><b>Case 1 · a recommendation</b>test2, 125 s at 64 agents → 3 cores, both settings met</button>
       <button type="button" data-wl="bal_test" data-t="60" data-ag="8"><b>Case 2 · none fits</b>bal_test, 60 s at 8 agents → even 16 cores is too slow</button>
     </div>
-    <p class="hint xtra">The answer is picked among the core counts measured in the training grid (2, 4, 6, 8, 11, 13, 16) and any count measured live (such as 3); the 224 graded targets use the grid counts only. Only concurrency levels measured in the training grid are offered. Cores are capped at 16:
-      the grid tops out at 16, and since the server is pinned from core 0 while the load generator owns cores 16–19,
+    <p class="hint xtra">The answer is picked among every core count from 2 to 16, each measured beforehand on this machine; the 224 graded targets use the same counts. Only the measured concurrency levels are offered. Cores are capped at 16:
+      the measurements top out at 16, and since the server is pinned from core 0 while the load generator owns cores 16–19,
       anything higher would contend with the load generator — <strong>this machine cannot even measure</strong> a clean point there.</p>
   </div>
 </div>
@@ -523,11 +525,23 @@ function renderRec(d){
       + (()=>{ const ok = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_met);
                if(ok.length) return `<br>But measured live, <strong>${ok.map(r=>`${cores(r.unverified.srv)}, HT ${r.ht} → ${fmt(r.unverified.live_measured)} s`).join("; ")}</strong> lands within the band.`;
                const un = (d.rows||[]).filter(r=>r.unverified && r.unverified.live_measured==null);
-               return un.length ? `<br>${un.map(r=>`${cores(r.unverified.srv)} (HT ${r.ht})`).join(" and ")}, not in the grid, ${un.length>1?"are":"is"} predicted to fit — measure ${un.length>1?"them":"it"} below.` : ""; })()
+               return un.length ? `<br>${un.map(r=>`${cores(r.unverified.srv)} (HT ${r.ht})`).join(" and ")}, not measured yet, ${un.length>1?"are":"is"} predicted to fit — measure ${un.length>1?"them":"it"} below.` : ""; })()
       + `</div>`;
   }
   const kv = (lab, v, dev) => `<dt>${lab}</dt><dd>${v==null?"—":fmt(v)+" s"}</dd><dd class="dev">${v==null?"":pct(dev)}</dd>`;
-  const ext = `<span title="Outside the training grid (extrapolated)"> ⚠</span>`;
+  const ext = `<span title="Outside the measured 2–16 cores (extrapolated)"> ⚠</span>`;
+  /* 局限挂到卡片上(论文 §4 的数): 2-4 核低于下锚点 = 外推(55.9% 对, 中位偏快 10.6%);
+     HT off 没有锚点(82.1% 对, HT on 83.9%)。2026-11-12 改为 11-11 全部整数核数口径(allint_numbers.py all)。class t-lim 不随图视图隐藏, Fig. 3 里能看到 */
+  const loA = Math.min(...(d.anchors||[]).map(a=>a.srv));
+  const offAnchor = (d.anchors||[]).some(a=>(a.th??2)===1);
+  const limNote = (s, ht) => {
+    const L = [];
+    if(isFinite(loA) && s < loA && s <= 4)
+      L.push(`<span title="At 2–4 cores, 55.9% of recommendations are right; below the lower anchor, predictions run 10.6% fast at the median, so this may under-provision.">extrapolated below the lower anchor (${cores(loA)})</span>`);
+    if(ht==="off" && !offAnchor)
+      L.push(`<span title="With hyper-threading off, 82.1% of recommendations are right, against 83.9% with it on.">no anchor run with hyper-threading off</span>`);
+    return L.length ? `<p class="t-lim">⚠ ${L.join(" · ")}</p>` : "";
+  };
   h += `<div class="tiles">`;
   for(const r of d.rows||[]){
     const ht = `Hyper-threading ${r.ht}`;
@@ -542,7 +556,7 @@ function renderRec(d){
           <div class="t-head"><span class="t-ht">${ht}</span><span class="chip na">Predicted only</span></div>
           <div class="t-big">${u.srv}<small>${u.srv===1?"core":"cores"}</small></div>
           <dl class="t-kv">${kv("Predicted", u.pred, u.dev)}</dl>
-          <p class="t-why">${cores(u.srv)} is not in the measured grid, so this has not been checked yet.
+          <p class="t-why">${cores(u.srv)} has not been measured on this machine, so this has not been checked yet.
             Nearest measured: ${cores(n.srv)} → ${n.measured!=null?fmt(n.measured)+" s ("+pct(n.meas_dev)+")":"—"}, outside ±${(100*d.tol).toFixed(0)}%.</p>
           <div><button class="btn livebtn" type="button" data-srv="${u.srv}" data-th="${r.ht==="on"?2:1}" style="width:auto;padding:.4rem .9rem;background:var(--blue)">Measure ${cores(u.srv)} now (2–6 min)</button></div></div>`;
         continue;
@@ -558,9 +572,9 @@ function renderRec(d){
     h += `<div class="tile ${st[0]}">
       <div class="t-head"><span class="t-ht">${ht}</span><span class="chip ${st[0]}">${st[1]}</span></div>
       <div class="t-big">${r.srv}<small>${r.srv===1?"core":"cores"}</small>${r.extrapolated?ext:""}</div>
-      <dl class="t-kv">${kv("Predicted", r.pred, r.pred_dev)}${r.measured!=null?kv(r.live?"Measured live":"Measured", r.measured, r.meas_dev):""}</dl>
-      ${r.live?`<p class="t-why">${cores(r.srv)} is not in the training grid; it was measured live on this machine and is now a candidate.</p>
-        <div><button class="btn livebtn" type="button" data-srv="${r.srv}" data-th="${r.ht==="on"?2:1}" style="width:auto;padding:.35rem .8rem;background:var(--blue)">Measure again (2–6 min)</button></div>`:""}</div>`;
+      <dl class="t-kv">${kv("Predicted", r.pred, r.pred_dev)}${r.measured!=null?kv(r.live?"Measured live":"Measured", r.measured, r.meas_dev):""}${(!r.live && r.live_measured!=null)?kv("Measured live", r.live_measured, r.live_measured/T-1):""}</dl>
+      ${limNote(r.srv, r.ht)}
+      <div><button class="btn livebtn" type="button" data-srv="${r.srv}" data-th="${r.ht==="on"?2:1}" style="width:auto;padding:.35rem .8rem;background:var(--blue)">${r.measured!=null?"Measure again live":"Measure live"} (2–6 min)</button></div></div>`;
   }
   h += `</div>`;
   const an = (d.anchors||[]).map(a=>`${a.srv} cores / HT ${(a.th??2)===2?"on":"off"} / ${a.agents} agents`).join("  +  ");
@@ -659,7 +673,7 @@ predicted ${fmt(p.pred)} s${p.measured!=null?`\nmeasured ${fmt(p.measured)} s`:"
     + ((d.rows||[]).some(r=>!r.ok&&r.nearest) ? `<span style="color:var(--crit)">◌ nearest (unreachable)</span>` : "")
     + (zeroPts("on").length ? `<span style="color:var(--muted)">┈ prior before anchors</span>` : "")
     + zeroErr()
-    + (offrung ? `<span class="xtra" style="color:var(--muted)">◎ off the grid's rungs: that core count was measured live on this machine</span>` : "");
+    + (offrung ? `<span class="xtra" style="color:var(--muted)">◎ every core count from 2 to 16 is scanned and measured on this machine</span>` : "");
 
   let t = `<table><thead><tr><th>Cores</th><th>on · pred</th><th>on · meas</th><th>off · pred</th><th>off · meas</th></tr></thead><tbody>`;
   for(const c of d.rungs){
@@ -721,7 +735,7 @@ function renderPipe(P){
      <span class="d">${cal? `correction exp(κ₀·ln N + κ₁), κ₀ = ${sgn(cal[0])}, κ₁ = ${sgn(cal[1])}, solved exactly from the two anchors` : "discarded (anchors disagree)"}</span>
      <span class="who">computed · milliseconds</span></div>
    <div class="step"><span class="n"><b>5</b>Inverter</span><span class="v">2<small>answers</small></span>
-     <span class="d">scans the measured core counts (grid 2–16, plus any measured live), HT on and off; keeps the prediction closest to the target, or says none lands within ±15%</span>
+     <span class="d">scans every core count from 2 to 16, each measured beforehand (plus any measured live), HT on and off; keeps the prediction closest to the target, or says none lands within ±15%</span>
      <span class="who">computed · milliseconds</span></div>`;
   $("#guards").innerHTML = P.guards.map(g=>`<span class="guard ${g.passed?"ok":"bad"}" title="${esc(g.note)}"><span class="ic">${g.passed?"✓":"✗"}</span>
      Guardrail (${g.id}) ${esc(g.name)}: ${esc(g.unit)} = ${g.value==null?"—":(g.id==="iii"?(100*g.value).toFixed(0)+"%":g.value.toFixed(g.id==="i"?3:2))}

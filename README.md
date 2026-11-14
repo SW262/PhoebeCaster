@@ -28,17 +28,20 @@ python3 paper/demo_failmap.py        # 224 scored targets         -> results/dem
 python3 paper/paper_numbers_v2.py    # Table 2, dataset, abstract -> results/paper_numbers_v2.json
 python3 paper/rev1_numbers.py        # Sections 2-4               -> results/rev1_numbers.json
 python3 paper/make_fig_dilation.py   # Figure 2                   -> ./fig_dilation.pdf
-python3 paper/demo_review_numbers.py # accuracy by hyper-threading, full-grid run time, h(N)
+python3 paper/demo_review_numbers.py # accuracy by hyper-threading, run time of all 210 configurations, h(N), timeouts
 python3 paper/demo_extrap_err.py     # low-core extrapolation paragraph (Section 4)
-python3 paper/demo_usl_baseline.py none  # Amdahl's law baseline       -> results/demo_usl_baseline_none.json
-python3 paper/demo_usl_baseline.py h     # ... with the learned h(N)  -> results/demo_usl_baseline_h.json
-python3 paper/demo_amdahl_breakdown.py   # PhoebeCaster vs Amdahl + h(N), by core range and workload
-python3 paper/demo_no_exclude.py         # accuracy with question 900086 kept -> results/demo_no_exclude.json
+python3 paper/allint_numbers.py all     # Section 4 / Table 2: errors, Amdahl's law (+h(N)), deadline rule -> results/allint_numbers_all.json
+python3 paper/allint_fwd.py             # Table 2 forward error, prior only / two anchors (416 configurations)
+python3 paper/testv2og_eval.py          # the 224 targets over every core count 2..16
+python3 paper/demo_no_exclude.py        # accuracy with question 900086 kept -> results/demo_no_exclude.json
 ```
 
-Run `demo_failmap.py` first: `rev1_numbers.py`, `demo_review_numbers.py`,
-`demo_extrap_err.py`, `demo_usl_baseline.py` and `demo_amdahl_breakdown.py` read
-its output; `demo_amdahl_breakdown.py` also needs both `demo_usl_baseline.py` runs.
+Run `demo_failmap.py` first: `rev1_numbers.py`, `demo_review_numbers.py` and
+`demo_extrap_err.py` read its output. The core scan considers every core count
+from 2 to 16, and every one of them is measured (420 runs over both
+workloads: 196 in `data/testv2/`, 224 in `data/testv2og/`).
+`python3 paper/allint_numbers.py grid` restricts the scan to the seven counts
+of an earlier version (2, 4, 6, 8, 11, 13, 16) for comparison.
 
 ## Run the demo
 
@@ -66,9 +69,11 @@ anchor runs alone.
 | Path | Contents |
 |---|---|
 | `data/rc3/`, `data/rc4/` | training runs on 10 BIRD databases: one `point.json` per run (db_time split into four components, completion time, per-query times) |
-| `data/testv2/` | the two held-out workloads (`test` = bal_test, `test2`), 196 configurations |
-| `data/testv2_live/` | configurations measured live outside the grid |
-| `data/testv2_pre900086/`, `data/*_pre900086.json` | bal_test grid, anchors and probe from before question 900086 was excluded (used only by `demo_no_exclude.py`) |
+| `data/testv2/` | the two held-out workloads (`test` = bal_test, `test2`) at 2, 4, 6, 8, 11, 13 and 16 cores: 196 configurations |
+| `data/testv2og/` | the same workloads at 3, 5, 7, 9, 10, 12, 14 and 15 cores: 224 configurations (directories with `_ctl` are drift controls) |
+| `data/testv2og_keep/` | bal_test at those core counts with question 900086 kept (used only by `demo_no_exclude.py`) |
+| `data/testv2_live/` | configurations measured live from the web UI |
+| `data/testv2_pre900086/`, `data/*_pre900086.json` | bal_test runs at 2, 4, 6, 8, 11, 13 and 16 cores, anchors and probe from before question 900086 was excluded (used only by `demo_no_exclude.py`) |
 | `data/offline_*.json`, `data/*_label_noise.json` | serial-probe results (per-query offline cost) |
 | `data/anchors_*_v2.json` | the two anchor runs of each held-out workload |
 | `data/train_set_v2.json`, `data/r_model.json`, `data/ht_gain_fit.json` | fitted inputs of the prior model |
@@ -90,6 +95,9 @@ Notes:
   `EXCLUDED_LIBS`): one of its screened-out query rounds was replayed anyway
   through a fallback path in `harness/workload.py`, so all of its runs contain a
   ~21 s query that should not be there (the fallback is fixed since).
+- Of the 420 held-out runs, 31 at 2–7 cores and 64–224 agents had some queries
+  cancelled by the 30 s statement timeout; they are kept as measured
+  (`paper/demo_review_numbers.py`).
 
 ## Measurement setup (not included)
 

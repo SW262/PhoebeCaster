@@ -1,0 +1,22 @@
+{
+ "prior.grid": {
+  "n": 192,
+  "median": 28.8,
+  "within15": 21.9
+ },
+ "prior.all": {
+  "n": 416,
+  "median": 29.0,
+  "within15": 20.9
+ },
+ "2anchor.grid": {
+  "n": 192,
+  "median": 6.5,
+  "within15": 87.5
+ },
+ "2anchor.all": {
+  "n": 416,
+  "median": 5.8,
+  "within15": 90.4
+ }
+}

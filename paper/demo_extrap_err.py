@@ -24,8 +24,9 @@ for t in T:
         if k in seen: continue
         seen.add(k); err.setdefault((t["workload"], r["srv"]), []).append(r["pred"] / r["measured"] - 1)
 print("① 预测偏差中位(墙钟, 负 = 预测偏快)")
+print("  2..4 核(低锚点以下, 两负载合并): %+.1f%%" % (100 * st.median([x for (w, s_), v in err.items() if s_ <= 4 for x in v])))
 for w in ("bal_test", "test2"):
-    print(f"  {w:9s}" + "  ".join(f"s{s}={100*st.median(err[(w, s)]):+.1f}%" for s in (2, 4, 6, 8, 11, 13, 16)))
+    print(f"  {w:9s}" + "  ".join(f"s{s}={100*st.median(err[(w, s)]):+.1f}%" for s in sorted({k[1] for k in err})))
 bad = {}
 for t in T:
     if t["srv"] <= 4: bad.setdefault(t["workload"], [0, 0]); bad[t["workload"]][0] += not t["ok"]; bad[t["workload"]][1] += 1

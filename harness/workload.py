@@ -530,6 +530,10 @@ def prepare(args):
     _slow = set()
     _dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
     _sfs = sorted(f for f in os.listdir(_dir) if f.endswith("sql_screen.json"))
+    # 2026-11-11: BIRD_SCREEN_SKIP=逗号分隔的文件名, 跳过这些筛查表(只给"不剔除 900086"的补采用,
+    #   testv2ogk_run.sh 设 test_sql_screen.json)。默认空 = 行为不变。
+    _skip = {x for x in os.environ.get("BIRD_SCREEN_SKIP", "").split(",") if x}
+    _sfs = [f for f in _sfs if f not in _skip]
     for _f in _sfs:
         try:
             _sc = json.load(open(os.path.join(_dir, _f)))

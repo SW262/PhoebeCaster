@@ -1,0 +1,96 @@
+{
+ "mode": "grid",
+ "n": 224,
+ "fwd": {
+  "ours": {
+   "n": 192,
+   "median": 6.5,
+   "within15": 87.5,
+   "bias_median": -1.1
+  },
+  "am": {
+   "n": 192,
+   "median": 15.9,
+   "within15": 47.4,
+   "bias_median": 12.7
+  },
+  "amh": {
+   "n": 192,
+   "median": 7.4,
+   "within15": 78.6,
+   "bias_median": 3.7
+  }
+ },
+ "ours_all": 84.4,
+ "feasible": [
+  135,
+  85.9
+ ],
+ "infeasible": [
+  89,
+  82.0
+ ],
+ "wrong": 35,
+ "kinds": {
+  "under": 18,
+  "over": 2,
+  "none_fits": 15,
+  "pick_but_infeasible": 0
+ },
+ "bins": {
+  "2-4": [
+   75,
+   64.0
+  ],
+  "5": [
+   0,
+   null
+  ],
+  "6-13": [
+   71,
+   98.6
+  ],
+  "14-15": [
+   0,
+   null
+  ],
+  "16": [
+   78,
+   91.0
+  ]
+ },
+ "wrong_bal": 26,
+ "ht": {
+  "on": [
+   112,
+   87.5
+  ],
+  "off": [
+   112,
+   81.2
+  ]
+ },
+ "bal_off": 66.1,
+ "by_wl": {
+  "bal_test": {
+   "ours": 76.8,
+   "amh": 89.3
+  },
+  "test2": {
+   "ours": 92.0,
+   "amh": 74.1
+  }
+ },
+ "amdahl": 57.1,
+ "amdahl_h": 81.7,
+ "deadline": {
+  "ours": 79.9,
+  "am": 83.0,
+  "amh": 87.9
+ },
+ "deadline_overprov": {
+  "ours": 8.0,
+  "am": 31.0,
+  "amh": 18.0
+ }
+}
